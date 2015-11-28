@@ -11,111 +11,83 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form:form commandName="category">
-		<form:errors path="*" cssClass="errorblock" element="div" />
+	<form:form modelAttribute="category" method="post" id="categoryForm">
 		<table>
 			<tr>
-				<td><form:input path="name" placeholder="Enter first name" />
+				<td><form:input path="name" placeholder="Enter category name" />
 				</td>
 			</tr>
 			<tr>
 				<td class="errorblock"><label for="name" id="nameError"
 					class="error"></label></td>
 				<form:errors path="name" cssClass="error" />
-
 			</tr>
 			<tr>
-				<td><form:input path="description" placeholder="Description" /></td>
-			</tr>
-
-
-			<c:forEach var="attribute" items="${category.attributesForCategory}">
-				<tr>
-					<td>${attribute.name}${attribute.description}</td>
-				</tr>
-			</c:forEach>
-			<tr>
-			</tr>
-
-			<tr>
-				<td><input type="submit" value="Submit" class="input"></td>
+				<td><form:textarea path="description" placeholder="Description" /></td>
 			</tr>
 		</table>
 		<table>
+
 			<thead>
 				<tr>
-					<th>Attribute name</th>
+					<th>Attribute</th>
 					<th>Description</th>
 					<th></th>
 				</tr>
 			</thead>
-			<tbody>
+
+			<tbody id="category">
 				<c:forEach items="${category.attributesForCategory}" var="attribute"
-					varStatus="i" begin="0" >
+					varStatus="i" begin="0">
 					<tr>
 						<td><form:input path="attributesForCategory[${i.index}].name"
 								id="name${i.index}" /></td>
 						<td><form:input
 								path="attributesForCategory[${i.index}].description"
 								id="description${i.index}" /></td>
-						<td><a href="#" >Remove attribute</a></td>
+						<td><input type="checkbox" value="${i.index}" name="toDelete" /></td>
+
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
-		<input type="button" onclick="addAttribute();" />
-
+		<input type="submit" value="Save" name="action" />
+		<input type="submit" value="Add Attribute" name="action" />
+		<input type="submit" value="Delete" name="action" />
 	</form:form>
+
+
 	<script type="text/javascript"
-		src="<spring:url value="js/jquery-2.1.4.js"/>"></script>
-	<script type="text/javascript">
-		function addAttribute() {
-			// 			$('#att').append('yourtHTML');
-		}
-	</script>
-	<script type="text/javascript">
-		function rowAdded(rowElement) {
-			//clear the imput fields for the row
-			$(rowElement).find("input").val('');
-			//may want to reset <select> options etc
+		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 
-			//in fact you may want to submit the form
-			saveNeeded();
-		}
-		function rowRemoved(rowElement) {
-			saveNeeded();
-			alert("Removed Row HTML:\n" + $(rowElement).html());
-		}
 
-		function saveNeeded() {
-			$('#submit').css('color', 'red');
-			$('#submit').css('font-weight', 'bold');
-			if ($('#submit').val().indexOf('!') != 0) {
-				$('#submit').val('!' + $('#submit').val());
-			}
-		}
+</html>
+<form:form commandName="category">
+	<form:errors path="*" cssClass="errorblock" element="div" />
+	<table>
+		<tr>
+			<td><form:input path="name" placeholder="Enter first name" /></td>
+		</tr>
+		<tr>
+			<td class="errorblock"><label for="name" id="nameError"
+				class="error"></label></td>
+			<form:errors path="name" cssClass="error" />
 
-		function beforeSubmit() {
-			alert('submitting....');
-			return true;
-		}
+		</tr>
+		<tr>
+			<td><form:input path="description" placeholder="Description" /></td>
+		</tr>
 
-		$(document).ready(function() {
-			var config = {
-				rowClass : 'person',
-				addRowId : 'addPerson',
-				removeRowClass : 'removePerson',
-				formId : 'personListForm',
-				rowContainerId : 'personListContainer',
-				indexedPropertyName : 'personList',
-				indexedPropertyMemberNames : 'name,age',
-				rowAddedListener : rowAdded,
-				rowRemovedListener : rowRemoved,
-				beforeSubmit : beforeSubmit
-			};
-			new DynamicListHelper(config);
-		});
-	</script>
 
+
+		<tr>
+		</tr>
+
+		<tr>
+			<td><input type="submit" value="Submit" class="input"></td>
+		</tr>
+	</table>
+
+</form:form>
 </body>
 </html>

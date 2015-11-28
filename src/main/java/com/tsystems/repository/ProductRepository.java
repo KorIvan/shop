@@ -26,4 +26,7 @@ public interface ProductRepository {
 	List<Category> findAllCategories();
 //	
 //	<T> List<T> findAll(T toSearch);
+	boolean createCategory(Category category);
+	boolean validateCategory(Category category);
+	boolean validateProduct(Product product);
 }

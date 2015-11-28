@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -23,7 +24,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "PRODUCT")
 public class Product {
 	@Id
-	@GeneratedValue()	
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique=true,nullable=false)
 	private Long id;
 
@@ -48,7 +49,7 @@ public class Product {
 	
 	@NotNull(message = "This field must be filled in!")
 	@DecimalMin(value = "0.001", message = "Minimal weight is 0.001 gram.")
-	private Float weigth;
+	private Float weight;
 	
 	@NotNull(message = "This field must be filled in!")
 	@DecimalMin(value = "0.001", message = "Minimal bulk is 0.001 cm.")
@@ -76,8 +77,8 @@ public class Product {
 		return bulk;
 	}
 
-	public Float getWeigth() {
-		return weigth;
+	public Float getWeight() {
+		return weight;
 	}
 
 	
@@ -104,8 +105,8 @@ public class Product {
 
 
 
-	public void setWeigth(Float weigth) {
-		this.weigth = weigth;
+	public void setWeight(Float weigth) {
+		this.weight = weigth;
 	}
 
 	public List<Properties> getProperties() {

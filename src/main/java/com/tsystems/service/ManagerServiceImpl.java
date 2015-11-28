@@ -16,8 +16,13 @@ public class ManagerServiceImpl implements ManagerService {
 	private ProductRepository productRepository;
 
 	public String createProduct(Product product) {
-		// TODO Auto-generated method stub
-		return null;
+		if (productRepository.validateProduct(product)) {
+			if (productRepository.createProduct(product))
+				return "Product created.";
+			else
+				return "Sorry, we have problems.";
+		} else
+			return String.format("Sorry, \"%s\" already exists in this category.", product.getName());
 	}
 
 	public boolean updateProduct(Product product) {
@@ -26,8 +31,13 @@ public class ManagerServiceImpl implements ManagerService {
 	}
 
 	public String createCategory(Category category) {
-		// TODO Auto-generated method stub
-		return null;
+		if (productRepository.validateCategory(category)) {
+			if (productRepository.createCategory(category))
+				return "Category created.";
+			else
+				return "Sorry, we have problems.";
+		} else
+			return String.format("Sorry, category \"%s\" already exists.", category.getName());
 	}
 
 	public boolean updateCategory(Category category) {

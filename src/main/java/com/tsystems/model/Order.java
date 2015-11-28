@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -30,7 +31,7 @@ import javax.validation.constraints.NotNull;
 public class Order {
 
 	@Id
-	@GeneratedValue()
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
 	private Long id;
 

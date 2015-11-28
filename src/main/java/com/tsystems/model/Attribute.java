@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -20,7 +21,7 @@ import javax.validation.constraints.NotNull;
 @Table(name="ATTRIBUTE")
 public class Attribute {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
 	private Integer id;
 
@@ -31,11 +32,6 @@ public class Attribute {
 	
 	@OneToMany(mappedBy="attributes")
 	private List<Properties> properties;
-//	
-//	@ManyToOne
-//	@JoinColumn(name="category_id")
-////	@JoinTable(name = "ATTRIBUTES_FOR_CATEGORY", joinColumns = @JoinColumn(name = "category_id") )
-//	private Category category;
 
 	public String getName() {
 		return name;

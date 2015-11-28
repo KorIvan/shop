@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,7 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "PERSON")
 public class Person {
 	@Id
-	@GeneratedValue()
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
 	private Long id;
 

@@ -3,6 +3,7 @@ package com.tsystems.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,7 +24,7 @@ import javax.validation.constraints.Pattern;
 @Table(name = "ADDRESS")
 public class Address {
 	@Id
-	@GeneratedValue()
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
 	private Long id;
 	@NotNull(message = "This field must be filled in!")
