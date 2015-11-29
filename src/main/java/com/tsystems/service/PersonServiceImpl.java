@@ -1,8 +1,11 @@
 package com.tsystems.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tsystems.model.Category;
 import com.tsystems.model.Order;
 import com.tsystems.model.Person;
 import com.tsystems.model.PersonType;
@@ -64,6 +67,10 @@ public class PersonServiceImpl implements PersonService {
 	public Integer putBackToStorage(Product product, Integer amountToPut) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public List<Product> getCategoryById(Long categoryId) {
+		return clientReposotiry.getProductsByCategory(categoryId);
 	}
 
 }

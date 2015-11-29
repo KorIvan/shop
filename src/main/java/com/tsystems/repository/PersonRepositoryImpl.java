@@ -14,7 +14,9 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tsystems.model.Category;
 import com.tsystems.model.Person;
+import com.tsystems.model.Product;
 
 @Repository("personReposotiry")
 public class PersonRepositoryImpl implements PersonRepository {
@@ -59,6 +61,22 @@ public class PersonRepositoryImpl implements PersonRepository {
 			return true;
 		else
 			return false;
+	}
+
+	public List<Product> getProductsByCategory(Long categoryId) {
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Product> cq = cb.createQuery(Product.class);
+		Root<Product> c = cq.from(Product.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+
+		predicates.add(cb.equal(c.get("category"), em.find(Category.class, categoryId)));
+
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+
+		TypedQuery<Product> q = em.createQuery(cq);
+		List<Product> founded = q.getResultList();
+		return founded;
 	}
 
 }

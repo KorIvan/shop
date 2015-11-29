@@ -8,44 +8,64 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>${title}</title>
+<link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
 
 </head>
+	<h1>${title}</h1>
+
 <body>
-	<form:form commandName="product" onsubmit="return validateProdForm(this);">
-		<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
+	<form:form commandName="product"
+		onsubmit="return validateProdForm(this);">
 		<table>
+			<tr>
+				<td>${message}</td>
+			</tr>
 			<tr>
 				<td><form:input path="name" placeholder="Enter product name" />
 				</td>
 			</tr>
 			<tr>
 				<td class="errorblock"><label for="name" id="nameError"
-					class="error"></label></td>
-				<form:errors path="name" cssClass="error" />
+					class="error"></label> <form:errors path="name" cssClass="error" /></td>
 			</tr>
 			<tr>
 				<td><form:select path="category" id="categories">
 						<form:option value="">Select Category</form:option>
-						<c:forEach items="${categories}" var="category">
-							<form:option value="${category}">${category.name}</form:option>
-						</c:forEach>
+						<form:options items="${categories}" itemValue="id"
+							itemLabel="name" />
 					</form:select></td>
+
 			</tr>
 			<tr>
-				<td class="errorblock"><label for="category"
-					id="categoryError" class="error"></label></td>
-				<form:errors path="category" cssClass="error" />
+				<td></td>
+			</tr>
+			<tr id="properties"></tr>
+			<tr>
+				<td><c:out value="${categoryIndex}" /></td>
+			</tr>
+			<tr>
+				<td><c:forEach
+						items="${categories[categoryIndex].attributesForCategory}"
+						var="attribute">
+						<label>${attribute.name}</label>
+					</c:forEach></td>
+			</tr>
+
+			<tr>
+				<td class="errorblock"><label for="category" id="categoryError"
+					class="error"></label> <form:errors path="category"
+						cssClass="error" /></td>
 
 			</tr>
 			<tr>
 				<td><form:input path="currentPrice"
 						placeholder="Enter current price" /></td>
 			</tr>
-				<tr>
+			<tr>
 				<td class="errorblock"><label for="currentPrice"
-					id="currentPriceError" class="error"></label></td>
-				<form:errors path="currentPrice" cssClass="error" />
+					id="currentPriceError" class="error"></label> <form:errors
+						path="currentPrice" cssClass="error" /></td>
 
 			</tr>
 			<tr>
@@ -54,8 +74,7 @@
 			</tr>
 			<tr>
 				<td class="errorblock"><label for="weight" id="weightError"
-					class="error"></label></td>
-				<form:errors path="weight" cssClass="error" />
+					class="error"></label> <form:errors path="weight" cssClass="error" /></td>
 
 			</tr>
 
@@ -64,8 +83,7 @@
 			</tr>
 			<tr>
 				<td class="errorblock"><label for="bulk" id="bulkError"
-					class="error"></label></td>
-				<form:errors path="bulk" cssClass="error" />
+					class="error"></label> <form:errors path="bulk" cssClass="error" /></td>
 
 			</tr>
 			<tr>
@@ -75,14 +93,13 @@
 				<td><form:textarea path="description"
 						placeholder="Enter description" /></td>
 			</tr>
-
 		</table>
 
 
 	</form:form>
-<script type="text/javascript"
-	src="../js/validateProdForm.js">
 
+	<script type="text/javascript" src="../js/validateProdForm.js">
+		
 	</script>
 
 
@@ -91,26 +108,41 @@
 	<!-- 		></script> -->
 	<script type="text/javascript"
 		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-		<script type="text/javascript">
-		$(document).ready(
-				function() {
-					$.getJSON('<spring:url value="categories.json"/>', 
-							{ajax : 'true'	},
-					function(data) {
-						var html = '<option value="">--Please select one--</option>';
-						var len = data.length;
-						for (var i = 0; i < len; i++) {
-							html += '<option value="' + data[i].name + '">'
-									+ data[i].name
-									+ '</option>';
-						}
-						html += '</option>';
+	<script type="text/javascript">
+		$("#categories").change(function() {
 
-						$('#categories').html(html);
+			// 			var index=$("#myDivNextSelectTag").html($(this)[0].value);
+			var index = $(this)[0].value;
+			console.log(index);
+			var html = '<c:set var="categoryIndex"   value="${'+index+'}"/>';
+			// 			<c:set var="categoryIndex" value="index"/>
+			// 				var message = '<c:out value="${categoryIndex}"/>';
+			$("#myDivNextSelectTag").html(html);
+
+		})
+	</script>
+	<script type="text/javascript">
+		$("#categories").change(
+				function() {
+					var index = $(this)[0].value;
+					$.getJSON('<spring:url value="categories.json"/>', {
+						ajax : 'true'
+					}, function(data) {
+						var html = '';
+						var category = data[index - 1];
+						var attributes = category.attributesForCategory;
+						var len = attributes.length;
+						for (var i = 0; i < len; i++) {
+							html += '<label>' + attributes[i].name
+									+ '</label><input value=""/>';
+						}
+						html += '';
+
+						$('#properties').html(html);
 					});
-					
+
 				});
-		</script>
-	
+	</script>
+
 </body>
 </html>

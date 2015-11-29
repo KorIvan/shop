@@ -4,9 +4,32 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>${title}</title>
 </head>
 <body>
+<h1>${title}</h1>
+	<script type="text/javascript">
+		$("#categories").change(
+				function() {
+					var index = $(this)[0].value;
+					$.getJSON('<spring:url value="category/'+(index-1)+'.json"/>', {
+						ajax : 'true'
+					}, function(data) {
+						var html = '';
+						var category = data[index - 1];
+						var attributes = category.attributesForCategory;
+						var len = attributes.length;
+						for (var i = 0; i < len; i++) {
+							html += '<label>' + attributes[i].name
+									+ '</label><input value=""/>';
+						}
+						html += '';
+
+						$('#properties').html(html);
+					});
+
+				});
+	</script>
 
 </body>
 </html>

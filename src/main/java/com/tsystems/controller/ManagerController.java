@@ -1,6 +1,5 @@
 package com.tsystems.controller;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +9,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.tsystems.model.Attribute;
 import com.tsystems.model.Category;
+import com.tsystems.model.CategoryEditor;
 import com.tsystems.model.Product;
+import com.tsystems.model.Properties;
 import com.tsystems.service.ManagerService;
 
 @Controller
@@ -27,28 +30,35 @@ import com.tsystems.service.ManagerService;
 public class ManagerController {
 	@Autowired
 	private ManagerService managerService;
+	@Autowired
+	private CategoryEditor categoryEditor;
+
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(Category.class, this.categoryEditor);
+	}
 
 	@RequestMapping(value = "/addProduct", method = RequestMethod.GET)
 	public ModelAndView createProduct() {
 		ModelAndView model = new ModelAndView("product");
 		model.addObject("categories", managerService.findAllCategories());
 		Product product = new Product();
+		List<Properties> properties = new LinkedList<Properties>();
+		product.setProperties(properties);
 		model.addObject("product", product);
+		model.addObject("title", "New product");
 		return model;
 	}
 
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-	public ModelAndView saveProduct(@Valid @ModelAttribute("product") Product product,
-			@ModelAttribute("category") Category category, BindingResult result) {
-		product.setCategory(category);
+	public ModelAndView saveProduct(@Valid @ModelAttribute("product") Product product, BindingResult result) {
 		ModelAndView model = new ModelAndView("product");
-		
-		// if result has errors
+		model.addObject("title", "New product");
 		if (result.hasErrors()) {
 			model.addObject("message", "Sorry, error ocured.");
 			return model;
 		} else {
-			
+			// product.setProperties(properties);
 			model.addObject("message", managerService.createProduct(product));
 		}
 		return model;
@@ -57,18 +67,6 @@ public class ManagerController {
 	@RequestMapping(value = "/categories", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody List<Category> getAllCategories() {
 		return managerService.findAllCategories();
-		// List<Category> categories = new ArrayList<Category>();
-		// Category a = new Category();
-		// a.setId(1);
-		// a.setName("TV");
-		// a.setDescription("ollo d ");
-		// Category b = new Category();
-		// b.setName("Kitchen");
-		// b.setDescription("lllbbbbbb");
-		// b.setId(2);
-		// categories.add(a);
-		// categories.add(b);
-		// return categories;
 	}
 
 	@RequestMapping(value = "/addCategory", method = RequestMethod.GET)
@@ -78,19 +76,7 @@ public class ManagerController {
 		List<Attribute> attributes = new LinkedList<Attribute>();
 		attributes.add(new Attribute());
 		cat.setAttributesForCategory(attributes);
-
-		// cat.setName("Kitchen");
-		// cat.setDescription("Technic for kitchen");
-		//
-		// Attribute a = new Attribute();
-		// a.setName("Model");
-		// a.setDescription("about models");
-		// Attribute b = new Attribute();
-		// b.setName("Size");
-		// b.setDescription("size in dimensions");
-		// attributes.add(a);
-		// attributes.add(b);
-		// cat.setAttributesForCategory(attributes);
+		model.addObject("title", "New category");
 		model.addObject("category", cat);
 
 		return model;
@@ -99,11 +85,17 @@ public class ManagerController {
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
 	public ModelAndView postCategory(@Valid @ModelAttribute("category") Category category, BindingResult result,
 			@RequestParam String action, HttpServletRequest request) {
-		System.out.println(action);
 		String[] toDelete = request.getParameterValues("toDelete");
 		ModelAndView model = new ModelAndView("category");
-		if (action.equalsIgnoreCase("Save"))
-			managerService.createCategory(category);
+		model.addObject("title", "New category");
+
+		if (result.hasErrors() && !result.hasFieldErrors("type")) {
+			model.addObject("message", "Sorry, error ocured.");
+			return model;
+		}
+		if (action.equalsIgnoreCase("Save")) {
+			model.addObject("message", managerService.createCategory(category));
+		}
 		if (action.equalsIgnoreCase("Add Attribute")) {
 			category.getAttributesForCategory().add(new Attribute());
 			model.addObject("category", category);

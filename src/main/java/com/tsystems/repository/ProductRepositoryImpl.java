@@ -20,7 +20,7 @@ import com.tsystems.model.Person;
 import com.tsystems.model.Product;
 
 @Repository("productRepository")
-public class ProductRepositoryImpl implements ProductRepository {
+public class ProductRepositoryImpl<T> implements ProductRepository {
 	@PersistenceContext
 	private EntityManager em;
 
@@ -39,8 +39,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 		if (em.contains(product))
 			return false;
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-		Root<Person> c = cq.from(Person.class);
+		CriteriaQuery<Product> cq = cb.createQuery(Product.class);
+		Root<Product> c = cq.from(Product.class);
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
 		predicates.add(cb.equal(c.get("name"), product.getName()));
@@ -48,8 +48,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 
-		TypedQuery<Person> q = em.createQuery(cq);
-		List<Person> founded = q.getResultList();
+		TypedQuery<Product> q = em.createQuery(cq);
+		List<Product> founded = q.getResultList();
 		if (founded.isEmpty())
 			return true;
 		else
@@ -107,6 +107,18 @@ public class ProductRepositoryImpl implements ProductRepository {
 			return true;
 		else
 			return false;
+	}
+
+//	public T getById(Long id, Class<T> T) {
+//		
+//	}
+
+	public Object getById(Long id, Class T) {
+		return em.find(T, id);
+	}
+
+	public Category findCategoryById(Long id) {
+		return em.find(Category.class, id);
 	}
 
 	

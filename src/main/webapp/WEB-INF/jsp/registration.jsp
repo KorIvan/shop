@@ -8,7 +8,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title><c:out value="${title}" /></title>
-<link href="<spring:url value="css/registration.css"/>" rel="stylesheet">
+<link href="<spring:url value="/css/registration.css"/>" rel="stylesheet">
 
 </head>
 <body>

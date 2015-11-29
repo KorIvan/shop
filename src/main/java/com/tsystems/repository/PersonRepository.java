@@ -1,6 +1,9 @@
 package com.tsystems.repository;
 
+import java.util.List;
+
 import com.tsystems.model.Person;
+import com.tsystems.model.Product;
 /**
  * PersonRepository provides CRUD-operations with objects of Person class. 
  * @author Ivan
@@ -17,4 +20,5 @@ public interface PersonRepository {
 	boolean validateClient(Person client);
 	boolean updatePerson(Person client);
 //	boolean deletePerson(Person client);
+	List<Product> getProductsByCategory(Long categoryId);
 }

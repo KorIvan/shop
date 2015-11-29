@@ -28,7 +28,7 @@ public class Category {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(nullable = false, unique = true)
-	private Integer id;
+	private Long id;
 
 //	@Column(name = "parent_id")
 //	private Integer parentId;
@@ -47,7 +47,7 @@ public class Category {
 	  )
 	private List<Attribute> attributesForCategory;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -56,7 +56,7 @@ public class Category {
 	}
 
 	@Deprecated
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

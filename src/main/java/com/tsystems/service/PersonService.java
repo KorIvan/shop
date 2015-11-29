@@ -1,5 +1,8 @@
 package com.tsystems.service;
 
+import java.util.List;
+
+import com.tsystems.model.Category;
 import com.tsystems.model.Order;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
@@ -72,4 +75,6 @@ public interface PersonService {
 	 * @return Product became at Storage
 	 */
 	Integer putBackToStorage(Product product, Integer amountToPut);
+
+	List<Product> getCategoryById(Long parseLong);
 }

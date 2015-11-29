@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +37,7 @@ public class Product {
 	private Float currentPrice;
 	
 	@NotNull(message = "This field must be filled in!")
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.REFRESH})
+	@ManyToOne()
 	private Category category;
 	
 //	@NotNull
@@ -44,7 +45,7 @@ public class Product {
 //	@JoinTable(name = "PRODUCT_PROPERTY", joinColumns =  @JoinColumn(name = "product_id") )
 //	@MapKeyColumn (name="property_name")
 //	private Map<Property,PropertyBody> properties;
-	@OneToMany(mappedBy="product")
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<Properties> properties;
 	
 	@NotNull(message = "This field must be filled in!")

@@ -16,6 +16,7 @@ public class ManagerServiceImpl implements ManagerService {
 	private ProductRepository productRepository;
 
 	public String createProduct(Product product) {
+//		
 		if (productRepository.validateProduct(product)) {
 			if (productRepository.createProduct(product))
 				return "Product created.";
@@ -57,6 +58,10 @@ public class ManagerServiceImpl implements ManagerService {
 
 	public List<Category> findAllCategories() {
 		return productRepository.findAllCategories();
+	}
+
+	public Category getCategoryById(Long id) {
+		return productRepository.findCategoryById(id);
 	}
 
 //	public List<?> findAll(Class<?> toSearch) {

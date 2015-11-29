@@ -8,8 +8,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>${title}</title>
+<link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
+
 </head>
+	<h1>${title}</h1>
+
 <body>
 	<form:form modelAttribute="category" method="post" id="categoryForm">
 		<table>
@@ -23,7 +27,7 @@
 				<form:errors path="name" cssClass="error" />
 			</tr>
 			<tr>
-				<td><form:textarea path="description" placeholder="Description" /></td>
+				<td><form:textarea path="description" placeholder="Category description" /></td>
 			</tr>
 		</table>
 		<table>
@@ -36,7 +40,7 @@
 				</tr>
 			</thead>
 
-			<tbody id="category">
+			<tbody class="attributes" id="category">
 				<c:forEach items="${category.attributesForCategory}" var="attribute"
 					varStatus="i" begin="0">
 					<tr>
@@ -59,35 +63,6 @@
 
 	<script type="text/javascript"
 		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-
-
 </html>
-<form:form commandName="category">
-	<form:errors path="*" cssClass="errorblock" element="div" />
-	<table>
-		<tr>
-			<td><form:input path="name" placeholder="Enter first name" /></td>
-		</tr>
-		<tr>
-			<td class="errorblock"><label for="name" id="nameError"
-				class="error"></label></td>
-			<form:errors path="name" cssClass="error" />
-
-		</tr>
-		<tr>
-			<td><form:input path="description" placeholder="Description" /></td>
-		</tr>
-
-
-
-		<tr>
-		</tr>
-
-		<tr>
-			<td><input type="submit" value="Submit" class="input"></td>
-		</tr>
-	</table>
-
-</form:form>
 </body>
 </html>

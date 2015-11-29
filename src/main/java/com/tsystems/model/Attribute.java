@@ -23,7 +23,7 @@ public class Attribute {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
-	private Integer id;
+	private Long id;
 
 	@NotNull(message = "This field must be filled in!")
 	private String name;
@@ -49,7 +49,7 @@ public class Attribute {
 		this.description = description;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 

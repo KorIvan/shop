@@ -9,7 +9,7 @@ import com.tsystems.model.Product;
  * @author Ivan
  *
  */
-public interface ProductRepository {
+public interface ProductRepository <T>{
 	Product readProduct(Integer id);
 	boolean createProduct(Product prod);
 	boolean updateProduct(Product prod);
@@ -29,4 +29,6 @@ public interface ProductRepository {
 	boolean createCategory(Category category);
 	boolean validateCategory(Category category);
 	boolean validateProduct(Product product);
+	T getById(Long id, Class<T> T);
+	Category findCategoryById(Long id);
 }

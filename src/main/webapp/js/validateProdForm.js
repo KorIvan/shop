@@ -1,4 +1,11 @@
 
+function getCategory(select) {
+					$.getJSON('<spring:url value="categories.json"/>', 
+							{ajax : 'true'	},
+					function(data) {return data[select];
+					});
+					
+				}
 function validateProdForm(form) {
 	var name = form.name.value;
 	var nameBool = false;
@@ -33,13 +40,17 @@ function validateProdForm(form) {
 	} else {
 		bulkBool = true;
 	}
-	var category = form.category.name.value;
+//	Object cat=getData(form.select);
+	var category = form.category.value;
 	var categoryBool = false;
-	console.log(form.category.value);
-	console.log(form.category.name.value);
+	console.log(category);
+//	console.log(form.category.value);
+//	console.log(form.category.name.value);
+//	console.log(form.category.description.value);
+console.log(category);
 
 	document.getElementById("categoryError").innerHTML = "";
-	if (category == null) {
+	if (category === null) {
 		document.getElementById("categoryError").innerHTML = "Choose category!";
 	} else {
 		categoryBool = true;

@@ -13,6 +13,7 @@ public interface ManagerService {
 	boolean updateCategory(Category category);
 //	List<?> findAll(Class<?> toSearch);
 	List<Category> findAllCategories();
+	Category getCategoryById(Long id);
 	String createAttribute(Attribute attribute);
 	boolean updateAttribute(Attribute attribute);
 }

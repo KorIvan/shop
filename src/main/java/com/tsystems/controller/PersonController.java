@@ -1,23 +1,25 @@
 package com.tsystems.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tsystems.model.Person;
+import com.tsystems.model.Product;
 import com.tsystems.service.PersonService;
 
 @Controller
-@SessionAttributes("cart")
 public class PersonController {
 	@Autowired
 	private PersonService clientService;
@@ -27,18 +29,19 @@ public class PersonController {
 		model.addAttribute("title", "Registration");
 		return "registration";
 	}
+
 	/**
 	 * Client's registration
+	 * 
 	 * @param person
 	 * @param result
 	 * @return
 	 */
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
 	public ModelAndView registrate(@Valid @ModelAttribute("person") Person person, BindingResult result) {
-		System.out.println(result.hasFieldErrors("type"));
 		ModelAndView model = new ModelAndView("registration");
 		model.addObject("title", "Registration");
-		//if result has errors
+		// if result has errors
 		if (result.hasErrors() && !result.hasFieldErrors("type")) {
 			model.addObject("message", "Sorry, error ocured.");
 			return model;
@@ -48,6 +51,11 @@ public class PersonController {
 		return model;
 	}
 
+	@RequestMapping(value="/catalog",method=RequestMethod.GET)
+	public ModelAndView getCatalog(){
+		ModelAndView model=new ModelAndView("catalog");
+		return model;
+	}
 	@RequestMapping(value = "/hello")
 	public String getHello(Model model) {
 		model.addAttribute("registration", "Registration");
@@ -62,8 +70,9 @@ public class PersonController {
 		return "hello";
 	}
 
-	@RequestMapping(value = "/calendar")
-	public String calendar(Model model) {
-		return "calendar";
+	@RequestMapping(value = "/category/{categoryId}", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody List<Product> getCategoryProducts(@PathVariable() String categoryId) {
+		
+		return clientService.getCategoryById(Long.parseLong(categoryId));
 	}
 }

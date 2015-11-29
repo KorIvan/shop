@@ -21,7 +21,7 @@ public class Properties {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
-	private Integer id;
+	private Long id;
 
 //	@OneToOne
 	@ManyToOne
@@ -36,7 +36,7 @@ public class Properties {
 
 	private String description;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -45,7 +45,7 @@ public class Properties {
 	}
 
 	@Deprecated
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
