@@ -18,7 +18,7 @@ import com.tsystems.model.Category;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
 
-@Repository("personReposotiry")
+@Repository("clientRepository")
 public class PersonRepositoryImpl implements PersonRepository {
 	@PersistenceContext
 	private EntityManager em;
@@ -77,6 +77,16 @@ public class PersonRepositoryImpl implements PersonRepository {
 		TypedQuery<Product> q = em.createQuery(cq);
 		List<Product> founded = q.getResultList();
 		return founded;
+	}
+
+	public List<Category> findAllCategories() {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Category> cq = cb.createQuery(Category.class);
+		Root<Category> c = cq.from(Category.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+ 		TypedQuery<Category> q = em.createQuery(cq);
+		return q.getResultList();
 	}
 
 }

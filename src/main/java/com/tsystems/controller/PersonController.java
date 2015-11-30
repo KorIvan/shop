@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.tsystems.model.Category;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
 import com.tsystems.service.PersonService;
@@ -74,5 +75,9 @@ public class PersonController {
 	public @ResponseBody List<Product> getCategoryProducts(@PathVariable() String categoryId) {
 		
 		return clientService.getCategoryById(Long.parseLong(categoryId));
+	}
+	@RequestMapping(value = "/categories", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody List<Category> getAllCategories() {
+		return clientService.findAllCategories();
 	}
 }

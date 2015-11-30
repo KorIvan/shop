@@ -16,12 +16,12 @@ import com.tsystems.repository.PersonRepository;
 public class PersonServiceImpl implements PersonService {
 
 	@Autowired
-	private PersonRepository clientReposotiry;
+	private PersonRepository clientRepository;
 
 	public String createClient(Person client) {
 		client.setType(PersonType.CLIENT);
-		if (clientReposotiry.validateClient(client)) {
-			if (clientReposotiry.createClient(client))
+		if (clientRepository.validateClient(client)) {
+			if (clientRepository.createClient(client))
 				return "Congratulations! You're registred!";
 			else
 				return "Sorry, we have some problems.";
@@ -70,7 +70,11 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	public List<Product> getCategoryById(Long categoryId) {
-		return clientReposotiry.getProductsByCategory(categoryId);
+		return clientRepository.getProductsByCategory(categoryId);
+	}
+
+	public List<Category> findAllCategories() {
+		return clientRepository.findAllCategories();
 	}
 
 }

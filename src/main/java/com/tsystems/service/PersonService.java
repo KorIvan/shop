@@ -77,4 +77,6 @@ public interface PersonService {
 	Integer putBackToStorage(Product product, Integer amountToPut);
 
 	List<Product> getCategoryById(Long parseLong);
+
+	List<Category> findAllCategories();
 }
