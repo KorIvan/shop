@@ -2,6 +2,7 @@ package com.tsystems.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.tsystems.model.Cart;
 import com.tsystems.model.Category;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
@@ -70,7 +72,6 @@ public class PersonController {
 
 		return "hello";
 	}
-
 	@RequestMapping(value = "/category/{categoryId}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody List<Product> getCategoryProducts(@PathVariable() String categoryId) {
 		
@@ -79,5 +80,12 @@ public class PersonController {
 	@RequestMapping(value = "/categories", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody List<Category> getAllCategories() {
 		return clientService.findAllCategories();
+	}
+	@RequestMapping(value="order", method=RequestMethod.GET)
+	public ModelAndView makeOrder(HttpSession session){
+		Cart cart=(Cart)session.getAttribute("cart");
+		ModelAndView model=new ModelAndView("order");
+		clientService.purchaseOrder(cart);
+		return model;
 	}
 }

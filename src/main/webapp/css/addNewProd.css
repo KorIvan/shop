@@ -51,6 +51,14 @@ input[type=submit] {
 	padding: 0px;
 	height: 2.2em;
 }
+input[type=number]{
+	font-size: 18px;
+	margin-left: 50px;
+	margin-right: 40px;
+	width: 50px;
+	padding: 5px;
+	height: 30px;
+}
 textarea{
 	font-size: 14px;
 	width: 300px;
@@ -62,5 +70,4 @@ select{
 	width: 310px;
 	padding: 5px;
 	height: 40px;
-	
 }

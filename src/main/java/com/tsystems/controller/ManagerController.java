@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,6 +68,12 @@ public class ManagerController {
 	@RequestMapping(value = "/categories", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody List<Category> getAllCategories() {
 		return managerService.findAllCategories();
+	}
+
+	@RequestMapping(value = "/category/{categoryId}/attributes", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody List<Attribute> getCategoryAttributes(@PathVariable() String categoryId) {
+		
+		return managerService.getAllAttributesOfCategory(Long.parseLong(categoryId));
 	}
 
 	@RequestMapping(value = "/addCategory", method = RequestMethod.GET)

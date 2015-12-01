@@ -2,6 +2,7 @@ package com.tsystems.service;
 
 import java.util.List;
 
+import com.tsystems.model.Cart;
 import com.tsystems.model.Category;
 import com.tsystems.model.Order;
 import com.tsystems.model.Person;
@@ -32,7 +33,7 @@ public interface PersonService {
 	 * @param order
 	 * @return
 	 */
-	boolean purchaseOrder(Order order);
+	String purchaseOrder(Cart cart);
 
 	/**
 	 * Client can cancel his Order at every step except when Order's status is "SHIPPING","DELIVERED".

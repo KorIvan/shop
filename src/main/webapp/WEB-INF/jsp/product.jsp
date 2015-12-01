@@ -44,13 +44,13 @@
 			<tr>
 				<td><c:out value="${categoryIndex}" /></td>
 			</tr>
-			<tr>
-				<td><c:forEach
-						items="${categories[categoryIndex].attributesForCategory}"
-						var="attribute">
-						<label>${attribute.name}</label>
-					</c:forEach></td>
-			</tr>
+<!-- 			<tr> -->
+<%-- 				<td><c:forEach items="${categories[categoryIndex].attributesForCategory}" --%>
+<%-- 						var="attribute"> --%>
+<%-- 						<label>${attribute.name}</label> --%>
+<%-- 						${attribute.name} --%>
+<%-- 					</c:forEach></td> --%>
+<!-- 			</tr> -->
 
 			<tr>
 				<td class="errorblock"><label for="category" id="categoryError"
@@ -86,12 +86,13 @@
 					class="error"></label> <form:errors path="bulk" cssClass="error" /></td>
 
 			</tr>
-			<tr>
-				<td><input type="submit" value="Submit" class="input"></td>
-			</tr>
+
 			<tr>
 				<td><form:textarea path="description"
 						placeholder="Enter description" /></td>
+			</tr>
+						<tr>
+				<td><input type="submit" value="Submit" id="submit"></td>
 			</tr>
 		</table>
 
@@ -103,11 +104,30 @@
 	</script>
 
 
-	<!-- <script type="text/javascript" -->
-	<%-- 		src="<spring:url value='js/jquery-2.1.4.js'/>" --%>
-	<!-- 		></script> -->
 	<script type="text/javascript"
 		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript">
+		$('#submit').submit(function(){$.getJson
+			var properties={property:{id:"",product:"",attribute:"",description:""}};
+		});
+		function sendAjax(properties) {
+			 
+			$.ajax({ 
+			    url: "<spring:url value="cart.html"/>", 
+			    type: 'POST', 
+			    dataType: 'json', 
+			    data: JSON.stringify({ product: product, amount: parseInt(newAmount)}),
+			    contentType: 'application/json',
+			    mimeType: 'application/json',
+			    success: function(data) { 
+			        alert(data.id + " " + data.name);
+			    },
+//			     error:function(data,status,er) { 
+//			         alert("error: "+data.name+" status: "+status+" er:"+er);
+//			     }
+			});
+			}
+		</script>
 	<script type="text/javascript">
 		$("#categories").change(function() {
 
@@ -122,6 +142,7 @@
 		})
 	</script>
 	<script type="text/javascript">
+	var attributes;
 		$("#categories").change(
 				function() {
 					var index = $(this)[0].value;
@@ -130,7 +151,7 @@
 					}, function(data) {
 						var html = '';
 						var category = data[index - 1];
-						var attributes = category.attributesForCategory;
+						attributes = category.attributesForCategory;
 						var len = attributes.length;
 						for (var i = 0; i < len; i++) {
 							html += '<label>' + attributes[i].name

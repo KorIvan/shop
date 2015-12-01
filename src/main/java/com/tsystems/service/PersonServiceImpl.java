@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tsystems.model.Cart;
 import com.tsystems.model.Category;
 import com.tsystems.model.Order;
 import com.tsystems.model.Person;
@@ -39,9 +40,9 @@ public class PersonServiceImpl implements PersonService {
 		return null;
 	}
 
-	public boolean purchaseOrder(Order order) {
+	public String purchaseOrder(Cart cart) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 	public boolean cancelOrder(Order order) {

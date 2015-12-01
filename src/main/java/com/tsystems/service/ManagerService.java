@@ -16,4 +16,5 @@ public interface ManagerService {
 	Category getCategoryById(Long id);
 	String createAttribute(Attribute attribute);
 	boolean updateAttribute(Attribute attribute);
+	List<Attribute> getAllAttributesOfCategory(Long parseLong);
 }

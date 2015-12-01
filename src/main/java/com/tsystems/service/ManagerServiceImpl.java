@@ -64,6 +64,10 @@ public class ManagerServiceImpl implements ManagerService {
 		return productRepository.findCategoryById(id);
 	}
 
+	public List<Attribute> getAllAttributesOfCategory(Long categoryId) {
+		return productRepository.findCategoryById(categoryId).getAttributesForCategory();
+	}
+
 //	public List<?> findAll(Class<?> toSearch) {
 //		productRepository.findAllCategories();
 //		return null;
