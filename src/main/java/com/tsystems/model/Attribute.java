@@ -2,8 +2,10 @@ package com.tsystems.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,6 +33,8 @@ public class Attribute {
 	private String description;
 	
 	@OneToMany(mappedBy="attributes")
+	//	@OneToMany(mappedBy="attributes",cascade=CascadeType.ALL,fetch=FetchType.EAGER) don't do this!!! will cause recursion when product add
+
 	private List<Properties> properties;
 
 	public String getName() {

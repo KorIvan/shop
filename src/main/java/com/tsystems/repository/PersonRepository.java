@@ -5,13 +5,14 @@ import java.util.List;
 import com.tsystems.model.Category;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
+import com.tsystems.model.User;
 /**
  * PersonRepository provides CRUD-operations with objects of Person class. 
  * @author Ivan
  *
  */
 public interface PersonRepository {
-	Person readPerson(Integer id);
+	Person readPerson(Long id);
 	boolean createClient(Person client);
 	/**
 	 * Check uniqueness of Client's email
@@ -37,4 +38,5 @@ public interface PersonRepository {
 	 * @return List<Category>
 	 */
 	List<Category> findAllCategories();
+	boolean validateClient(User user);
 }

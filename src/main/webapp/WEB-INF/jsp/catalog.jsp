@@ -8,9 +8,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>${title}</title>
+<%-- <link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet"> --%>
 </head>
 <body>
-<h1>${title}</h1>
+<div align="center"><h1>${title}</h1>
 <form:form commandName="cart.cart" name="products">
 
 <table>
@@ -34,14 +35,14 @@
 </table>
 <input type="button" value="Send to cart" id="send" name="action"/>
 </form:form>
-<div class="simpleCart_items"></div>
+</div>
 <script type="text/javascript"
 		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" >
 var product;
 var amount;
 $('#send').click(function(){
-console.log(products[0]);
+console.log(product[0]);
 var tempAmount;	amount=0;product=null;
 for (var i=0; i<products.length;i++){
 	tempAmount=$('#prod'+products[i].id).val();
@@ -113,15 +114,6 @@ $.ajax({
 		
 	</script>
 
-<script type="text/javascript" src="<spring:url value="/js/simpleCart.min.js"/>" ></script>
-	<script>
-		simpleCart({
-			checkout: { 
-				type: "PayPal" , 
-				email: "you@yours.com" 
-			}
-		});	
-	</script>
 </body>
 
 

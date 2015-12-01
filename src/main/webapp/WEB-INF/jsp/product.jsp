@@ -12,12 +12,14 @@
 <link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
 
 </head>
-	<h1>${title}</h1>
-
+<h1>${title}</h1>
 <body>
 	<form:form commandName="product"
 		onsubmit="return validateProdForm(this);">
 		<table>
+			<tr>
+				<td>${product.category.name}</td>
+			</tr>
 			<tr>
 				<td>${message}</td>
 			</tr>
@@ -30,27 +32,25 @@
 					class="error"></label> <form:errors path="name" cssClass="error" /></td>
 			</tr>
 			<tr>
-				<td><form:select path="category" id="categories">
-						<form:option value="">Select Category</form:option>
-						<form:options items="${categories}" itemValue="id"
-							itemLabel="name" />
-					</form:select></td>
-
-			</tr>
-			<tr>
 				<td></td>
 			</tr>
 			<tr id="properties"></tr>
 			<tr>
-				<td><c:out value="${categoryIndex}" /></td>
 			</tr>
-<!-- 			<tr> -->
-<%-- 				<td><c:forEach items="${categories[categoryIndex].attributesForCategory}" --%>
-<%-- 						var="attribute"> --%>
-<%-- 						<label>${attribute.name}</label> --%>
-<%-- 						${attribute.name} --%>
-<%-- 					</c:forEach></td> --%>
-<!-- 			</tr> -->
+			<c:forEach items="${product.properties}" var="prop" varStatus="i"
+				begin="0">
+				<tr>
+					<td><form:label path="properties[${i.index}].attributes.name"
+							id="name${i.index}">${prop.attributes.name}</form:label></td>
+				</tr>
+				<tr>
+					<td><form:input path="properties[${i.index}].description"
+							id="description${i.index}" /></td>
+				</tr>
+				<tr>
+					<td>${i.index}</td>
+				</tr>
+			</c:forEach>
 
 			<tr>
 				<td class="errorblock"><label for="category" id="categoryError"
@@ -91,7 +91,7 @@
 				<td><form:textarea path="description"
 						placeholder="Enter description" /></td>
 			</tr>
-						<tr>
+			<tr>
 				<td><input type="submit" value="Submit" id="submit"></td>
 			</tr>
 		</table>
@@ -106,28 +106,37 @@
 
 	<script type="text/javascript"
 		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-		<script type="text/javascript">
-		$('#submit').submit(function(){$.getJson
-			var properties={property:{id:"",product:"",attribute:"",description:""}};
+	<script type="text/javascript">
+		$('#submit').submit(function() {
+			$.getJson
+			var properties = {
+				property : {
+					id : "",
+					product : "",
+					attribute : "",
+					description : "lol"
+				}
+			};
+			sendAjax(properties);
 		});
 		function sendAjax(properties) {
-			 
-			$.ajax({ 
-			    url: "<spring:url value="cart.html"/>", 
-			    type: 'POST', 
-			    dataType: 'json', 
-			    data: JSON.stringify({ product: product, amount: parseInt(newAmount)}),
-			    contentType: 'application/json',
-			    mimeType: 'application/json',
-			    success: function(data) { 
-			        alert(data.id + " " + data.name);
-			    },
-//			     error:function(data,status,er) { 
-//			         alert("error: "+data.name+" status: "+status+" er:"+er);
-//			     }
+
+			$.ajax({
+				url : "<spring:url value="addProduct.html"/>",
+				type : 'POST',
+				dataType : 'json',
+				data : JSON.stringify(properties),
+				contentType : 'application/json',
+				mimeType : 'application/json',
+				success : function(data) {
+					alert(data.id + " " + data.name);
+				},
+			//			     error:function(data,status,er) { 
+			//			         alert("error: "+data.name+" status: "+status+" er:"+er);
+			//			     }
 			});
-			}
-		</script>
+		}
+	</script>
 	<script type="text/javascript">
 		$("#categories").change(function() {
 
@@ -135,34 +144,32 @@
 			var index = $(this)[0].value;
 			console.log(index);
 			var html = '<c:set var="categoryIndex"   value="${'+index+'}"/>';
-			// 			<c:set var="categoryIndex" value="index"/>
-			// 				var message = '<c:out value="${categoryIndex}"/>';
 			$("#myDivNextSelectTag").html(html);
 
 		})
 	</script>
 	<script type="text/javascript">
-	var attributes;
-		$("#categories").change(
-				function() {
-					var index = $(this)[0].value;
-					$.getJSON('<spring:url value="categories.json"/>', {
-						ajax : 'true'
-					}, function(data) {
-						var html = '';
-						var category = data[index - 1];
-						attributes = category.attributesForCategory;
-						var len = attributes.length;
-						for (var i = 0; i < len; i++) {
-							html += '<label>' + attributes[i].name
-									+ '</label><input value=""/>';
-						}
-						html += '';
+		var attributes;
+		// 		$("#categories").change(
+		// 				function() {
+		// 					var index = $(this)[0].value;
+		// 					$.getJSON('<spring:url value="categories.json"/>', {
+		// 						ajax : 'true'
+		// 					}, function(data) {
+		// 						var html = '';
+		// 						var category = data[index - 1];
+		// 						attributes = category.attributesForCategory;
+		// 						var len = attributes.length;
+		// 						for (var i = 0; i < len; i++) {
+		// 							html += '<label>' + attributes[i].name
+		// 									+ '</label><input path="properties[0]" value=""/>';
+		// 						}
+		// 						html += '';
 
-						$('#properties').html(html);
-					});
+		// 						$('#properties').html(html);
+		// 					});
 
-				});
+		// 				});
 	</script>
 
 </body>

@@ -8,14 +8,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title><c:out value="${title}" /></title>
-<link href="<spring:url value="/css/registration.css"/>" rel="stylesheet">
+<link href="<spring:url value="/css/registration.css"/>"
+	rel="stylesheet">
 
 </head>
 <body>
-	<div align="center"><h1>${title}</h1>
+<div align="center"><h1>${title}</h1>
 	<form:form commandName="person"
 		onsubmit="return validateRegForm(this);">
-<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
+		<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
 		<table>
 			<tr>
 				<td>${message}</td>
@@ -51,36 +52,12 @@
 				<form:errors path="birthdate" cssClass="error" />
 
 			</tr>
-
 			<tr>
-				<td><form:input path="email" placeholder="Enter email" /></td>
+				<td><form:hidden path="email" /></td>
+				<td><form:hidden path="id" /></td>
+				<td><form:hidden path="type" /></td>
+				<td><form:hidden path="password" /></td>
 			</tr>
-			<tr>
-				<td class="errorblock"><label for="email" id="emailError"
-					class="error"></label></td>
-				<form:errors path="email" cssClass="error" />
-
-			</tr>
-
-			<tr>
-				<td><form:input path="password" placeholder="Enter password" /></td>
-			</tr>
-			<tr>
-				<td class="errorblock"><label for="password" id="passwordError"
-					class="error"></label></td>
-				<form:errors path="password" cssClass="error" />
-
-			</tr>
-			<tr>
-				<td><input id="passwordRepeat" placeholder="Repeat password" /></td>
-			</tr>
-
-			<tr>
-				<td class="errorblock"><label for="passwordRepeat"
-					id="passwordRepeatError" class="error"></label></td>
-
-			</tr>
-
 			<tr>
 				<td><input type="submit" value="Submit" class="input"></td>
 			</tr>

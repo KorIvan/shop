@@ -18,9 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tsystems.model.Category;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
+import com.tsystems.model.User;
 
-@Repository("productRepository")
-public class ProductRepositoryImpl<T> implements ProductRepository {
+@Repository("managerRepository")
+public class ManagerRepositoryImpl<T> implements ManagerRepository {
 	@PersistenceContext
 	private EntityManager em;
 
@@ -119,6 +120,27 @@ public class ProductRepositoryImpl<T> implements ProductRepository {
 
 	public Category findCategoryById(Long id) {
 		return em.find(Category.class, id);
+	}
+
+	public boolean validateManager(User user) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+		Root<Person> c = cq.from(Person.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+
+		predicates.add(cb.equal(c.get("email"), user.getEmail()));
+		predicates.add(cb.equal(c.get("password"), user.getPassword()));
+		predicates.add(cb.equal(c.get("type"), user.getType()));
+
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+
+		TypedQuery<Person> q = em.createQuery(cq);
+		List<Person> founded = q.getResultList();
+		if (founded.isEmpty())
+			return false;
+		else{
+			user.setId(founded.get(0).getId());
+			return true;}
 	}
 
 	

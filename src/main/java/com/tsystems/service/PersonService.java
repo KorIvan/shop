@@ -2,11 +2,13 @@ package com.tsystems.service;
 
 import java.util.List;
 
+import com.tsystems.model.Address;
 import com.tsystems.model.Cart;
 import com.tsystems.model.Category;
 import com.tsystems.model.Order;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
+import com.tsystems.model.User;
 
 public interface PersonService {
 	/**
@@ -21,7 +23,7 @@ public interface PersonService {
 	 * 
 	 * @return Updated Person's account
 	 */  
-	Person updateClient(Person person);
+	String updateClient(Person person);
 
 //	boolean checkEmailForUniqueness();
 	Person authenticatePerson();
@@ -53,7 +55,7 @@ public interface PersonService {
 	
 	/**
 	 * When Client has canceled his Order after provisioning payment,
-	 * he gets his money back.
+	 * he gets his money back.getClientById
 	 * @param order
 	 * @return true, if money're transfered back.
 	 */
@@ -80,4 +82,10 @@ public interface PersonService {
 	List<Product> getCategoryById(Long parseLong);
 
 	List<Category> findAllCategories();
+
+	boolean validateClient(User user);
+
+	Person getClientById(Long id);
+
+	String createAddress(Address address, Long clientId);
 }

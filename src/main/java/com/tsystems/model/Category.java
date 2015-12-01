@@ -39,6 +39,8 @@ public class Category {
 	private String description;
 	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+//	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY) //in json does not load
+
 	 @JoinTable
 	  (
 	      name="ATTRIBUTES_FOR_CATEGORY",

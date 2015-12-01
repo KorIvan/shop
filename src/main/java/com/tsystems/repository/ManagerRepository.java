@@ -4,12 +4,13 @@ import java.util.List;
 
 import com.tsystems.model.Category;
 import com.tsystems.model.Product;
+import com.tsystems.model.User;
 /**
  * ProductRepository provides CRUD-operations with objects of Product class. 
  * @author Ivan
  *
  */
-public interface ProductRepository <T>{
+public interface ManagerRepository <T>{
 	Product readProduct(Integer id);
 	boolean createProduct(Product prod);
 	boolean updateProduct(Product prod);
@@ -31,4 +32,5 @@ public interface ProductRepository <T>{
 	boolean validateProduct(Product product);
 	T getById(Long id, Class<T> T);
 	Category findCategoryById(Long id);
+	boolean validateManager(User user);
 }

@@ -8,17 +8,18 @@ import org.springframework.stereotype.Service;
 import com.tsystems.model.Attribute;
 import com.tsystems.model.Category;
 import com.tsystems.model.Product;
-import com.tsystems.repository.ProductRepository;
+import com.tsystems.model.User;
+import com.tsystems.repository.ManagerRepository;
 
 @Service("managerService")
 public class ManagerServiceImpl implements ManagerService {
 	@Autowired
-	private ProductRepository productRepository;
+	private ManagerRepository managerRepository;
 
 	public String createProduct(Product product) {
-//		
-		if (productRepository.validateProduct(product)) {
-			if (productRepository.createProduct(product))
+		//
+		if (managerRepository.validateProduct(product)) {
+			if (managerRepository.createProduct(product))
 				return "Product created.";
 			else
 				return "Sorry, we have problems.";
@@ -32,8 +33,8 @@ public class ManagerServiceImpl implements ManagerService {
 	}
 
 	public String createCategory(Category category) {
-		if (productRepository.validateCategory(category)) {
-			if (productRepository.createCategory(category))
+		if (managerRepository.validateCategory(category)) {
+			if (managerRepository.createCategory(category))
 				return "Category created.";
 			else
 				return "Sorry, we have problems.";
@@ -57,20 +58,25 @@ public class ManagerServiceImpl implements ManagerService {
 	}
 
 	public List<Category> findAllCategories() {
-		return productRepository.findAllCategories();
+		return managerRepository.findAllCategories();
 	}
 
 	public Category getCategoryById(Long id) {
-		return productRepository.findCategoryById(id);
+		return managerRepository.findCategoryById(id);
 	}
 
 	public List<Attribute> getAllAttributesOfCategory(Long categoryId) {
-		return productRepository.findCategoryById(categoryId).getAttributesForCategory();
+		return managerRepository.findCategoryById(categoryId).getAttributesForCategory();
 	}
 
-//	public List<?> findAll(Class<?> toSearch) {
-//		productRepository.findAllCategories();
-//		return null;
-//	}
+	public boolean validateManager(User user) {
+		return managerRepository.validateManager(user);
+
+	}
+
+	// public List<?> findAll(Class<?> toSearch) {
+	// productRepository.findAllCategories();
+	// return null;
+	// }
 
 }

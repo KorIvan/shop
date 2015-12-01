@@ -45,7 +45,9 @@ public class Product {
 //	@JoinTable(name = "PRODUCT_PROPERTY", joinColumns =  @JoinColumn(name = "product_id") )
 //	@MapKeyColumn (name="property_name")
 //	private Map<Property,PropertyBody> properties;
+//	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL) //in json does not load
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+
 	private List<Properties> properties;
 	
 	@NotNull(message = "This field must be filled in!")

@@ -1,8 +1,8 @@
 h1{color: yellow;
-	margin-left:33%
+	text-transform: uppercase;
 }
 body{
-background-color: black;}
+background-color: green;}
 
 .error {
 	color: #ff0000;
@@ -22,10 +22,10 @@ form {
    display: inline-block;
    	background: yellow;
 	margin: 30px;
-	margin-left: 33%;
+/* 	margin-left: 33%; */
 	border: 20px;
 	padding: 40px;
-}
+	border-radius: 40px;}
 
 input {
 	font-size: 20px;

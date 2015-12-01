@@ -3,10 +3,12 @@ package com.tsystems.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,12 +32,9 @@ public class Person {
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
-//	@Column(columnDefinition="CLIENT")
 	private PersonType type;
 
 	@Pattern(regexp = "[A-Z]{2,99}", message = "First name must contain at least 2 literal characters!")
-	// @org.hibernate.validator.constraints.
-	
 	@Column(name = "first_name")
 	@NotNull
 	private String firstName;
@@ -50,17 +49,17 @@ public class Person {
 	@NotNull(message="Set birthdate!")
 	private Date birthdate;
 
-	@Column(unique = true) 
+	@Column(unique=true, nullable=false) 
 	@Pattern(regexp = ".+@.+\\.[a-z]+", message = "Invalid email address!")
 	@NotNull(message="Set email!")
 	private String email;
 
 	@Pattern(regexp = ".{6,100}", message = "Password must contain at least 5 characters")
 	@NotNull
+	@Column(nullable=false)
 	private String password;
 
-	// private java.util.Da
-	@OneToMany(mappedBy = "client")
+	@OneToMany(mappedBy = "client",cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<Address> addresses;
 
 	private boolean enabled;
@@ -77,10 +76,7 @@ public class Person {
 		return email;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
+	
 	public String getLastName() {
 		return lastName;
 	}
@@ -177,6 +173,14 @@ public class Person {
 		if (type != other.type)
 			return false;
 		return true;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

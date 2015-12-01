@@ -31,46 +31,15 @@ public class Properties {
 	@NotNull
 	private Product product;
 
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+//	@ManyToOne(fetch=FetchType.EAGER)
+		@ManyToOne(fetch=FetchType.LAZY) // in json does not load
+
 	@JoinColumn(name="attribute_id")
 	@NotNull
 	private Attribute attributes;
 
 	private String description;
 
-	public Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return description;
-	}
-
-	@Deprecated
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public void setName(String name) {
-		this.description = name;
-	}
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-
-
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	@Override
 	public int hashCode() {
@@ -107,6 +76,34 @@ public class Properties {
 		} else if (!product.equals(other.product))
 			return false;
 		return true;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Attribute getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(Attribute attributes) {
+		this.attributes = attributes;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 }

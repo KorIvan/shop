@@ -171,4 +171,12 @@ public class Address {
 		return true;
 	}
 
+	public Person getClient() {
+		return client;
+	}
+
+	public void setClient(Person client) {
+		this.client = client;
+	}
+
 }

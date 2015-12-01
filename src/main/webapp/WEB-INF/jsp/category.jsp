@@ -12,7 +12,8 @@
 <link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
 
 </head>
-	<h1>${title}</h1>
+<div align="center"><h1>${title}</h1>
+
 
 <body>
 	<form:form modelAttribute="category" method="post" id="categoryForm">
@@ -63,6 +64,6 @@
 
 	<script type="text/javascript"
 		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-</html>
+</div>
 </body>
 </html>
