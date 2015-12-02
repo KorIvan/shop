@@ -7,29 +7,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
+<title>Order purchasing</title>
 <link href="<spring:url value="/css/menu.css"/>" rel="stylesheet">
 
-<title>${title}</title>
 </head>
 <body>
 	<div align="center">
 		<h1>${title}</h1>
 		<div>${message}</div>
-		<form:form commandName="order">
+		<form:form modelAttribute="order">
 			<!-- 			onsubmit="return validateRegForm(this);"> -->
 			<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
 			<div>
 				Order status:
 				<form:input readonly="true" cssClass="springInput" path="status" />
 			</div>
-
 			<table>
+				<tr>
+					<td>${message}</td>
+				</tr>
 				<tr>
 
 				</tr>
 
-				<thead>
 				<thead>
 					<th>Product</th>
 					<th>Price</th>

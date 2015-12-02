@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.tsystems.model.Attribute;
 import com.tsystems.model.Category;
+import com.tsystems.model.Order;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
 import com.tsystems.repository.ManagerRepository;
@@ -72,6 +73,10 @@ public class ManagerServiceImpl implements ManagerService {
 	public boolean validateManager(User user) {
 		return managerRepository.validateManager(user);
 
+	}
+
+	public List<Order> findAllOrders() {
+		return managerRepository.findAllOrders();
 	}
 
 	// public List<?> findAll(Class<?> toSearch) {

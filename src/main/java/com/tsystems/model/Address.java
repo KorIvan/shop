@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Client's address. Client can have multiple addresses. Address consists of
  * zip-code, country, city, street, building, apartment. If Client chose self
@@ -44,6 +46,7 @@ public class Address {
 
 	@NotNull
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "client_id")
 	private Person client;
 

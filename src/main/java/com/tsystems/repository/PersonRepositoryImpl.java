@@ -14,8 +14,13 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tsystems.model.Address;
 import com.tsystems.model.Category;
+import com.tsystems.model.DeliveryMethod;
+import com.tsystems.model.Order;
+import com.tsystems.model.PaymentMethod;
 import com.tsystems.model.Person;
+import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
 
@@ -37,9 +42,10 @@ public class PersonRepositoryImpl implements PersonRepository {
 
 		return em.contains(person);
 	}
+
 	@Transactional
 	public boolean updatePerson(Person client) {
-	em.merge(client);
+		em.merge(client);
 		em.flush();
 		return true;
 	}
@@ -98,7 +104,7 @@ public class PersonRepositoryImpl implements PersonRepository {
 
 		predicates.add(cb.equal(c.get("email"), user.getEmail()));
 		predicates.add(cb.equal(c.get("password"), user.getPassword()));
-		predicates.add(cb.equal(c.get("type"), user.getType()));
+		predicates.add(cb.equal(c.get("type"), PersonType.CLIENT));
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 		TypedQuery<Person> q = em.createQuery(cq);
 		List<Person> founded = q.getResultList();
@@ -106,11 +112,67 @@ public class PersonRepositoryImpl implements PersonRepository {
 			return false;
 		else {
 			user.setId(founded.get(0).getId());
-			System.out.println(founded.get(0).getId()+" in repo");
-			System.out.println(user.getId()+" in repo current user id");
+			System.out.println(founded.get(0).getId() + " in repo");
+			System.out.println(user.getId() + " in repo current user id");
 			return true;
 		}
 	}
 
+	@Transactional
+	public Order createOrder(Order order) {
+		em.persist(order);
+		em.flush();
+		return order;
+	}
+
+	public List<Address> findAllAddresses(Long clientId) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Address> cq = cb.createQuery(Address.class);
+		Root<Address> c = cq.from(Address.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+
+		predicates.add(cb.equal(c.get("client"), readPerson(clientId)));
+
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+
+		TypedQuery<Address> q = em.createQuery(cq);
+		List<Address> founded = q.getResultList();
+		return founded;
+	}
+
+	public List<Order> findAllOrders(Long clientId) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+		Root<Order> c = cq.from(Order.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+
+		predicates.add(cb.equal(c.get("client"), readPerson(clientId)));
+
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+
+		TypedQuery<Order> q = em.createQuery(cq);
+		List<Order> founded = q.getResultList();
+		return founded;
+	}
+
+	public boolean hasUnfinishedOrder(Long clientId) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+		Root<Order> c = cq.from(Order.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+
+		predicates.add(cb.equal(c.get("client"), readPerson(clientId)));
+		predicates.add(cb.equal(c.get("deliveryMethod"), DeliveryMethod.UNKNOWN));
+		predicates.add(cb.equal(c.get("payMethod"), PaymentMethod.UNKNOWN));
+
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+
+		TypedQuery<Order> q = em.createQuery(cq);
+		List<Order> founded = q.getResultList();
+		if (founded.isEmpty())
+			return false;
+		else
+			return true;
+	}
 
 }

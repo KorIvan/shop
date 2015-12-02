@@ -31,11 +31,12 @@ public interface PersonService {
 	/**
 	 * Client has chosen all products he needs and has decided to purchase
 	 * order.
+	 * @param long1 
 	 * 
 	 * @param order
 	 * @return
 	 */
-	String purchaseOrder(Cart cart);
+	Order makeOrder(Cart cart, Long clientId);
 
 	/**
 	 * Client can cancel his Order at every step except when Order's status is "SHIPPING","DELIVERED".
@@ -88,4 +89,13 @@ public interface PersonService {
 	Person getClientById(Long id);
 
 	String createAddress(Address address, Long clientId);
+
+	Order purchaseOrder(Order order, Long clientId);
+
+	List<Address> findAllAddresses(Long clientId);
+
+	List<Order> findAllOrders(Long clientId);
+	
+	Order getUnfinishedOrder(Long clientId);
+	boolean hasUnfinishedOrder(Long clientId);
 }

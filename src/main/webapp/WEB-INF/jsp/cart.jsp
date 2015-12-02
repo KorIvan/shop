@@ -1,3 +1,4 @@
+<%@ include file="client.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -6,9 +7,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<link href="<spring:url value="/css/menu.css"/>" rel="stylesheet">
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>${title}</title>
-<link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
 
 </head>
 <div align="center"><h1>${title}</h1>
@@ -21,14 +23,7 @@
 				<th>Amount</th>
 			</thead>
 			<tbody id="cart">
-<%-- 				<c:forEach var="cartItem" items="${cart.itemList}" begin="0" --%>
-<%-- 					varStatus="i"> --%>
-<!-- 					<tr> -->
-<%-- 						<td>${cartItem.product.name}</td> --%>
-<%-- 						<td><input type="number" id="${cartItem.product.id}"value="${cartItem.amount}" min="0" max="100" onchange="changeAmount(this);"/></td> --%>
-<!-- 					</tr> -->
-<%-- 				</c:forEach>													 --%>
-			
+<a href=<spring:url value="makeOrder.html"/>> Make order</a>			
 			
 			</tbody>
 		</table>

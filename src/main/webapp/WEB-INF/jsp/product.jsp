@@ -1,3 +1,5 @@
+<%@ include file="manager.jsp"  %>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -12,13 +14,16 @@
 <link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
 
 </head>
-<h1>${title}</h1>
+
+
 <body>
+<div align="center">
+<h1>${title}</h1>
 	<form:form commandName="product"
 		onsubmit="return validateProdForm(this);">
 		<table>
 			<tr>
-				<td>${product.category.name}</td>
+				<td>Category: ${product.category.name}</td>
 			</tr>
 			<tr>
 				<td>${message}</td>
@@ -46,9 +51,6 @@
 				<tr>
 					<td><form:input path="properties[${i.index}].description"
 							id="description${i.index}" /></td>
-				</tr>
-				<tr>
-					<td>${i.index}</td>
 				</tr>
 			</c:forEach>
 
@@ -98,7 +100,7 @@
 
 
 	</form:form>
-
+</div>
 	<script type="text/javascript" src="../js/validateProdForm.js">
 		
 	</script>

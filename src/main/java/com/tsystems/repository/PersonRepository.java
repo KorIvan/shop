@@ -2,7 +2,9 @@ package com.tsystems.repository;
 
 import java.util.List;
 
+import com.tsystems.model.Address;
 import com.tsystems.model.Category;
+import com.tsystems.model.Order;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
@@ -38,5 +40,20 @@ public interface PersonRepository {
 	 * @return List<Category>
 	 */
 	List<Category> findAllCategories();
+	/**
+	 * Vaildate client for authorization
+	 * @param user
+	 * @return
+	 */
 	boolean validateClient(User user);
+	Order createOrder(Order order);
+	List<Address> findAllAddresses(Long clientId);
+	List<Order> findAllOrders(Long clientId);
+	/**
+	 * Search in Client's Orders Order with deliveryMethod=Unknown, payMethod=Unknown.
+	 * If there is one, return true.
+	 * @param clientId
+	 * @return
+	 */
+	boolean hasUnfinishedOrder(Long clientId);
 }

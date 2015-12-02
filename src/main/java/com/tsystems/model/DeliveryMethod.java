@@ -8,6 +8,6 @@ package com.tsystems.model;
  *
  */
 public enum DeliveryMethod {
-SELF_DELIVERY,COURIER, OTHER
+SELF_DELIVERY,COURIER, OTHER,UNKNOWN
 //POST,FEDEX,UPS,DHL
 }

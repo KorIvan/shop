@@ -9,10 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -39,15 +38,16 @@ public class Product {
 	@NotNull(message = "This field must be filled in!")
 	@ManyToOne()
 	private Category category;
-	
+//	@OneToOne(mappedBy="product",cascade=CascadeType.ALL)
+//	private OrderItem orderItem;
 //	@NotNull
 //	@OneToMany(cascade=CascadeType.PERSIST)
 //	@JoinTable(name = "PRODUCT_PROPERTY", joinColumns =  @JoinColumn(name = "product_id") )
 //	@MapKeyColumn (name="property_name")
 //	private Map<Property,PropertyBody> properties;
 //	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL) //in json does not load
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-
+	@OneToMany(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST,CascadeType.MERGE},mappedBy="product")
+	
 	private List<Properties> properties;
 	
 	@NotNull(message = "This field must be filled in!")
@@ -182,6 +182,14 @@ public class Product {
 			return false;
 		return true;
 	}
+
+//	public OrderItem getOrderItem() {
+//		return orderItem;
+//	}
+//
+//	public void setOrderItem(OrderItem orderItem) {
+//		this.orderItem = orderItem;
+//	}
 
 
 	

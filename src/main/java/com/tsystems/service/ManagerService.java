@@ -4,12 +4,13 @@ import java.util.List;
 
 import com.tsystems.model.Attribute;
 import com.tsystems.model.Category;
+import com.tsystems.model.Order;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
 
 public interface ManagerService {
 	String createProduct(Product product);
-
+	
 	boolean updateProduct(Product product);
 
 	String createCategory(Category category);
@@ -27,4 +28,5 @@ public interface ManagerService {
 	List<Attribute> getAllAttributesOfCategory(Long parseLong);
 	
 	boolean validateManager(User user);
+	List<Order> findAllOrders();
 }

@@ -4,19 +4,21 @@
 <head>
 <meta charset="utf-8">
 <title>Index page</title>
-<link type="text/css" rel="stylesheet" href="css/mycss.css">
+<link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
+<style type="text/css">a {	color: yellow;
+	text-transform: uppercase;
+	font-size: 40px;
+}</style>
 </head>
 
 <body>
-	<h1>Hello ugly world!</h1>
+	<h1></h1>
 </body>
-<table>
-	<thead>
-	</thead>
-	<tbody>
-		<tr>
-			<a href="<spring:url value="/catalog.html"/>">Catalog</a>
-		</tr>
-	</tbody>
-</table>
+
+<div align=center>
+	<div>><a href="<spring:url value="/catalog.html"/>">Catalog</a></div>
+		<div>><a href="<spring:url value="/login.html"/>">Client</a></div>
+		<div>><a href="<spring:url value="/manager/login.html"/>">Manager</a></div>
+	
+</div>
 </html>

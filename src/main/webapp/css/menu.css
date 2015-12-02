@@ -1,0 +1,109 @@
+h1{color: yellow;
+	text-transform: uppercase;
+}
+.springInput{
+		font-size: 16px;
+	width: 220px;
+	padding: 5px;
+	height: 20px;
+}
+.springSelect{
+	font-size: 16px;
+	width: 240px;
+	padding: 5px;
+	height: 40px;
+}
+.springAmount{
+	font-size: 16px;
+	width: 100px;
+	padding: 5px;
+	height: 20px;
+}
+a{
+	color:yellow;
+		text-transform: uppercase;
+font-family:arial, verdana, sans-serif;'
+	font-size: 20px;
+	margin: 10px;
+	padding: 5px;;
+}
+body{
+background-color: green;}
+.attributes input[type=text]{
+		font-size: 14px;
+	width:100px;
+	padding: 5px;
+	height: 15px;
+}
+input[type=checkbox]{
+		font-size: 14px;
+	width:20px;
+	padding: 5px;
+	height: 5px;
+}
+.error {
+	color: #ff0000;
+	font-size: 13px;
+}
+
+.errorblock {
+	color: #000;
+	background-color: #ffeeee;
+	/* 	border: 3px solid #ff0000; */
+	padding: 0px;
+	margin: 16px;
+	width: 300px;
+}
+
+form {
+   display: inline-block;
+   	background: yellow;
+	margin: 30px;
+/* 	margin-left: 33%; */
+	border: 20px;
+	padding: 40px;
+	border-radius: 40px;}
+}
+
+input {
+	font-size: 20px;
+	width: 300px;
+	padding: 5px;
+	height: 25px;
+}
+
+input[type=submit] {
+	font-size: 14px;
+	width: 100px;
+	padding: 0px;
+	height: 2.2em;
+}
+input[type=number]{
+	font-size: 18px;
+	margin-left: 50px;
+	margin-right: 40px;
+	width: 50px;
+	padding: 5px;
+	height: 30px;
+}
+input[type=button]{
+	font-size: 16px;
+	margin-left: 50px;
+	margin-right: 40px;
+	width: 100px;
+	padding: 5px;
+	height: 40px;
+}
+textarea{
+	font-size: 14px;
+	width: 300px;
+	padding: 5px;
+	height: 2.2em;
+}
+select{
+	font-size: 18px;
+	width: 310px;
+	padding: 5px;
+	height: 40px;
+}
+.springInput{}

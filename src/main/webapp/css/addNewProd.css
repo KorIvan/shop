@@ -1,20 +1,32 @@
-h1{color: yellow;
+h1 {
+	color: yellow;
 	text-transform: uppercase;
 }
-body{
-background-color: green;}
-.attributes input[type=text]{
-		font-size: 14px;
-	width:100px;
+
+/* a { */
+/* 	color: yellow; */
+/* 	text-transform: uppercase; */
+/* 	font-size: 40px; */
+/* } */
+
+body {
+	background-color: green;
+}
+
+.attributes input[type=text] {
+	font-size: 14px;
+	width: 100px;
 	padding: 5px;
 	height: 15px;
 }
-input[type=checkbox]{
-		font-size: 14px;
-	width:20px;
+
+input[type=checkbox] {
+	font-size: 14px;
+	width: 20px;
 	padding: 5px;
 	height: 5px;
 }
+
 .error {
 	color: #ff0000;
 	font-size: 13px;
@@ -30,10 +42,10 @@ input[type=checkbox]{
 }
 
 form {
-   display: inline-block;
-   	background: yellow;
+	display: inline-block;
+	background: yellow;
 	margin: 30px;
-/* 	margin-left: 33%; */
+	/* 	margin-left: 33%; */
 	border: 20px;
 	padding: 40px;
 }
@@ -51,7 +63,8 @@ input[type=submit] {
 	padding: 0px;
 	height: 2.2em;
 }
-input[type=number]{
+
+input[type=number] {
 	font-size: 18px;
 	margin-left: 50px;
 	margin-right: 40px;
@@ -59,13 +72,15 @@ input[type=number]{
 	padding: 5px;
 	height: 30px;
 }
-textarea{
+
+textarea {
 	font-size: 14px;
 	width: 300px;
 	padding: 5px;
 	height: 2.2em;
 }
-select{
+
+select {
 	font-size: 18px;
 	width: 310px;
 	padding: 5px;

@@ -1,40 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-	
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta charset="utf-8">
+<link href="<spring:url value="/css/registration.css"/>"
+	rel="stylesheet">
+
 <title>Authorization</title>
 <link type="text/css" rel="stylesheet" href="css/mycss.css">
 </head>
-
-<!-- <form method="POST" id="authForm" onsubmit="return validate(this);"> -->
-<!-- 	<input type="email" name="email" id="email" placeholder="Enter email" -->
-<!-- 		title="Please enter your email which contains at least 5 symbols." /> -->
-
-<!-- 	<input type="password" name="password" id="password" -->
-<!-- 		placeholder="Enter password" title="Please enter your password 1-9A-z" /> -->
-<!-- 	<div class="result"></div> -->
-<!-- 	<button name="submit" type="submit" id="submit">Submit</button> -->
-<!-- </form> -->
 <div>${message}</div>
-<form:form method="POST" commandName="user" onsubmit="return validate(this);">
+<div align="center">
+<form:form method="POST" commandName="user"
+	onsubmit="return validate(this);">
 	<form:input path="email" placeholder="Enter email"
 		title="Please enter your email which contains at least 5 symbols." />
 
-	<form:input path="password"	placeholder="Enter password" title="Please enter your password 1-9A-z" />
+	<form:input path="password" placeholder="Enter password"
+		title="Please enter your password 1-9A-z" />
 	<div class="result"></div>
 	<button name="submit" type="submit" id="submit">Submit</button>
 </form:form>
-
-<!-- 	<script type="text/javascript"> 
-	// function validate() { // var email =
-	document.forms["authForm"]["email"].value; // // var password =
-	form.password; // alert(email + " " + password+" 2"); // }
-</script> -->
-
+</div>
 <script type="text/javascript">
 	function validate(form) {
 		var email = form.email.value;

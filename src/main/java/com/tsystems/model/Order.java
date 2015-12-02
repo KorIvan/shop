@@ -2,22 +2,24 @@ package com.tsystems.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Order consist of set of Products, Address, Client and If Client chose self
@@ -35,7 +37,7 @@ public class Order {
 	@Column(unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne
+	@OneToOne(fetch=FetchType.EAGER)
 	@NotNull(message = "This field can't be null!")
 	private Person client;
 
@@ -53,10 +55,10 @@ public class Order {
 	private DeliveryMethod deliveryMethod;
 
 	@NotNull(message = "This field must be filled in!")
-	@ManyToMany
-	@JoinTable(name = "ORDER_PRODUCT", joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "product_id") })
-	private List<Product> products;
+	@OneToMany(fetch=FetchType.EAGER, cascade={CascadeType.ALL},mappedBy="order")
+//	@JoinTable(name = "ORDER_PRODUCT", joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = {
+//			@JoinColumn(name = "product_id") })
+	private List<OrderItem> orderItems;
 
 	private Boolean paid;
 
@@ -80,78 +82,7 @@ public class Order {
 	@Column(name = "comment_for_order")
 	private String commentsForOrder;
 
-	public Person getClient() {
-		return client;
-	}
 
-	public Address getAddress() {
-		return address;
-	}
-
-	public PaymentMethod getPayMethod() {
-		return payMethod;
-	}
-
-	public DeliveryMethod getDeliveryMethod() {
-		return deliveryMethod;
-	}
-
-	public List<Product> getProducts() {
-		return products;
-	}
-
-	public Boolean getPaid() {
-		return paid;
-	}
-
-	public OrderStatus getStatus() {
-		return status;
-	}
-
-	public void setClient(Person client) {
-		this.client = client;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
-	public void setPayMethod(PaymentMethod payMethod) {
-		this.payMethod = payMethod;
-	}
-
-	public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
-		this.deliveryMethod = deliveryMethod;
-	}
-
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
-
-	public void setPaid(Boolean paid) {
-		this.paid = paid;
-	}
-
-	public void setStatus(OrderStatus status) {
-		this.status = status;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	@Deprecated
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Float getCost() {
-		return cost;
-	}
-
-	public void setCost(Float cost) {
-		this.cost = cost;
-	}
 
 	@Override
 	public int hashCode() {
@@ -198,5 +129,102 @@ public class Order {
 			return false;
 		return true;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Person getClient() {
+		return client;
+	}
+
+	public void setClient(Person client) {
+		this.client = client;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public PaymentMethod getPayMethod() {
+		return payMethod;
+	}
+
+	public void setPayMethod(PaymentMethod payMethod) {
+		this.payMethod = payMethod;
+	}
+
+	public DeliveryMethod getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
+	}
+
+	public List<OrderItem> getOrderItems() {
+		return orderItems;
+	}
+
+	public void setOrderItems(List<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
+
+	public Boolean getPaid() {
+		return paid;
+	}
+
+	public void setPaid(Boolean paid) {
+		this.paid = paid;
+	}
+
+	public OrderStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	}
+
+	public Float getCost() {
+		return cost;
+	}
+
+	public void setCost(Float cost) {
+		this.cost = cost;
+	}
+
+	public java.util.Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(java.util.Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public java.util.Date getDeliveryDate() {
+		return deliveryDate;
+	}
+
+	public void setDeliveryDate(java.util.Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+
+	public String getCommentsForOrder() {
+		return commentsForOrder;
+	}
+
+	public void setCommentsForOrder(String commentsForOrder) {
+		this.commentsForOrder = commentsForOrder;
+	}
+
 
 }

@@ -1,10 +1,12 @@
 package com.tsystems.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -26,6 +28,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.tsystems.model.Attribute;
 import com.tsystems.model.Category;
 import com.tsystems.model.CategoryEditor;
+import com.tsystems.model.Order;
 import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
 import com.tsystems.model.Properties;
@@ -50,21 +53,26 @@ public class ManagerController {
 	public String logInGet(@ModelAttribute("user") User user) {
 		return "auth";
 	}
-
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String destroySession(HttpServletRequest request, HttpSession session) {
-		session.invalidate();
-		return "redirect:../";
+	public void destroySession(HttpServletResponse response, HttpSession session) {
+		User user = (User) session.getAttribute("manager");
+		user.setType(PersonType.NONE);
+		try {
+			response.sendRedirect("../");
+		} catch (IOException e) {
+			System.out.println("page does not exist!");
+			e.printStackTrace();
+		}
 	}
-
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ModelAndView logInPost(HttpServletRequest request, @ModelAttribute("user") User user) {
-		ModelAndView model = new ModelAndView("redirect:/manager.html");
-		user.setType(PersonType.SALES_MANAGER);
+		ModelAndView model = new ModelAndView("redirect:/client.html");
 		String message;
 		if (managerService.validateManager(user)) {
 			message = "You are logged in.";
+			user.setType(PersonType.SALES_MANAGER);
 			model.addObject("manager", user);
+			model.setView(new RedirectView("../manager.html"));
 		} else {
 			message = "Wrong login and password.";
 			model.setViewName("auth");
@@ -158,6 +166,17 @@ public class ManagerController {
 		return model;
 	}
 
+//	@RequestMapping(value = "/orders", method = RequestMethod.GET, produces = "application/json")
+//	public @ResponseBody List<Order> getAllOrders() {
+//		return managerService.findAllOrders();
+//	}
+	@RequestMapping(value = "/orders", method = RequestMethod.GET)
+	public ModelAndView findAllOrders(HttpSession session) {
+		ModelAndView model=new ModelAndView("orders");
+		List<Order> orders=managerService.findAllOrders();
+		model.addObject("orders", orders);
+		return model;
+	}
 	@RequestMapping(value = "/categories", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody List<Category> getAllCategories() {
 		return managerService.findAllCategories();

@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Properties consist of set of Attributes.
  * @author Ivan Kornelyuk
@@ -26,7 +28,8 @@ public class Properties {
 	private Long id;
 
 //	@OneToOne
-	@ManyToOne
+	@JsonIgnore
+	@ManyToOne()
 	@JoinColumn(name="product_id")
 	@NotNull
 	private Product product;

@@ -3,6 +3,7 @@ package com.tsystems.repository;
 import java.util.List;
 
 import com.tsystems.model.Category;
+import com.tsystems.model.Order;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
 /**
@@ -33,4 +34,5 @@ public interface ManagerRepository <T>{
 	T getById(Long id, Class<T> T);
 	Category findCategoryById(Long id);
 	boolean validateManager(User user);
+	List<Order> findAllOrders();
 }

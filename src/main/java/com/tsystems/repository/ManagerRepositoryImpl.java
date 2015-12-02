@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,7 +15,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tsystems.model.Category;
+import com.tsystems.model.Order;
 import com.tsystems.model.Person;
+import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
 
@@ -83,6 +84,16 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 		TypedQuery<Category> q = em.createQuery(cq);
 		return q.getResultList();
 	}
+	public List<Order> findAllOrders(){
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+		Root<Order> c = cq.from(Order.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+
+		TypedQuery<Order> q = em.createQuery(cq);
+		return q.getResultList();
+	}
 @Transactional
 	public boolean createCategory(Category category) {
 		em.persist(category);
@@ -130,7 +141,7 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 
 		predicates.add(cb.equal(c.get("email"), user.getEmail()));
 		predicates.add(cb.equal(c.get("password"), user.getPassword()));
-		predicates.add(cb.equal(c.get("type"), user.getType()));
+		predicates.add(cb.equal(c.get("type"), PersonType.SALES_MANAGER));
 
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 
