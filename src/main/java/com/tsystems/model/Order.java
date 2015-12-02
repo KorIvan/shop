@@ -19,6 +19,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -37,11 +39,11 @@ public class Order {
 	@Column(unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.DETACH)
 	@NotNull(message = "This field can't be null!")
 	private Person client;
 
-	@OneToOne
+	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)//just try
 	private Address address;
 
 	@Enumerated(EnumType.STRING)
@@ -76,6 +78,7 @@ public class Order {
 	private java.util.Date creationDate;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "MM/dd/yyyy")
 	@Column(name = "delivery_date")
 	private java.util.Date deliveryDate;
 	

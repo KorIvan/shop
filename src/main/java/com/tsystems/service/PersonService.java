@@ -22,16 +22,17 @@ public interface PersonService {
 	 * Client made some adjustments to his account profile and save them.
 	 * 
 	 * @return Updated Person's account
-	 */  
-	String updateClient(Person person);
+	 */
+	void updateClient(Person person);
 
-//	boolean checkEmailForUniqueness();
+	// boolean checkEmailForUniqueness();
 	Person authenticatePerson();
 
 	/**
 	 * Client has chosen all products he needs and has decided to purchase
 	 * order.
-	 * @param long1 
+	 * 
+	 * @param long1
 	 * 
 	 * @param order
 	 * @return
@@ -39,12 +40,14 @@ public interface PersonService {
 	Order makeOrder(Cart cart, Long clientId);
 
 	/**
-	 * Client can cancel his Order at every step except when Order's status is "SHIPPING","DELIVERED".
+	 * Client can cancel his Order at every step except when Order's status is
+	 * "SHIPPING","DELIVERED".
+	 * 
 	 * @param order
 	 * @return true, if Order canceled.
 	 */
-	boolean cancelOrder(Order order);
-	
+	void cancelOrder(Order order);
+
 	/**
 	 * Client pays his Order by card or electronic wallet.
 	 * 
@@ -52,15 +55,16 @@ public interface PersonService {
 	 * @return true if transaction completed successfully
 	 * @return false if Client has not enough money
 	 */
-	boolean transferMoney(Order order);
-	
+	void transferMoney(Order order);
+
 	/**
-	 * When Client has canceled his Order after provisioning payment,
-	 * he gets his money back.getClientById
+	 * When Client has canceled his Order after provisioning payment, he gets
+	 * his money back.getClientById
+	 * 
 	 * @param order
 	 * @return true, if money're transfered back.
 	 */
-	boolean returnMoney(Order order);
+	void returnMoney(Order order);
 
 	/**
 	 * Client chooses amount of Product to buy.
@@ -71,8 +75,10 @@ public interface PersonService {
 	 */
 	Integer takeFromStrorage(Product product, Integer amountToTake);
 
-	/**must be put back
-	 * If Clilent cancels Order Products must be put back at Storage.
+	/**
+	 * must be put back If Clilent cancels Order Products must be put back at
+	 * Storage.
+	 * 
 	 * @return Product left at Storage
 	 * @param product
 	 * @param amountToPut
@@ -88,14 +94,26 @@ public interface PersonService {
 
 	Person getClientById(Long id);
 
-	String createAddress(Address address, Long clientId);
+	void createAddress(Address address, Long clientId);
 
-	Order purchaseOrder(Order order, Long clientId);
+	/**
+	 * Persist Order for Client for further purchasing
+	 * 
+	 * @param order
+	 * @param clientId
+	 */
+	void purchaseOrder(Order order, Long clientId);
 
 	List<Address> findAllAddresses(Long clientId);
 
 	List<Order> findAllOrders(Long clientId);
-	
+
 	Order getUnfinishedOrder(Long clientId);
+
 	boolean hasUnfinishedOrder(Long clientId);
+
+	void updateOrder(Order ordser);
+	
+	Address findAddressById(Long id);
+
 }

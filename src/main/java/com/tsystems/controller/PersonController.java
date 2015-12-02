@@ -13,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,16 +32,38 @@ import com.tsystems.model.CartItem;
 import com.tsystems.model.Category;
 import com.tsystems.model.DeliveryMethod;
 import com.tsystems.model.Order;
+import com.tsystems.model.OrderItem;
+import com.tsystems.model.OrderItemEditor;
+import com.tsystems.model.OrderStatus;
 import com.tsystems.model.PaymentMethod;
 import com.tsystems.model.Person;
+import com.tsystems.model.PersonEditor;
 import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
+import com.tsystems.model.ProductEditor;
 import com.tsystems.model.User;
 import com.tsystems.service.PersonService;
 
 @Controller
 @SessionAttributes({ "client", "cart", "order" })
 public class PersonController {
+	@Autowired
+	private PersonEditor personEditor;
+	@Autowired
+	private ProductEditor productEditor;
+	@Autowired
+	private OrderItemEditor orderItemEditor;
+	// @Autowired
+	// private OrderItemEditor addressItemEditor;
+
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(Person.class, this.personEditor);
+		binder.registerCustomEditor(Product.class, this.productEditor);
+		binder.registerCustomEditor(OrderItem.class, this.orderItemEditor);
+		// binder.registerCustomEditor(Address.class, addressItemEditor);
+	}
+
 	@Autowired
 	private PersonService clientService;
 
@@ -50,7 +75,7 @@ public class PersonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
-	public String getRegistrationForm(@ModelAttribute("person") Person person, Model model) {
+	public String getRegistrationForm(@ModelAttribute("person") Person person, Model model, HttpSession session) {
 		model.addAttribute("title", "Registration");
 		return "registration";
 	}
@@ -99,7 +124,6 @@ public class PersonController {
 		// model.addObject("message", "Sorry, error ocured.");
 		// return model;
 		// } else {
-		model.addObject("message", clientService.updateClient(person));
 		// }
 		return model;
 	}
@@ -146,7 +170,7 @@ public class PersonController {
 	}
 
 	@RequestMapping(value = "makeOrder", method = RequestMethod.GET)
-	public ModelAndView makeOrder(HttpSession session) {
+	public ModelAndView makeOrder(HttpSession session,BindingResult result) {
 		ModelAndView model = new ModelAndView("order");
 		if (!validateClient(session)) {
 			model.setView(new RedirectView("login.html"));
@@ -162,34 +186,134 @@ public class PersonController {
 			return model;
 		}
 		Cart cart = (Cart) session.getAttribute("cart");
-		model.addObject("title", "Your order");
-		if (cart.getItemList() == null || cart == null) {
-			model.setView(new RedirectView("client.html"));
+		if (cart == null) {
+			model.setViewName("catalog");
+			model.addObject("title", "Catalog");
+			model.addObject("message", "Cart is empty. Choose some products first.");
 			return model;
 		}
-		Order order = clientService.makeOrder(cart, client.getId());
-		session.setAttribute("order", order);
-		model.addObject("order", order);
+		model.addObject("title", "Your order");
+		if (!cart.getItemList().isEmpty()) {
+			Order order = clientService.makeOrder(cart, client.getId());
+			session.setAttribute("order", order);
+			model.addObject("order", order);
+			return model;
+		}
+		model.setViewName("client");
 		return model;
 	}
 
 	@RequestMapping(value = "makeOrder", method = RequestMethod.POST)
-	public ModelAndView purchaseOrder(HttpSession session, @ModelAttribute("order") Order order, BindingResult result) {
+	public ModelAndView purchaseOrder(HttpSession session, @ModelAttribute("order") Order order, BindingResult result,
+			@RequestParam String action) {
 
 		System.out.println(result.getAllErrors());
 		ModelAndView model = new ModelAndView("order");
 		User client = (User) session.getAttribute("client");
+		// if(client==null){
+		// model.setViewName("index");
+		// return model; }
 		model.addObject("title", "Your order");
-		if (order.getDeliveryMethod().equals(DeliveryMethod.SELF_DELIVERY)
-				&& order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
-			clientService.purchaseOrder(order, client.getId());
+		if (action.equalsIgnoreCase("Cancel order")) {
+			clientService.cancelOrder(order);
 			model.setViewName("client");
 			return model;
-		} else {
-			model.addObject("order", order);
-			model.setViewName("deliveryMethod");
-			return model;
 		}
+		if (action.equalsIgnoreCase("Next")) {
+
+			if (order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)
+					|| order.getPayMethod().equals(PaymentMethod.UNKNOWN)) {
+				model.setViewName("order");
+				model.addObject("message",
+						"If you want complete purchase order, fields Payment method and Delivery method can't be unknown!");
+				return model;
+			}
+			if (order.getDeliveryMethod().equals(DeliveryMethod.SELF_DELIVERY)) {
+				order.setAddress(null);
+				order.setDeliveryDate(null);
+				if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
+					order.setStatus(OrderStatus.WAITING_SEFL_DELIVERY);
+					clientService.updateOrder(order);
+					// now this order's purchasing is finished
+					model.setViewName("client");
+					return model;
+				}
+				if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
+
+					order.setStatus(OrderStatus.PAYMENT_PENDING);
+
+					if (order.getPaid().equals(false)) {
+						order.setStatus(OrderStatus.WAITING_SEFL_DELIVERY);
+						clientService.updateOrder(order);
+						// now this order's purchasing is finished
+						model.setViewName("client");
+					}
+					clientService.updateOrder(order);
+					model.setViewName("orderPayment");
+					return model;
+				}
+			} else if (order.getDeliveryMethod().equals(DeliveryMethod.COURIER)) {
+				order.setStatus(OrderStatus.PAYMENT_PENDING);
+				System.out.println("order address " + order.getAddress());
+				System.out.println("order delivery " + order.getDeliveryDate());
+				// order.setAddress(clientService.get);
+				System.out.println("order address " + order.getAddress());
+				System.out.println("order delivery " + order.getDeliveryDate());
+
+				if (order.getAddress() != null && order.getDeliveryDate() != null) {
+					if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
+						order.setStatus(OrderStatus.SHIPMENT_PENDING);
+						clientService.updateOrder(order);
+						// now this order's purchasing is finished
+						model.setViewName("client");
+						return model;
+					}
+					if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
+						if (order.getPaid().equals(false)) {
+							order.setStatus(OrderStatus.SHIPMENT_PENDING);
+							clientService.updateOrder(order);
+							// now this order's purchasing is finished
+							model.setViewName("client");
+							return model;
+						}
+					}
+				}
+				model.setViewName("orderDelivery");
+				model.addObject("order", order);
+				List<Address> userAddresses = clientService.findAllAddresses(client.getId());
+
+				for (Address address : userAddresses)
+					System.out.println(address.getCity());
+				model.addObject("addresses", userAddresses);
+				model.addObject("title", "Choose address and delivery date");
+				return model;
+			} else if (order.getDeliveryMethod().equals(DeliveryMethod.OTHER)) {
+				if (order.getAddress() != null && order.getDeliveryDate() != null) {
+					if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
+						model.addObject("message", "Exchanging payment possible only with COURIER and SELF DELIVERY");
+						model.setViewName("orderPayment");
+						return model;
+					}
+					if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
+						order.setStatus(OrderStatus.PAYMENT_PENDING);
+						if (order.getPaid().equals(false)) {
+							order.setStatus(OrderStatus.SHIPMENT_PENDING);
+							clientService.updateOrder(order);
+							// now this order's purchasing is finished
+							model.setViewName("client");
+							return model;
+						}
+					}
+				}
+				model.setViewName("orderDelivery");
+				model.addObject("order", order);
+				List<Address> userAddresses = clientService.findAllAddresses(client.getId());
+				model.addObject("addresses", userAddresses);
+				model.addObject("title", "Choose address and delivery date");
+				return model;
+			}
+		}
+		return model;
 	}
 
 	@RequestMapping(value = "getOrder", method = RequestMethod.GET)
@@ -212,7 +336,8 @@ public class PersonController {
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public void destroySession(HttpServletResponse response, HttpSession session) {
 		User user = (User) session.getAttribute("client");
-		user.setType(PersonType.NONE);
+		if (user != null)
+			user.setType(PersonType.NONE);
 		try {
 			response.sendRedirect("");
 		} catch (IOException e) {
@@ -254,7 +379,9 @@ public class PersonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/addAddress", method = RequestMethod.GET)
-	public String getAddressForm(@ModelAttribute("address") Address address, Model model) {
+	public String getAddressForm(@ModelAttribute("address") Address address, Model model, HttpSession session) {
+		if (!validateClient(session))
+			return "redirect:/login.html";
 		model.addAttribute("title", "Add new address");
 		return "address";
 	}
@@ -272,7 +399,8 @@ public class PersonController {
 		} else {
 			System.out.println(address.getApartment() + " " + address.getStreet() + " " + address.getCountry());
 			User user = (User) session.getAttribute("client");
-			model.addObject("message", clientService.createAddress(address, user.getId()));
+			// model.addObject("message", clientService.createAddress(address,
+			// user.getId()));
 			model.setView(new RedirectView("client.html"));
 		}
 		return model;

@@ -31,10 +31,8 @@ public class PersonServiceImpl implements PersonService {
 	public String createClient(Person client) {
 		client.setType(PersonType.CLIENT);
 		if (clientRepository.validateClient(client)) {
-			if (clientRepository.createClient(client))
-				return "Congratulations! You're registred!";
-			else
-				return "Sorry, we have some problems.";
+			clientRepository.createClient(client);
+			return "Congratulations! You're registred!";
 		} else
 			return String.format("Sorry, user with email %s already exists.", client.getEmail());
 	}
@@ -44,7 +42,7 @@ public class PersonServiceImpl implements PersonService {
 
 	}
 
-	public String updateClient(Person client) {
+	public void updateClient(Person client) {
 		// System.out.println(client.getFirstName());
 		// System.out.println(client.getLastName());
 		// System.out.println(client.getEmail());
@@ -54,10 +52,7 @@ public class PersonServiceImpl implements PersonService {
 		// System.out.println(client.getId());
 		// System.out.println(client.getType());
 
-		if (clientRepository.updatePerson(client))
-			return "Personal information updated successfully.";
-		else
-			return "Sorry, error";
+		clientRepository.updatePerson(client);
 	}
 
 	public Person authenticatePerson() {
@@ -76,35 +71,36 @@ public class PersonServiceImpl implements PersonService {
 		float cost = 0;
 		for (CartItem item : cart.getItemList()) {
 			OrderItem orderItem = new OrderItem();
-			orderItem.setProduct(item.getProduct());
 			Integer amount = item.getAmount();
-			orderItem.setAmount(amount);
-			Float price = item.getProduct().getCurrentPrice();
-			orderItem.setPrice(price);
-			orderItem.setOrder(order);
-			itemList.add(orderItem);
-			cost += amount * price;
+			if (amount != 0) {
+				orderItem.setAmount(amount);
+				orderItem.setProduct(item.getProduct());
+				Float price = item.getProduct().getCurrentPrice();
+				orderItem.setPrice(price);
+				orderItem.setOrder(order);
+				itemList.add(orderItem);
+				cost += amount * price;
+			}
+
 		}
 		cart.setItemList(new ArrayList<CartItem>());
 		System.out.println("total cost is" + cost);
 		order.setCost(cost);
 		order.setOrderItems(itemList);
+		clientRepository.createOrder(order);
 		return order;
 	}
 
-	public boolean cancelOrder(Order order) {
-		// TODO Auto-generated method stub
-		return false;
+	public void cancelOrder(Order order) {
+		clientRepository.deleteOrder(order);
 	}
 
-	public boolean transferMoney(Order order) {
+	public void transferMoney(Order order) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
-	public boolean returnMoney(Order order) {
+	public void returnMoney(Order order) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public Integer takeFromStrorage(Product product, Integer amountToTake) {
@@ -129,26 +125,25 @@ public class PersonServiceImpl implements PersonService {
 		return clientRepository.validateClient(user);
 	}
 
-	public String createAddress(Address address, Long clientId) {
+	public void createAddress(Address address, Long clientId) {
 		Person client = clientRepository.readPerson(clientId);
 		if (client.getAddresses() == null) {
 			client.setAddresses(new ArrayList<Address>());
 		}
 		client.getAddresses().add(address);
 		address.setClient(client);
-		if (clientRepository.updatePerson(client))
-			return "New address added.";
-		else
-			return "Sorry, address can't be added.";
+		clientRepository.updatePerson(client);
 	}
 
-	public Order purchaseOrder(Order order, Long clientId) {
+	public void purchaseOrder(Order order, Long clientId) {
 		System.out.println(order.getOrderItems());
 		System.out.println(order.getClient().getEmail());
-		System.out.println(order.get)
 
-		order.setClient(clientRepository.readPerson(clientId));
-		return clientRepository.createOrder(order);
+		clientRepository.createOrder(order);
+	}
+
+	public void updateOrder(Order order) {
+		clientRepository.updateOrder(order);
 	}
 
 	public List<Address> findAllAddresses(Long clientId) {
@@ -161,19 +156,20 @@ public class PersonServiceImpl implements PersonService {
 
 	public Order getUnfinishedOrder(Long clientId) {
 		List<Order> unfinished = clientRepository.findAllOrders(clientId);
-		for (int i = 0; i < unfinished.size(); i++) {
-			Order curr = unfinished.get(i);
-			if (!curr.getPayMethod().equals(PaymentMethod.UNKNOWN)
-					&& !curr.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN))
-				unfinished.remove(i);
+		for (Order order:unfinished) {
+			if(order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)||order.getPayMethod().equals(PaymentMethod.UNKNOWN)){
+				return order;
+			}
 		}
-		return unfinished.get(0);
-
+		return null;
 	}
-
 
 	public boolean hasUnfinishedOrder(Long clientId) {
 		return clientRepository.hasUnfinishedOrder(clientId);
+	}
+
+	public Address findAddressById(Long id) {
+		return clientRepository.findAddressById(id);
 	}
 
 }

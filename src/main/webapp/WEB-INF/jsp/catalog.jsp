@@ -14,8 +14,12 @@
 <title>${title}</title>
 </head>
 <body>
-	<div align="center">
-		<h1>${title}</h1>
+		
+	<div align="center"><h1>${title}</h1>
+		<div class="message">${message}		
+		</div>
+		</div>
+		<div align="center">
 		<form:form commandName="cart.cart" name="products">
 <td><select id="categories"></select></td>
 			<table>
@@ -39,8 +43,8 @@
 			<input type="button" value="Send to cart" id="send" name="action" />
 		</form:form>
 	</div>
-	<script type="text/javascript"
-		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript"
+		src='<spring:url value="js/jquery-2.1.4.js"/>'></script>
 	<script type="text/javascript">
 		var product;
 		var amount;

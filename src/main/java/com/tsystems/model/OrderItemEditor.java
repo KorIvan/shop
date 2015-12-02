@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.tsystems.service.ManagerService;
 @Component
-public class CategoryEditor extends PropertyEditorSupport{
+public class OrderItemEditor extends PropertyEditorSupport{
 	@Autowired
 	private ManagerService managerService;
 	private static String toParse;
@@ -17,7 +17,7 @@ public class CategoryEditor extends PropertyEditorSupport{
 			toParse=text;
 		}
 		System.out.println("in setAsText ["+text+"]");
-        Category c = this.managerService.getCategoryById(Long.valueOf(toParse));
+        OrderItem c = this.managerService.getOrderItemById(Long.valueOf(toParse));
         this.setValue(c);
     }
 }

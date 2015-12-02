@@ -34,20 +34,13 @@ public class PersonRepositoryImpl implements PersonRepository {
 	}
 
 	@Transactional
-	public boolean createClient(Person person) {
+	public void createClient(Person person) {
 		em.persist(person);
-		System.out.println("person persisted!");
-		em.flush();
-		System.out.println("person flushed!");
-
-		return em.contains(person);
 	}
 
 	@Transactional
-	public boolean updatePerson(Person client) {
+	public void updatePerson(Person client) {
 		em.merge(client);
-		em.flush();
-		return true;
 	}
 
 	public boolean validateClient(Person client) {
@@ -119,10 +112,8 @@ public class PersonRepositoryImpl implements PersonRepository {
 	}
 
 	@Transactional
-	public Order createOrder(Order order) {
+	public void createOrder(Order order) {
 		em.persist(order);
-		em.flush();
-		return order;
 	}
 
 	public List<Address> findAllAddresses(Long clientId) {
@@ -173,6 +164,21 @@ public class PersonRepositoryImpl implements PersonRepository {
 			return false;
 		else
 			return true;
+	}
+
+	@Transactional
+	public void updateOrder(Order order) {
+		em.merge(order);
+	}
+
+	@Transactional
+	public void deleteOrder(Order order) {
+		em.remove(order);
+
+	}
+
+	public Address findAddressById(Long id) {
+		return em.find(Address.class, id);
 	}
 
 }

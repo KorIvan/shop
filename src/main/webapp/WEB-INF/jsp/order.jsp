@@ -15,7 +15,7 @@
 <body>
 	<div align="center">
 		<h1>${title}</h1>
-		<div>${message}</div>
+		<div class="message">${message}</div>
 		<form:form commandName="order">
 			<!-- 			onsubmit="return validateRegForm(this);"> -->
 			<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
@@ -35,22 +35,31 @@
 					<th>Price</th>
 					<th>Amount</th>
 				</thead>
+				<form:hidden path="orderItems" />
 				<c:forEach items="${order.orderItems}" var="item" begin="0"
 					varStatus="i">
+
 					<tr>
+
 						<td><form:input cssClass="springInput" readonly="true"
 								path="orderItems[${i.index}].product.name" /></td>
+
 						<td><form:input cssClass="springAmount" readonly="true"
 								path="orderItems[${i.index}].price" /></td>
+
 						<td><form:input cssClass="springAmount" readonly="true"
 								path="orderItems[${i.index}].amount" /></td>
-						<td><form:hidden path="orderItems[${i.index}].product" />
-						<td><form:hidden path="orderItems[${i.index}].product.weight" />
-						<td><form:hidden path="orderItems[${i.index}].product.bulk" />
-						<td><form:hidden
-								path="orderItems[${i.index}].product.category" />
-						<td><form:hidden
-								path="orderItems[${i.index}].product.currentPrice" />
+
+						<td><form:input cssClass="springInput" readonly="true"
+								path="orderItems[${i.index}].id" /></td>
+						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.id" /> --%>
+						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.weight" /> --%>
+						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.bulk" /> --%>
+						<%-- 						<td><form:input --%>
+						<%-- 								path="orderItems[${i.index}].product.category" /> <form:hidden --%>
+						<%-- 								cssClass="springInput" readonly="true" path="orderItems" /> --%>
+						<%-- 						<td><form:hidden --%>
+						<%-- 								path="orderItems[${i.index}].product.currentPrice" /> --%>
 					</tr>
 
 				</c:forEach>
@@ -75,21 +84,28 @@
 						</form:select></td>
 				</tr>
 				<tr>
-					<td><form:hidden path="id" />
-					<td><form:hidden path="client" />
-					<td><form:hidden path="paid" />
-					<td><form:hidden path="deliveryDate" /></td>
-					<%-- 					<td><form:hidden path="payMethod" /> --%>
-					<td><form:hidden path="creationDate" /></td>
-					<td><form:hidden path="address" /></td>
+<%-- 					<td><form:hidden path="id" /> --%>
+<%-- 					<td><form:hidden path="client.id" /> --%>
+<%-- 					<td><form:hidden path="paid" />  --%>
+					<%-- 					<td><form:hidden path="deliveryDate" /></td> --%>
+						<%-- 					<td><form:hidden path="payMethod" /> --%> <%-- 					<td><form:hidden path="creationDate.value" /></td> --%>
+<%-- 					<td><form:hidden path="address" /></td> --%>
 
 
 				</tr>
 				<tr>
-					<td><input type="submit" value="Confirm" class="input"></td>
+					<td><input type="submit" id="cancelOrder" value="Cancel order" name="action" onclick="return areYouSure();"/></td>
+
+					<td><input type="submit" value="Next" name ="action" class="input"></td>
 				</tr>
 			</table>
 		</form:form>
 	</div>
+	<script type="text/javascript">
+	function areYouSure(){
+		alert("Do you really want to cancel order?");
+	}
+	</script>
+
 </body>
 </html>

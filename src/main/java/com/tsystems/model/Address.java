@@ -32,10 +32,10 @@ public class Address {
 	@NotNull(message = "This field must be filled in!")
 	private String zip;
 	@NotNull(message = "This field must be filled in!")
-	@Pattern(regexp = "[A-Z]{1}[a-z]{1,99}", message = "Country name must contain at least 2 literal character and starts with upper case")
+	@Pattern(regexp = "[a-zA-Z]{2,99}", message = "Country name must contain at least 2 literal character and starts with upper case")
 	private String country;
 	@NotNull(message = "This field must be filled in!")
-	@Pattern(regexp = "[A-Z]{1}[a-z]{1,99}", message = "City name must contain at least 2 literal character and starts with upper case")
+	@Pattern(regexp = "[a-zA-Z]{2,99}", message = "City name must contain at least 2 literal character and starts with upper case")
 	private String city;
 	@NotNull(message = "This field must be filled in!")
 	private String street;
@@ -45,7 +45,7 @@ public class Address {
 	private String apartment;
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne()
 	@JsonIgnore
 	@JoinColumn(name = "client_id")
 	private Person client;

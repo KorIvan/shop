@@ -30,6 +30,9 @@
 			<td></td>
 			<td><a href="<spring:url value="/logout.html"/>">Log out</a></td>
 		</tr>
+				<tr>
+			<td><a href="<spring:url value="/logout.html"/>">Registration</a></td>
+		</tr>
 	</table>
 
 </body>

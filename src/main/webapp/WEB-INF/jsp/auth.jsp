@@ -13,56 +13,63 @@
 <title>Authorization</title>
 <link type="text/css" rel="stylesheet" href="css/mycss.css">
 </head>
-<div>${message}</div>
+<body>
+	<div align="center">
+<h1>Authentication</h1>
+<div class="message" align="center">
+
+	${message}</div>
+
 <div align="center">
-<form:form method="POST" commandName="user"
-	onsubmit="return validate(this);">
-	<form:input path="email" placeholder="Enter email"
-		title="Please enter your email which contains at least 5 symbols." />
+		<form:form method="POST" commandName="user"
+			onsubmit="return validate(this);">
+			<form:input path="email" placeholder="Enter email"
+				title="Please enter your email which contains at least 5 symbols." />
 
-	<form:input path="password" placeholder="Enter password"
-		title="Please enter your password 1-9A-z" />
-	<div class="result"></div>
-	<button name="submit" type="submit" id="submit">Submit</button>
-</form:form>
-</div>
-<script type="text/javascript">
-	function validate(form) {
-		var email = form.email.value;
+			<form:input path="password" placeholder="Enter password"
+				title="Please enter your password 1-9A-z" />
+			<div class="result"></div>
+			<button name="submit" type="submit" id="submit">Submit</button>
+		</form:form>
+	</div>
+	<script type="text/javascript">
+		function validate(form) {
+			var email = form.email.value;
 
-		var password = form.password.value;
-		if (email == null || email == "" || password == null || password == "") {
-			alert("Fields must be filled out");
-			return false;
+			var password = form.password.value;
+			if (email == null || email == "" || password == null
+					|| password == "") {
+				alert("Fields must be filled out");
+				return false;
+			}
+			var pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+			if (!email.match(pattern)) {
+				alert("Login does not match pattern!");
+			}
+			return true;
 		}
-		var pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-		if (!email.match(pattern)) {
-			alert("Login does not match pattern!");
-		}
-		return true;
-	}
-</script>
+	</script>
 
-<script type="text/javascript"
-	src="js-plugin/jquery/1.8.3/jquery.min.js"></script>
-<script type="text/javascript"
-	src="js-plugin/jquery-ui/jquery-ui-1.8.23.custom.min.js"></script>
-<!-- third party plugins  -->
-<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
-<script type="text/javascript"
-	src="js-plugin/easing/jquery.easing.1.3.js"></script>
+	<script type="text/javascript"
+		src="js-plugin/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="js-plugin/jquery-ui/jquery-ui-1.8.23.custom.min.js"></script>
+	<!-- third party plugins  -->
+	<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript"
+		src="js-plugin/easing/jquery.easing.1.3.js"></script>
 
 
-<!-- form -->
-<script type="text/javascript"
-	src="js-plugin/neko-contact-ajax-plugin/js/jquery.form.js"></script>
-<script type="text/javascript"
-	src="js-plugin/neko-contact-ajax-plugin/js/jquery.validate.min.js"></script>
+	<!-- form -->
+	<script type="text/javascript"
+		src="js-plugin/neko-contact-ajax-plugin/js/jquery.form.js"></script>
+	<script type="text/javascript"
+		src="js-plugin/neko-contact-ajax-plugin/js/jquery.validate.min.js"></script>
 
-<!-- Custom  -->
-<script type="text/javascript" src="js/custom.js"></script>
+	<!-- Custom  -->
+	<script type="text/javascript" src="js/custom.js"></script>
 
-<!-- 	<script type="text/javascript" src="js/admin.js"></script> -->
+	<!-- 	<script type="text/javascript" src="js/admin.js"></script> -->
 
 
 </body>

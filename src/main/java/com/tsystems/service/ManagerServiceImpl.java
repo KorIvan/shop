@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.tsystems.model.Attribute;
 import com.tsystems.model.Category;
 import com.tsystems.model.Order;
+import com.tsystems.model.OrderItem;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
 import com.tsystems.repository.ManagerRepository;
@@ -18,45 +19,29 @@ public class ManagerServiceImpl implements ManagerService {
 	private ManagerRepository managerRepository;
 
 	public String createProduct(Product product) {
-		//
 		if (managerRepository.validateProduct(product)) {
-			if (managerRepository.createProduct(product))
-				return "Product created.";
-			else
-				return "Sorry, we have problems.";
+			managerRepository.createProduct(product);
+			return "Product created.";
 		} else
 			return String.format("Sorry, \"%s\" already exists in this category.", product.getName());
 	}
 
-	public boolean updateProduct(Product product) {
-		// TODO Auto-generated method stub
-		return false;
+	public void updateProduct(Product product) {
+		managerRepository.updateProduct(product);
 	}
 
 	public String createCategory(Category category) {
 		if (managerRepository.validateCategory(category)) {
-			if (managerRepository.createCategory(category))
+			managerRepository.createCategory(category);
 				return "Category created.";
-			else
-				return "Sorry, we have problems.";
 		} else
 			return String.format("Sorry, category \"%s\" already exists.", category.getName());
 	}
 
-	public boolean updateCategory(Category category) {
-		// TODO Auto-generated method stub
-		return false;
+	public void updateCategory(Category category) {
+		managerRepository.updateCategory(category);
 	}
 
-	public String createAttribute(Attribute attribute) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean updateAttribute(Attribute attribute) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	public List<Category> findAllCategories() {
 		return managerRepository.findAllCategories();
@@ -77,6 +62,14 @@ public class ManagerServiceImpl implements ManagerService {
 
 	public List<Order> findAllOrders() {
 		return managerRepository.findAllOrders();
+	}
+
+	public Product getProductById(Long prodId) {
+		return managerRepository.findProductById(prodId);
+	}
+
+	public OrderItem getOrderItemById(Long id) {
+		return managerRepository.findOrderItemById(id);
 	}
 
 	// public List<?> findAll(Class<?> toSearch) {

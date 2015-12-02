@@ -34,12 +34,12 @@ public class Person {
 	@Enumerated(EnumType.STRING)
 	private PersonType type;
 
-	@Pattern(regexp = "[A-Z]{2,99}", message = "First name must contain at least 2 literal characters!")
+	@Pattern(regexp = "[a-zA-Z]{2,99}", message = "First name must contain at least 2 literal characters!")
 	@Column(name = "first_name")
 	@NotNull
 	private String firstName;
 
-	@Pattern(regexp = "[A-Z]{2,99}", message = "Last name must contain at least 2 literal characters!")
+	@Pattern(regexp = "[a-zA-Z]{2,99}", message = "Last name must contain at least 2 literal characters!")
 	@Column(name = "last_name")
 	@NotNull
 	private String lastName;

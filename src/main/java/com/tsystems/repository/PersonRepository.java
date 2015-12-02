@@ -15,7 +15,7 @@ import com.tsystems.model.User;
  */
 public interface PersonRepository {
 	Person readPerson(Long id);
-	boolean createClient(Person client);
+	void createClient(Person client);
 	/**
 	 * Check uniqueness of Client's email
 	 * @param client
@@ -27,7 +27,7 @@ public interface PersonRepository {
 	 * @param client
 	 * @return true, if Person updated successfully
 	 */
-	boolean updatePerson(Person client);
+	void updatePerson(Person client);
 //	boolean deletePerson(Person client);
 	/**
 	 * Retrieve all Products under selected Category
@@ -46,7 +46,7 @@ public interface PersonRepository {
 	 * @return
 	 */
 	boolean validateClient(User user);
-	Order createOrder(Order order);
+	void createOrder(Order order);
 	List<Address> findAllAddresses(Long clientId);
 	List<Order> findAllOrders(Long clientId);
 	/**
@@ -56,4 +56,13 @@ public interface PersonRepository {
 	 * @return
 	 */
 	boolean hasUnfinishedOrder(Long clientId);
+	
+	void updateOrder(Order order);
+	/**
+	 * Method call deletes cancelled order
+	 * @param order
+	 */
+	void deleteOrder(Order order);
+	
+	Address findAddressById(Long id);
 }

@@ -3,7 +3,14 @@ h1{color: yellow;
 }
 body{
 background-color: green;}
-
+.message{
+	display: inline-block;
+	font-size: 20px;
+	padding: 1px;
+	margin: 10px;
+	background: red;
+	border-radius: 20px;
+}
 .error {
 	color: #ff0000;
 	font-size: 13px;
@@ -17,7 +24,21 @@ background-color: green;}
 	margin: 16px;
 	width: 300px;
 }
-
+input[type=button]{
+	font-size: 16px;
+	margin-left: 50px;
+	margin-right: 40px;
+	width: 100px;
+	padding: 5px;
+	height: 40px;
+}
+button{
+	font-size: 18px;
+	margin-top: 30px;
+	width: 150px;
+	padding: 0px;
+	height: 40px;
+}
 form {
    display: inline-block;
    	background: yellow;

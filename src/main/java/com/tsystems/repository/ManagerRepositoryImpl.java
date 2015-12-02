@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tsystems.model.Category;
 import com.tsystems.model.Order;
+import com.tsystems.model.OrderItem;
 import com.tsystems.model.Person;
 import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
@@ -32,11 +33,12 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 	}
 
 	@Transactional
-	public boolean createProduct(Product product) {
+	public void createProduct(Product product) {
 		em.persist(product);
-		em.flush();
-		return em.contains(product);
+		// em.flush();
+		// return em.contains(product);
 	}
+
 	public boolean validateProduct(Product product) {
 		if (em.contains(product))
 			return false;
@@ -57,21 +59,20 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 		else
 			return false;
 	}
-	@Transactional
-	public boolean updateProduct(Product prod) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Transactional
-	public boolean deleteProduct(Product prod) {
-		// TODO Auto-generated method stub
-		return false;
+	public void updateProduct(Product prod) {
+		em.merge(prod);
 	}
 
-	public boolean importProducts() {
+	// @Transactional
+	// public void deleteProduct(Product prod) {
+	// // TODO Auto-generated method stub
+	// return false;
+	// }
+
+	public void importProducts() {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public List<Category> findAllCategories() {
@@ -84,7 +85,8 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 		TypedQuery<Category> q = em.createQuery(cq);
 		return q.getResultList();
 	}
-	public List<Order> findAllOrders(){
+
+	public List<Order> findAllOrders() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Order> cq = cb.createQuery(Order.class);
 		Root<Order> c = cq.from(Order.class);
@@ -94,11 +96,10 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 		TypedQuery<Order> q = em.createQuery(cq);
 		return q.getResultList();
 	}
-@Transactional
-	public boolean createCategory(Category category) {
+
+	@Transactional
+	public void createCategory(Category category) {
 		em.persist(category);
-		em.flush();
-		return em.contains(category);
 	}
 
 	public boolean validateCategory(Category category) {
@@ -121,14 +122,6 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 			return false;
 	}
 
-//	public T getById(Long id, Class<T> T) {
-//		
-//	}
-
-	public Object getById(Long id, Class T) {
-		return em.find(T, id);
-	}
-
 	public Category findCategoryById(Long id) {
 		return em.find(Category.class, id);
 	}
@@ -149,13 +142,23 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 		List<Person> founded = q.getResultList();
 		if (founded.isEmpty())
 			return false;
-		else{
+		else {
 			user.setId(founded.get(0).getId());
-			return true;}
+			return true;
+		}
 	}
 
-	
-	
-	
+	public void updateCategory(Category category) {
+		em.merge(category);
+
+	}
+
+	public Product findProductById(Long prodId) {
+		return em.find(Product.class, prodId);
+	}
+
+	public OrderItem findOrderItemById(Long id) {
+		return em.find(OrderItem.class, id);
+	}
 
 }
