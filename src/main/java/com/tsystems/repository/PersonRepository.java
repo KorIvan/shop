@@ -65,4 +65,5 @@ public interface PersonRepository {
 	void deleteOrder(Order order);
 	
 	Address findAddressById(Long id);
+	List<Order> getAllOrders(Long id);
 }

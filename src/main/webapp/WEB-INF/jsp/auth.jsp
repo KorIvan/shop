@@ -7,6 +7,10 @@
 <html>
 <head>
 <meta charset="utf-8">
+<link href="<spring:url value="/css/bootstrap.css"/>" rel="stylesheet"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
+
 <link href="<spring:url value="/css/registration.css"/>"
 	rel="stylesheet">
 
@@ -14,6 +18,8 @@
 <link type="text/css" rel="stylesheet" href="css/mycss.css">
 </head>
 <body>
+<%@ include file="clientNavbar.jsp" %>
+
 	<div align="center">
 <h1>Authentication</h1>
 <div class="message" align="center">
@@ -32,6 +38,10 @@
 			<button name="submit" type="submit" id="submit">Submit</button>
 		</form:form>
 	</div>
+		<script	src='<spring:url value="js/jquery-2.1.4.js"/>'></script>
+	
+	<script src="<spring:url value="js/bootstrap.min.js"/>" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	
 	<script type="text/javascript">
 		function validate(form) {
 			var email = form.email.value;

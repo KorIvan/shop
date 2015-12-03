@@ -172,4 +172,8 @@ public class PersonServiceImpl implements PersonService {
 		return clientRepository.findAddressById(id);
 	}
 
+	public List<Order> getOrdersHistoryByClientI(Long clientId) {
+		return clientRepository.findAllOrders(clientId);
+	}
+
 }

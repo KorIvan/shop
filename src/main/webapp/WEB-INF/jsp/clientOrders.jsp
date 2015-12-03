@@ -20,25 +20,24 @@
 		<table>
 			<thead>
 				<th>№</th>
-				<th>Client</th>
 				<th>Status</th>
 				<th>Payment method</th>
 				<th>Delivery Method</th>
 				<th>Is paid</th>
 				<th>Cost</th>
 				<th>Creation date</th>
+				
 
 			</thead>
 			<tbody>
 				<tr>
 					<td>${message}</td>
 				</tr>
-				<c:forEach items="${orders}" var="order" begin="0"
+				<c:forEach items="${ordersHistory}" var="order" begin="0"
 					varStatus="i">
 
 					<tr>
-						<td><label>${i.index+1}</label>
-						<td><input readonly="true" value="${order.client.email}" /></td>
+						<td><label>${i.index}</label>
 						<td><input readonly="true" value="${order.status}" /></td>
 						<td><input readOnly="true" value="${order.payMethod}" /></td>
 						<td><input readonly="true" value="${order.deliveryMethod}" /></td>

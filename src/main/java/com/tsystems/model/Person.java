@@ -26,7 +26,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "PERSON")
 public class Person {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
 	private Long id;
 
@@ -46,21 +46,24 @@ public class Person {
 
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "MM/dd/yyyy")
-	@NotNull(message="Set birthdate!")
+	@NotNull(message = "Set birthdate!")
 	private Date birthdate;
 
-	@Column(unique=true, nullable=false) 
+	@Column(unique = true, nullable = false)
 	@Pattern(regexp = ".+@.+\\.[a-z]+", message = "Invalid email address!")
-	@NotNull(message="Set email!")
+	@NotNull(message = "Set email!")
 	private String email;
 
 	@Pattern(regexp = ".{6,100}", message = "Password must contain at least 5 characters")
 	@NotNull
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String password;
 
-	@OneToMany(mappedBy = "client",cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Address> addresses;
+
+	@OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	private List<Order> orders;
 
 	private boolean enabled;
 
@@ -76,7 +79,6 @@ public class Person {
 		return email;
 	}
 
-	
 	public String getLastName() {
 		return lastName;
 	}
@@ -181,6 +183,14 @@ public class Person {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 
 }

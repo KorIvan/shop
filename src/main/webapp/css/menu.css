@@ -5,19 +5,19 @@ h1{color: yellow;
 		font-size: 16px;
 	width: 220px;
 	padding: 5px;
-	height: 20px;
+/* 	height: 20px; */
 }
 .springSelect{
 	font-size: 16px;
-	width: 240px;
+	width: 220px;
 	padding: 5px;
-	height: 40px;
+/* 	height: 40px; */
 }
 .springAmount{
 	font-size: 16px;
 	width: 100px;
 	padding: 5px;
-	height: 20px;
+/* 	height: 20px; */
 }
 a{
 	color:yellow;
@@ -34,6 +34,14 @@ font-family:arial, verdana, sans-serif;'
 	margin: 10px;
 	background: red;
 	border-radius: 20px;
+}
+table tr td:empty {
+    width: 20px;
+}
+
+table tr td {
+/*     padding-top: 10px; */
+/*     padding-bottom: 10px; */
 }
 body{
 background-color: green;}
@@ -56,11 +64,11 @@ input[type=checkbox]{
 
 .errorblock {
 	color: #000;
-	background-color: #ffeeee;
+/* 	background-color: #ffeeee; */
 	/* 	border: 3px solid #ff0000; */
 	padding: 0px;
-	margin: 16px;
-	width: 300px;
+/* 	margin: 16px; */
+	width: 200px;
 }
 
 form {
@@ -77,7 +85,7 @@ input {
 	font-size: 20px;
 	width: 300px;
 	padding: 5px;
-	height: 25px;
+/* 	height: 25px; */
 }
 
 input[type=submit] {
@@ -87,7 +95,7 @@ input[type=submit] {
 	height: 2.2em;
 }
 input[type=number]{
-	font-size: 18px;
+	font-size: 16px;
 	margin-left: 50px;
 	margin-right: 40px;
 	width: 50px;

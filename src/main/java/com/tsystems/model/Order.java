@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,8 +21,6 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Order consist of set of Products, Address, Client and If Client chose self
@@ -39,7 +38,8 @@ public class Order {
 	@Column(unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.DETACH)
+	@ManyToOne
+	//(fetch=FetchType.EAGER, cascade=CascadeType.DETACH)
 	@NotNull(message = "This field can't be null!")
 	private Person client;
 

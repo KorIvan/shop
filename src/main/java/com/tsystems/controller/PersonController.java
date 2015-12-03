@@ -53,15 +53,15 @@ public class PersonController {
 	private ProductEditor productEditor;
 	@Autowired
 	private OrderItemEditor orderItemEditor;
-	// @Autowired
-	// private OrderItemEditor addressItemEditor;
+	@Autowired
+	private OrderItemEditor addressItemEditor;
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Person.class, this.personEditor);
 		binder.registerCustomEditor(Product.class, this.productEditor);
 		binder.registerCustomEditor(OrderItem.class, this.orderItemEditor);
-		// binder.registerCustomEditor(Address.class, addressItemEditor);
+		binder.registerCustomEditor(Address.class, addressItemEditor);
 	}
 
 	@Autowired
@@ -129,8 +129,10 @@ public class PersonController {
 	}
 
 	@RequestMapping(value = "/catalog", method = RequestMethod.GET)
-	public ModelAndView getCatalog() {
+	public ModelAndView getCatalog(HttpSession session) {
+		session.setAttribute("order", new Order());
 		ModelAndView model = new ModelAndView("catalog");
+
 		return model;
 	}
 
@@ -170,7 +172,7 @@ public class PersonController {
 	}
 
 	@RequestMapping(value = "makeOrder", method = RequestMethod.GET)
-	public ModelAndView makeOrder(HttpSession session,BindingResult result) {
+	public ModelAndView makeOrder(HttpSession session) {
 		ModelAndView model = new ModelAndView("order");
 		if (!validateClient(session)) {
 			model.setView(new RedirectView("login.html"));
@@ -194,12 +196,14 @@ public class PersonController {
 		}
 		model.addObject("title", "Your order");
 		if (!cart.getItemList().isEmpty()) {
-			Order order = clientService.makeOrder(cart, client.getId());
-			session.setAttribute("order", order);
-			model.addObject("order", order);
+			Order newOrder = clientService.makeOrder(cart, client.getId());
+			session.setAttribute("order", newOrder);
+			model.addObject("order", newOrder);
 			return model;
 		}
-		model.setViewName("client");
+		model.addObject("paymentMethod", PaymentMethod.class);
+
+		model.setViewName("catalog");
 		return model;
 	}
 
@@ -216,7 +220,7 @@ public class PersonController {
 		model.addObject("title", "Your order");
 		if (action.equalsIgnoreCase("Cancel order")) {
 			clientService.cancelOrder(order);
-			model.setViewName("client");
+			model.setViewName("catalog");
 			return model;
 		}
 		if (action.equalsIgnoreCase("Next")) {
@@ -235,7 +239,7 @@ public class PersonController {
 					order.setStatus(OrderStatus.WAITING_SEFL_DELIVERY);
 					clientService.updateOrder(order);
 					// now this order's purchasing is finished
-					model.setViewName("client");
+					model.setViewName("catalog");
 					return model;
 				}
 				if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
@@ -246,7 +250,7 @@ public class PersonController {
 						order.setStatus(OrderStatus.WAITING_SEFL_DELIVERY);
 						clientService.updateOrder(order);
 						// now this order's purchasing is finished
-						model.setViewName("client");
+						model.setViewName("catalog");
 					}
 					clientService.updateOrder(order);
 					model.setViewName("orderPayment");
@@ -265,7 +269,7 @@ public class PersonController {
 						order.setStatus(OrderStatus.SHIPMENT_PENDING);
 						clientService.updateOrder(order);
 						// now this order's purchasing is finished
-						model.setViewName("client");
+						model.setViewName("catalog");
 						return model;
 					}
 					if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
@@ -273,7 +277,7 @@ public class PersonController {
 							order.setStatus(OrderStatus.SHIPMENT_PENDING);
 							clientService.updateOrder(order);
 							// now this order's purchasing is finished
-							model.setViewName("client");
+							model.setViewName("catalog");
 							return model;
 						}
 					}
@@ -300,7 +304,7 @@ public class PersonController {
 							order.setStatus(OrderStatus.SHIPMENT_PENDING);
 							clientService.updateOrder(order);
 							// now this order's purchasing is finished
-							model.setViewName("client");
+							model.setViewName("catalog");
 							return model;
 						}
 					}
@@ -386,6 +390,22 @@ public class PersonController {
 		return "address";
 	}
 
+	@RequestMapping(value = "/allAddresses", method = RequestMethod.GET)
+	public ModelAndView getAddressForm(HttpSession session,@ModelAttribute("address") Address address,
+			BindingResult result) {
+		ModelAndView model=new ModelAndView("addresses");
+		if (!validateClient(session)) {
+			model.addObject("message", "Log in or registrate.");
+			model.setViewName("catalog");
+			return model;
+		}
+		User user=(User)session.getAttribute("client");
+		List<Address> addresses=clientService.findAllAddresses(user.getId());
+		model.addObject("addresses", addresses);
+		model.addObject("title", "Address list");
+		return model;
+	}
+
 	@RequestMapping(value = "/addAddress", method = RequestMethod.POST)
 	public ModelAndView createAddress(@Valid @ModelAttribute("address") Address address, BindingResult result,
 			HttpSession session) {
@@ -401,6 +421,7 @@ public class PersonController {
 			User user = (User) session.getAttribute("client");
 			// model.addObject("message", clientService.createAddress(address,
 			// user.getId()));
+			clientService.createAddress(address, user.getId());
 			model.setView(new RedirectView("client.html"));
 		}
 		return model;
@@ -470,8 +491,10 @@ public class PersonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getAllAddresses", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody List<Address> getClientAddresses(HttpSession session) {
+	public @ResponseBody List<Address> getClientAddresses(HttpSession session, Model model) {
 		User user = (User) session.getAttribute("client");
+		if (!validateClient(session))
+			return null;
 		return clientService.findAllAddresses(user.getId());
 	}
 
@@ -494,6 +517,23 @@ public class PersonController {
 			model.setView(new RedirectView("login.html"));
 			return model;
 		}
+		return model;
+	}
+
+	/**
+	 * history of client orders
+	 */
+	@RequestMapping(value="/orderHistory", method=RequestMethod.GET)
+	public ModelAndView getAllOrders(HttpSession session, @ModelAttribute("orderHistory") Order order,
+			BindingResult result) {
+		ModelAndView model = new ModelAndView("clientOrders");
+		User user=(User)session.getAttribute("client");
+		if (!validateClient(session)) {
+			model.setView(new RedirectView("login.html"));
+			return model;
+		}
+		List<Order> orders=clientService.getOrdersHistoryByClientI(user.getId());
+		model.addObject("ordersHistory", orders);
 		return model;
 	}
 

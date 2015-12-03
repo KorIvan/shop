@@ -1,4 +1,3 @@
-<%@ include file="client.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -9,10 +8,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title><c:out value="${title}" /></title>
+<link href="<spring:url value="/css/bootstrap.css"/>"  rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <link href="<spring:url value="/css/registration.css"/>" rel="stylesheet">
 
 </head>
 <body>
+<%@ include file="clientNavbar.jsp"%>
+
 	<div align="center"><h1>${title}</h1>
 	<form:form commandName="address">
 <%-- 		onsubmit="return validateAddressForm(this);"> --%>
@@ -87,6 +89,11 @@
 		</table>
 	</form:form>
 </div>
+<script type="text/javascript"
+		src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+			<script src="<spring:url value="js/bootstrap.min.js"/>"
+		integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+		crossorigin="anonymous"></script>
 	<script src="<spring:url value="js/validateAddressForm.js"/>"
 		type="text/javascript" /></script>
 

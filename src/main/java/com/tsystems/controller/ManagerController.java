@@ -57,6 +57,7 @@ public class ManagerController {
 	public void destroySession(HttpServletResponse response, HttpSession session) {
 		User user = (User) session.getAttribute("manager");
 		user.setType(PersonType.NONE);
+
 		try {
 			response.sendRedirect("../");
 		} catch (IOException e) {
@@ -65,12 +66,15 @@ public class ManagerController {
 		}
 	}
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView logInPost(HttpServletRequest request, @ModelAttribute("user") User user) {
+	public ModelAndView logInPost(HttpServletRequest request, @ModelAttribute("user") User user, HttpSession session) {
 		ModelAndView model = new ModelAndView("redirect:/client.html");
 		String message;
 		if (managerService.validateManager(user)) {
 			message = "You are logged in.";
 			user.setType(PersonType.SALES_MANAGER);
+			User user2 = (User) session.getAttribute("client");
+			if(user2!=null)
+				user2.setType(PersonType.NONE);
 			model.addObject("manager", user);
 			model.setView(new RedirectView("../manager.html"));
 		} else {
@@ -136,6 +140,11 @@ public class ManagerController {
 	@RequestMapping(value = "/addProduct", method = RequestMethod.GET)
 	public ModelAndView createProduct(@ModelAttribute("product") Product product, HttpSession session) {
 		ModelAndView model = new ModelAndView("product");
+		if (session.getAttribute("product").equals(null)){
+			model.setViewName("manager");
+			return model;
+		}
+			
 		if (!validateManager(session)) {
 			model.setViewName("accessDenied");
 			return model;
@@ -173,7 +182,12 @@ public class ManagerController {
 	@RequestMapping(value = "/orders", method = RequestMethod.GET)
 	public ModelAndView findAllOrders(HttpSession session) {
 		ModelAndView model=new ModelAndView("orders");
+		if (!validateManager(session)) {
+			model.setViewName("accessDenied");
+			return model;
+		}
 		List<Order> orders=managerService.findAllOrders();
+		model.addObject("orders", orders);
 		model.addObject("orders", orders);
 		return model;
 	}

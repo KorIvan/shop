@@ -181,4 +181,9 @@ public class PersonRepositoryImpl implements PersonRepository {
 		return em.find(Address.class, id);
 	}
 
+	public List<Order> getAllOrders(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

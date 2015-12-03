@@ -1,6 +1,14 @@
 h1{color: yellow;
 	text-transform: uppercase;
 }
+a{
+	color:yellow;
+		text-transform: uppercase;
+font-family:arial, verdana, sans-serif;'
+	font-size: 20px;
+	margin: 10px;
+	padding: 5px;;
+}
 body{
 background-color: green;}
 .message{
@@ -52,7 +60,7 @@ input {
 	font-size: 20px;
 	width: 300px;
 	padding: 5px;
-	height: 25px;
+/* 	height: 25px; */
 }
 
 input[type=submit] {

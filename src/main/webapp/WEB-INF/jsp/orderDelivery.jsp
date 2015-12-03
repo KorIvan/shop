@@ -8,35 +8,48 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Order purchasing</title>
+<link href="<spring:url value="/css/bootstrap.css"/>" rel="stylesheet"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
 <link href="<spring:url value="/css/menu.css"/>" rel="stylesheet">
 
 </head>
 <body>
+<%@ include file="clientNavbar.jsp" %>
 
 	<div align="center">
 		<h1>${title}</h1>
 		<div>${message}</div>
 		<form:form commandName="order" onsubmit="return validateForm(this);">
 			<table>
-				<%-- 				<c:forEach items="${order.orderItems}" var="item" begin="0" --%>
-				<%-- 					varStatus="i"> --%>
-				<!-- 					<tr> -->
-				<%-- 						<td><form:hidden cssClass="springInput" readonly="true" --%>
-				<%-- 								path="orderItems[${i.index}].product.name" /></td> --%>
-				<%-- 						<td><form:hidden cssClass="springAmount" readonly="true" --%>
-				<%-- 								path="orderItems[${i.index}].price" /></td> --%>
-				<%-- 						<td><form:hidden cssClass="springAmount" readonly="true" --%>
-				<%-- 								path="orderItems[${i.index}].amount" /></td> --%>
-				<%-- 						<td><form:hidden path="orderItems[${i.index}].product" /> --%>
-				<%-- 						<td><form:hidden path="orderItems[${i.index}].product.weight" /> --%>
-				<%-- 						<td><form:hidden path="orderItems[${i.index}].product.bulk" /> --%>
-				<%-- 						<td><form:hidden --%>
-				<%-- 								path="orderItems[${i.index}].product.category" /> --%>
-				<%-- 						<td><form:hidden --%>
-				<%-- 								path="orderItems[${i.index}].product.currentPrice" /> --%>
-				<!-- 					</tr> -->
+				<c:forEach items="${order.orderItems}" var="item" begin="0"
+					varStatus="i">
 
-				<%-- 				</c:forEach> --%>
+					<tr>
+						<td><form:hidden cssClass="springInput" readonly="true"
+								path="orderItems[${i.index}].id" /></td>
+						<td><form:hidden cssClass="springInput" readonly="true"
+								path="orderItems[${i.index}].product.name" /></td>
+
+						<td><form:hidden  cssClass="springAmount" readonly="true"
+								path="orderItems[${i.index}].price" /></td>
+
+						<td><form:hidden cssClass="springAmount" readonly="true"
+								path="orderItems[${i.index}].amount" /></td>
+
+						<td><form:hidden cssClass="springInput" readonly="true"
+								path="orderItems[${i.index}].id" /></td>
+						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.id" /> --%>
+						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.weight" /> --%>
+						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.bulk" /> --%>
+						<%-- 						<td><form:input --%>
+						<%-- 								path="orderItems[${i.index}].product.category" /> <form:hidden --%>
+						<%-- 								cssClass="springInput" readonly="true" path="orderItems" /> --%>
+						<%-- 						<td><form:hidden --%>
+						<%-- 								path="orderItems[${i.index}].product.currentPrice" /> --%>
+					</tr>
+
+				</c:forEach>
 				<tr>
 					<td>Order status:</td>
 					<td><form:input readonly="true" cssClass="springInput"
@@ -122,6 +135,10 @@
 		</form:form>
 		<div></div>
 	</div>
+	<script type="text/javascript"
+		src='<spring:url value="js/jquery-2.1.4.js"/>'></script>
+		<script src="<spring:url value="js/bootstrap.min.js"/>" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	
 	<script type="text/javascript">
 		function validateForm(form) {
 			var date = form.deliveryDate.value;

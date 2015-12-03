@@ -116,4 +116,6 @@ public interface PersonService {
 	
 	Address findAddressById(Long id);
 
+	List<Order> getOrdersHistoryByClientI(Long id);
+
 }

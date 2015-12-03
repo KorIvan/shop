@@ -52,14 +52,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //		resolver.setViewResolvers(resolvers);
 		return resolver;
 	}
-	@Bean
-	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-	    ObjectMapper mapper = new ObjectMapper();
-	    mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-	    MappingJackson2HttpMessageConverter converter = 
-	        new MappingJackson2HttpMessageConverter(mapper);
-	    return converter;
-	}
+//	@Bean
+//	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+//	    ObjectMapper mapper = new ObjectMapper();
+//	    mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//	    MappingJackson2HttpMessageConverter converter = 
+//	        new MappingJackson2HttpMessageConverter(mapper);
+//	    return converter;
+//	}
 
 	@Bean
 	public InternalResourceViewResolver jspViewResolver() {

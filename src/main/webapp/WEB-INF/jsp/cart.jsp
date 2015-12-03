@@ -19,11 +19,12 @@
 		<table>
 			<%-- <form:input path="cart.itemList[0].amount"/> --%>
 			<thead>
-				<th>Product</th>
-				<th>Amount</th>
+				<th>Product</th><th></th>
+				<th>Price</th><th></th>
+				<th>Amount of product</th>
 			</thead>
 			<tbody id="cart">
-<a href=<spring:url value="makeOrder.html"/>> Make order</a>			
+<!-- <a href=<spring:url value="makeOrder.html"/>> Make order</a>			 -->
 			
 			</tbody>
 		</table>
@@ -34,18 +35,22 @@
 		<script type="text/javascript" >
 		var itemList;
 	$(document).ready(
-			function() {
+			function getCart() {
 				$.getJSON('<spring:url value="cartContent.json"/>', {
 					ajax : 'true'
 				}, function(data) {
 					itemList=data.itemList;
 					var html = '';
 					var len = itemList.length;
+					var cost=0;
 					for (var i = 0; i < len; i++) {
-						html += '<tr><td><label>' + itemList[i].product.name+ '</label></td><td><input id="'+i+'" type="number" min="0" max="100" value="'+itemList[i].amount+'" onchange="changeAmount(this);"></td></tr>';
+						html += '<tr><td><label>' + itemList[i].product.name+ '</label><td></td></td><td>'+itemList[i].product.currentPrice+'</td><td></td><td><input id="'+i+'" type="number" min="0" max="100" value="'+itemList[i].amount+'" onchange="changeAmount(this);"></td></tr>';
 						console.log(itemList[i]);
+						cost+=Number(itemList[i].product.currentPrice)*Number(itemList[i].amount);
+						console.log(Number(itemList[i].product.currentPrice)+" "+Number(itemList[i].amount));
 					}
-					html += '';
+					console.log("final cost"+cost);
+					html += '<tr><td><b>Total cost</b></td><td></td><td>'+cost+'</td></tr>';
 
 					$('#cart').html(html);
 				});

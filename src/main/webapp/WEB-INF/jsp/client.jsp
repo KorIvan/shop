@@ -7,33 +7,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Client</title>
+<link href="<spring:url value="/css/bootstrap.css"/>" rel="stylesheet"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
 <link href="<spring:url value="/css/menu.css"/>" rel="stylesheet">
 
 </head>
 <body>
-	<table>
-		<tr>
-			<td><a href="<spring:url value="/cart.html"/>">Open cart</a></td>
-			<td></td>
-			<td><a href="<spring:url value="/catalog.html"/>">Catalog</a></td>
-		</tr>
-		<tr>
-			<td><a href="<spring:url value="/editClientParams.html"/>">Edit
-					personal information</a></td>
-			<td></td>
-			<td><a href="<spring:url value="/addAddress.html"/>">Add new
-					address</a></td>
-		</tr>
-		<tr>
-			<td><a href="<spring:url value="/makeOrder.html"/>">Make
-					order</a></td>
-			<td></td>
-			<td><a href="<spring:url value="/logout.html"/>">Log out</a></td>
-		</tr>
-				<tr>
-			<td><a href="<spring:url value="/logout.html"/>">Registration</a></td>
-		</tr>
-	</table>
+<%@ include file="clientNavbar.jsp" %>
+
+	<div align="center">${message}</div>
+	<script type="text/javascript"
+		src='<spring:url value="js/jquery-2.1.4.js"/>'></script>
+<script src="<spring:url value="js/bootstrap.min.js"/>" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 </body>
 </html>

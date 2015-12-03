@@ -1,4 +1,3 @@
-<%@ include file="manager.jsp"  %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -11,12 +10,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>${title}</title>
+<link href="<spring:url value="/css/bootstrap.css"/>" rel="stylesheet"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
 <link href="<spring:url value="/css/addNewProd.css"/>" rel="stylesheet">
 
 </head>
 
 
 <body>
+<%@ include file="clientNavbar.jsp" %>
 <div align="center">
 <h1>${title}</h1>
 	<form:form commandName="product"
@@ -175,6 +178,7 @@
 
 		// 				});
 	</script>
+	<script src="<spring:url value="js/bootstrap.min.js"/>" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 </body>
 </html>
