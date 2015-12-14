@@ -105,9 +105,6 @@ public class PersonController {
 	@RequestMapping(value = "/editClientParams", method = RequestMethod.GET)
 	public String getPersonalInformationForm(@ModelAttribute("person") Person person, Model model,
 			HttpSession session) {
-		if (!validateClient(session)) {
-			return "redirect:/";
-		}
 		model.addAttribute("title", "Edit personal information");
 		User user = (User) (session.getAttribute("client"));
 		System.out.println(user.getId() + " user's id");
@@ -174,10 +171,6 @@ public class PersonController {
 	@RequestMapping(value = "makeOrder", method = RequestMethod.GET)
 	public ModelAndView makeOrder(HttpSession session) {
 		ModelAndView model = new ModelAndView("order");
-		if (!validateClient(session)) {
-			model.setView(new RedirectView("login.html"));
-			return model;
-		}
 		User client = (User) session.getAttribute("client");
 
 		if (clientService.hasUnfinishedOrder(client.getId())) {
@@ -354,24 +347,22 @@ public class PersonController {
 	public ModelAndView logInPost(HttpServletRequest request, @ModelAttribute("user") User user) {
 		ModelAndView model = new ModelAndView("redirect:/client.html");
 		String message;
-		if (clientService.validateClient(user)) {
-			message = "You are logged in.";
-			user.setType(PersonType.CLIENT);
-			model.addObject("client", user);
-			model.setView(new RedirectView("client.html"));
-		} else {
-			message = "Wrong login and password.";
-			model.setViewName("auth");
-		}
-
-		model.addObject("message", message);
+//		if (clientService.validateClient(user)) {
+//			message = "You are logged in.";
+//			user.setType(PersonType.CLIENT);
+//			model.addObject("client", user);
+//			model.setView(new RedirectView("client.html"));
+//		} else {
+//			message = "Wrong login and password.";
+//			model.setViewName("auth");
+//		}
+//
+//		model.addObject("message", message);
 		return model;
 	}
 
 	@RequestMapping(value = "client", method = RequestMethod.GET)
 	public String mainClient(HttpSession session) {
-		if (!validateClient(session))
-			return "redirect:/login.html";
 		return "client";
 	}
 
@@ -384,8 +375,6 @@ public class PersonController {
 	 */
 	@RequestMapping(value = "/addAddress", method = RequestMethod.GET)
 	public String getAddressForm(@ModelAttribute("address") Address address, Model model, HttpSession session) {
-		if (!validateClient(session))
-			return "redirect:/login.html";
 		model.addAttribute("title", "Add new address");
 		return "address";
 	}
@@ -394,11 +383,6 @@ public class PersonController {
 	public ModelAndView getAddressForm(HttpSession session,@ModelAttribute("address") Address address,
 			BindingResult result) {
 		ModelAndView model=new ModelAndView("addresses");
-		if (!validateClient(session)) {
-			model.addObject("message", "Log in or registrate.");
-			model.setViewName("catalog");
-			return model;
-		}
 		User user=(User)session.getAttribute("client");
 		List<Address> addresses=clientService.findAllAddresses(user.getId());
 		model.addObject("addresses", addresses);
@@ -433,15 +417,6 @@ public class PersonController {
 	 * @param session
 	 * @return true,if client logged in; false, if null or not a client
 	 */
-	private boolean validateClient(HttpSession session) {
-		User user = (User) session.getAttribute("client");
-		if (user == null)
-			return false;
-		if (user.getType().equals(PersonType.CLIENT))
-			return true;
-		else
-			return false;
-	}
 
 	private Cart cart = new Cart();
 
@@ -493,8 +468,6 @@ public class PersonController {
 	@RequestMapping(value = "/getAllAddresses", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody List<Address> getClientAddresses(HttpSession session, Model model) {
 		User user = (User) session.getAttribute("client");
-		if (!validateClient(session))
-			return null;
 		return clientService.findAllAddresses(user.getId());
 	}
 
@@ -513,10 +486,6 @@ public class PersonController {
 	@RequestMapping(value = "/continueOrder", method = RequestMethod.GET)
 	public ModelAndView continueOrder(HttpSession session) {
 		ModelAndView model = new ModelAndView("orderDelivery");
-		if (!validateClient(session)) {
-			model.setView(new RedirectView("login.html"));
-			return model;
-		}
 		return model;
 	}
 
@@ -528,10 +497,6 @@ public class PersonController {
 			BindingResult result) {
 		ModelAndView model = new ModelAndView("clientOrders");
 		User user=(User)session.getAttribute("client");
-		if (!validateClient(session)) {
-			model.setView(new RedirectView("login.html"));
-			return model;
-		}
 		List<Order> orders=clientService.getOrdersHistoryByClientI(user.getId());
 		model.addObject("ordersHistory", orders);
 		return model;

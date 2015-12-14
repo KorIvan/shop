@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="security"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -28,11 +29,12 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<c:if
-					test="${(empty client && empty manager)||(!(client.type eq 'CLIENT') && !(manager.type eq 'SALES_MANAGER'))}">
-
-					<li><a href="<spring:url value="http://localhost:8080/shop/registration.html"/>">Registration</a></li>
+				<security:authorize var="loggedIn" access="isAuthenticated()" />
+				<c:if test="${!loggedIn}">
+					<li><a
+						href="<spring:url value="http://localhost:8080/shop/registration.html"/>">Registration</a></li>
 				</c:if>
+
 				<li><a
 					href="<spring:url value="http://localhost:8080/shop/catalog.html"/>">Catalog</a>
 				</li>
@@ -48,7 +50,7 @@
 									addresses</a></li>
 
 							<li><a href="#">Edit</a></li>
-	
+
 						</ul></li>
 				</c:if>
 			</ul>
@@ -61,14 +63,14 @@
 						<ul class="dropdown-menu">
 							<li><a href="http://localhost:8080/shop/makeOrder.html">Make
 									new</a></li>
-							<li><a href="http://localhost:8080/shop/orderHistory.html">View history</a></li>
+							<li><a href="http://localhost:8080/shop/orderHistory.html">View
+									history</a></li>
 
 						</ul></li>
 				</c:if>
 
 
-
-				<c:if test="${manager.type eq 'SALES_MANAGER'}">
+				<security:authorize access="hasRole('SALES_MANAGER')">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
 						data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false">Product<span class="caret"></span></a>
@@ -89,60 +91,61 @@
 									new</a></li>
 
 						</ul></li>
-						<li class="dropdown"><a href="#" class="dropdown-toggle"
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
 						data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false">Orders<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a
-								href="<spring:url value="http://localhost:8080/shop/manager/orders.html"/>">Order list</a></li>
+								href="<spring:url value="http://localhost:8080/shop/manager/orders.html"/>">Order
+									list</a></li>
 
 						</ul></li>
-				</c:if>
-
-
+				</security:authorize>
 			</ul>
 
-			<!-- 			<form class="navbar-form navbar-left" role="search"> -->
-			<!-- 				<div class="form-group"> -->
-			<!-- 					<input type="text" class="form-control" placeholder="Search"> -->
-			<!-- 				</div> -->
-			<!-- 				<button type="submit" class="btn btn-default">Submit</button> -->
-			<!-- 			</form> -->
 			<ul class="nav navbar-nav navbar-right">
-				<c:if test="${!(manager.type eq 'SALES_MANAGER')}">
+				<security:authorize access="hasRole('CLIENT')">
 					<li><a href="cart.html">Cart</a></li>
-				</c:if>
+				</security:authorize>
 
-
-<!-- 				<li class="dropdown"><a href="#" class="dropdown-toggle" -->
-<!-- 					data-toggle="dropdown" role="button" aria-haspopup="true" -->
-<!-- 					aria-expanded="false">Dropdown <span class="caret"></span></a> -->
-<!-- 					<ul class="dropdown-menu"> -->
-<!-- 						<li><a href="#">Action</a></li> -->
-<!-- 						<li><a href="#">Another action</a></li> -->
-<!-- 						<li><a href="#">Something else here</a></li> -->
-<!-- 						<li role="separator" class="divider"></li> -->
-<!-- 						<li><a href="#">Separated link</a></li> -->
-<!-- 					</ul> -->
-<!-- 					</li> -->
+				<!-- 				<li class="dropdown"><a href="#" class="dropdown-toggle" -->
+				<!-- 					data-toggle="dropdown" role="button" aria-haspopup="true" -->
+				<!-- 					aria-expanded="false">Dropdown <span class="caret"></span></a> -->
+				<!-- 					<ul class="dropdown-menu"> -->
+				<!-- 						<li><a href="#">Action</a></li> -->
+				<!-- 						<li><a href="#">Another action</a></li> -->
+				<!-- 						<li><a href="#">Something else here</a></li> -->
+				<!-- 						<li role="separator" class="divider"></li> -->
+				<!-- 						<li><a href="#">Separated link</a></li> -->
+				<!-- 					</ul> -->
+				<!-- 					</li> -->
 				<li class="active"><c:if test="${client.type eq 'CLIENT'}">
 						<a><c:out value="${client.type}" /> <span class="sr-only">(current)</span>
 						</a>
 					</c:if> <c:if test="${manager.type eq 'SALES_MANAGER'}">
 						<a><c:out value="MANAGER" /> <span class="sr-only">(current)</span>
 						</a>
-					</c:if> <c:if test="${client.type eq 'CLIENT'}">
-						<li class="active"><a href="logout.html">Log out <span
+					</c:if> 
+					<c:if test="${loggedIn}">
+						<li class="active"><a href="<spring:url value="logout.html" />">Log out <span
 								class="sr-only">(current)</span></a></li>
-					</c:if> <c:if test="${manager.type eq 'SALES_MANAGER'}">
+					</c:if> 
+					<c:if test="${manager.type eq 'SALES_MANAGER'}">
 						<li class="active"><a
 							href="http://localhost:8080/shop/manager/logout.html">Log out
 								<span class="sr-only">(current)</span>
 						</a></li>
-					</c:if> <c:if
-						test="${!(client.type eq 'CLIENT' || manager.type eq 'SALES_MANAGER')}">
+					</c:if> <%-- 					<security:authentication var="role" property="principal.authorities"/> --%>
+					<c:if test="${!loggedIn}">
 						<li class="active"><a> GUEST <span class="sr-only">(current)</span>
 						</a></li>
+					</c:if> <security:authorize access="hasRole('SALES_MANAGER')">
+						<li class="active"><a>Manager<span class="sr-only">(current)</span>
+						</a></li>
+					</security:authorize> <security:authorize access="hasRole('CLIENT')">
+						<li class="active"><a>Client<span class="sr-only">(current)</span>
+						</a></li>
+					</security:authorize> <c:if test="${!loggedIn }">
 						<li class="active"><a href="<spring:url value="login.html"/>">
 								Log in <span class="sr-only">(current)</span>
 						</a></li>

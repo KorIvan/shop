@@ -134,7 +134,7 @@ public class ManagerRepositoryImpl<T> implements ManagerRepository {
 
 		predicates.add(cb.equal(c.get("email"), user.getEmail()));
 		predicates.add(cb.equal(c.get("password"), user.getPassword()));
-		predicates.add(cb.equal(c.get("type"), PersonType.SALES_MANAGER));
+		predicates.add(cb.equal(c.get("type"), PersonType.ROLE_SALES_MANAGER));
 
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 

@@ -29,7 +29,7 @@ public class PersonServiceImpl implements PersonService {
 	private PersonRepository clientRepository;
 
 	public String createClient(Person client) {
-		client.setType(PersonType.CLIENT);
+		client.setType(PersonType.ROLE_CLIENT);
 		if (clientRepository.validateClient(client)) {
 			clientRepository.createClient(client);
 			return "Congratulations! You're registred!";

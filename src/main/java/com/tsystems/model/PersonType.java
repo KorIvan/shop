@@ -8,5 +8,5 @@ package com.tsystems.model;
  *
  */
 public enum PersonType {
-	CLIENT, SALES_MANAGER, ADMINISTRATOR,NONE
+	ROLE_CLIENT, ROLE_SALES_MANAGER, ROLE_ADMIN,NONE
 }

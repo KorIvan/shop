@@ -97,7 +97,7 @@ public class PersonRepositoryImpl implements PersonRepository {
 
 		predicates.add(cb.equal(c.get("email"), user.getEmail()));
 		predicates.add(cb.equal(c.get("password"), user.getPassword()));
-		predicates.add(cb.equal(c.get("type"), PersonType.CLIENT));
+		predicates.add(cb.equal(c.get("type"), PersonType.ROLE_CLIENT));
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 		TypedQuery<Person> q = em.createQuery(cq);
 		List<Person> founded = q.getResultList();
