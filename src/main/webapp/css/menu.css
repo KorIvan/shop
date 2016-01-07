@@ -1,62 +1,74 @@
-h1{color: yellow;
+h1 {
+	color: black;
 	text-transform: uppercase;
 }
-.springInput{
-		font-size: 16px;
-	width: 220px;
-	padding: 5px;
-/* 	height: 20px; */
-}
-.springSelect{
+
+.springInput {
 	font-size: 16px;
 	width: 220px;
 	padding: 5px;
-/* 	height: 40px; */
+	/* 	height: 20px; */
 }
-.springAmount{
+
+.springSelect {
+	font-size: 16px;
+	width: 220px;
+	padding: 5px;
+	/* 	height: 40px; */
+}
+
+.springAmount {
 	font-size: 16px;
 	width: 100px;
 	padding: 5px;
-/* 	height: 20px; */
+	/* 	height: 20px; */
 }
-a{
-	color:yellow;
-		text-transform: uppercase;
-font-family:arial, verdana, sans-serif;'
+
+a {
+	color: black;
+	text-transform: uppercase;
+	font-family: arial, verdana, sans-serif; '
 	font-size: 20px;
 	margin: 10px;
 	padding: 5px;;
 }
-.message{
+
+.message {
 	display: inline-block;
 	font-size: 20px;
-	padding: 1px;
+	padding: 0px;
 	margin: 10px;
 	background: red;
 	border-radius: 20px;
 }
+
 table tr td:empty {
-    width: 20px;
+	width: 20px;
 }
 
-table tr td {
-/*     padding-top: 10px; */
-/*     padding-bottom: 10px; */
+table {
+#	border-collapse: separate;
+#	border-spacing: 5px;
 }
-body{
-background-color: green;}
-.attributes input[type=text]{
-		font-size: 14px;
-	width:100px;
+
+body {
+	background-color: #99FFCC;
+}
+
+.attributes input[type=text] {
+	font-size: 14px;
+	width: 100px;
 	padding: 5px;
 	height: 15px;
 }
-input[type=checkbox]{
-		font-size: 14px;
-	width:20px;
+
+input[type=checkbox] {
+	font-size: 14px;
+	width: 20px;
 	padding: 5px;
 	height: 5px;
 }
+
 .error {
 	color: #ff0000;
 	font-size: 13px;
@@ -64,28 +76,29 @@ input[type=checkbox]{
 
 .errorblock {
 	color: #000;
-/* 	background-color: #ffeeee; */
+	/* 	background-color: #ffeeee; */
 	/* 	border: 3px solid #ff0000; */
 	padding: 0px;
-/* 	margin: 16px; */
+	/* 	margin: 16px; */
 	width: 200px;
 }
 
 form {
-   display: inline-block;
-   	background: yellow;
+	display: inline-block;
+	background: #FFFFCC;;
 	margin: 30px;
-/* 	margin-left: 33%; */
+	/* 	margin-left: 33%; */
 	border: 20px;
 	padding: 40px;
-	border-radius: 40px;}
+	border-radius: 40px;
 }
 
+}
 input {
 	font-size: 20px;
 	width: 300px;
 	padding: 5px;
-/* 	height: 25px; */
+	/* 	height: 25px; */
 }
 
 input[type=submit] {
@@ -94,7 +107,8 @@ input[type=submit] {
 	padding: 0px;
 	height: 2.2em;
 }
-input[type=number]{
+
+input[type=number] {
 	font-size: 16px;
 	margin-left: 50px;
 	margin-right: 40px;
@@ -102,7 +116,8 @@ input[type=number]{
 	padding: 5px;
 	height: 30px;
 }
-input[type=button]{
+
+input[type=button] {
 	font-size: 16px;
 	margin-left: 50px;
 	margin-right: 40px;
@@ -110,16 +125,21 @@ input[type=button]{
 	padding: 5px;
 	height: 40px;
 }
-textarea{
+
+textarea {
 	font-size: 14px;
 	width: 300px;
 	padding: 5px;
 	height: 2.2em;
 }
-select{
+
+select {
 	font-size: 18px;
 	width: 310px;
 	padding: 5px;
 	height: 40px;
 }
-.springInput{}
+
+.springInput {
+	
+}

@@ -23,8 +23,6 @@ import com.tsystems.repository.StatisticsRepository;
 public class ManagerServiceImpl implements ManagerService {
 	@Autowired
 	private ManagerRepository managerRepository;
-	@Autowired
-	private StatisticsRepository statisticsRepository;
 
 	public String createProduct(Product product) {
 		if (managerRepository.validateProduct(product)) {
@@ -84,50 +82,6 @@ public class ManagerServiceImpl implements ManagerService {
 	// return null;
 	// }
 
-	public Statistics gatherStatistics() {
-		return null;
-	}
 
-	private Map<Integer, Product> calculateTop10Products() {
-
-		return null;
-	}
-
-	private Map<Integer, Person> calculateTop10Clients() {
-		return null;
-	}
-
-	@Override
-	public Float calculateWeekIncome(Calendar week) {
-		week.set(Calendar.DAY_OF_WEEK, week.getFirstDayOfWeek());
-		System.out.println(week.getFirstDayOfWeek()+" is first day of week!");
-		Date from=new Date(week.getTime().getTime());
-		week.add(Calendar.WEEK_OF_YEAR, 1);
-		Date to=new Date(week.getTime().getTime());
-		List<Order> paidOrders=statisticsRepository.getPaidOrders(from,to);
-		float total=0;
-		for(Order o:paidOrders){
-			total+=o.getCost();
-		}
-		return new Float(total);
-	}
-	
-	@Override
-	public Float calculateWeekIncome(Date from, Date to) {
-		List<Order> paidOrders=statisticsRepository.getPaidOrders(from,to);
-		float total=0;
-		for(Order o:paidOrders){
-			total+=o.getCost();
-		}
-		return new Float(total);
-	}
-
-	private Float calculateMonthIncome() {
-		return 0f;
-	}
-
-	private Float calculateTotalIncome() {
-		return 0f;
-	}
 
 }

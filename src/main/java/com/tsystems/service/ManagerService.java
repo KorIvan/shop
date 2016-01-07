@@ -40,11 +40,6 @@ public interface ManagerService {
 	Product getProductById(Long prodId);
 
 	OrderItem getOrderItemById(Long id);
-
-	Float calculateWeekIncome(Calendar week);
-
-	Float calculateWeekIncome(Date from, Date to);
-
 }
 
 
