@@ -25,7 +25,7 @@ import com.tsystems.model.Product;
 import com.tsystems.model.User;
 
 @Repository("clientRepository")
-public class PersonRepositoryImpl implements PersonRepository {
+public class ClientRepositoryImpl implements ClientRepository {
 	@PersistenceContext
 	private EntityManager em;
 

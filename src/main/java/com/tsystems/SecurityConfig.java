@@ -30,8 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //				.formLogin().loginPage("/login").usernameParameter("ssoId").passwordParameter("password").and()
 //				.exceptionHandling().accessDeniedPage("/Access_Denied");
 		antMatchers("/client/**").access("hasRole('CLIENT')").
-		antMatchers("/manager/**").access("hasRole('SALES_MANAGER')").and().formLogin().loginPage("/login").and().exceptionHandling().accessDeniedPage("/403")
-		;
+		antMatchers("/manager/**").access("hasRole('SALES_MANAGER')").antMatchers("/manager**").access("hasRole('SALES_MANAGER')").
+		antMatchers("/statistics/**").access("hasRole('SALES_MANAGER')").
+		//anyRequest().authenticated().
+		and().formLogin().loginPage("/login").
+		and().exceptionHandling().accessDeniedPage("/403");
 	}
 	
 }

@@ -90,7 +90,7 @@ public class ManagerController {
 	}
 
 	@RequestMapping(value = "/category", method = RequestMethod.POST)
-	public ModelAndView createProductCategory(@ModelAttribute("product") Product product, HttpSession session) {
+	public ModelAndView createProductCategory(@ModelAttribute("product") Product product) {
 
 		ModelAndView model = new ModelAndView(new RedirectView("addProduct.html"));
 		// if (!validateManager(session)) {
@@ -138,13 +138,8 @@ public class ManagerController {
 	}
 
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-	public ModelAndView saveProduct(@Valid @ModelAttribute("product") Product product, BindingResult result,
-			HttpSession session) {
+	public ModelAndView saveProduct(@Valid @ModelAttribute("product") Product product, BindingResult result) {
 		ModelAndView model = new ModelAndView("product");
-		// if (!validateManager(session)) {
-		// model.setViewName("accessDenied");
-		// return model;
-		// }
 		model.addObject("title", "New product");
 		if (result.hasErrors()) {
 			model.addObject("message", "Sorry, error ocured.");
@@ -185,7 +180,7 @@ public class ManagerController {
 	}
 
 	@RequestMapping(value = "/addCategory", method = RequestMethod.GET)
-	public ModelAndView createCategory(HttpSession session) {
+	public ModelAndView createCategory() {
 		ModelAndView model = new ModelAndView("category");
 
 		Category cat = new Category();
@@ -228,8 +223,5 @@ public class ManagerController {
 		return model;
 	}
 
-	@RequestMapping(value = "/403", method = RequestMethod.GET)
-	public String accessDenied() {
-		return "accessDenied";
-	}
+
 }

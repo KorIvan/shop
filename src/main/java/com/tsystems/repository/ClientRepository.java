@@ -9,11 +9,11 @@ import com.tsystems.model.Person;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
 /**
- * PersonRepository provides CRUD-operations with objects of Person class. 
+ * ClientRepository provides CRUD-operations with objects of Person class. 
  * @author Ivan
  *
  */
-public interface PersonRepository {
+public interface ClientRepository {
 	Person readPerson(Long id);
 	void createClient(Person client);
 	/**

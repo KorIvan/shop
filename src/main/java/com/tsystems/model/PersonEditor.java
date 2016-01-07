@@ -5,11 +5,11 @@ import java.beans.PropertyEditorSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.tsystems.service.PersonService;
+import com.tsystems.service.ClientService;
 @Component
 public class PersonEditor extends PropertyEditorSupport {
 	@Autowired
-	private PersonService clientService;
+	private ClientService clientService;
 	private static String toParse;
 
 	@Override

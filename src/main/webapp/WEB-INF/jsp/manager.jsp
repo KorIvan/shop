@@ -14,7 +14,7 @@
 
 </head>
 <body>
-<%@ include file="clientNavbar.jsp" %>
+<%@ include file="header.jsp" %>
 
 	<table>
 

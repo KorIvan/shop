@@ -42,11 +42,11 @@ import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
 import com.tsystems.model.ProductEditor;
 import com.tsystems.model.User;
-import com.tsystems.service.PersonService;
+import com.tsystems.service.ClientService;
 
-@Controller
-@SessionAttributes({ "client", "cart", "order" })
-public class PersonController {
+@Controller("client")
+@SessionAttributes({ "cart"})
+public class ClientController {
 	@Autowired
 	private PersonEditor personEditor;
 	@Autowired
@@ -65,7 +65,7 @@ public class PersonController {
 	}
 
 	@Autowired
-	private PersonService clientService;
+	private ClientService clientService;
 
 	/**
 	 * Client's registration
@@ -84,7 +84,6 @@ public class PersonController {
 	public ModelAndView registrate(@Valid @ModelAttribute("person") Person person, BindingResult result) {
 		ModelAndView model = new ModelAndView("registration");
 		model.addObject("title", "Registration");
-		// if result has errors
 		if (result.hasErrors() && !result.hasFieldErrors("type")) {
 			model.addObject("message", "Sorry, error ocured.");
 			return model;
@@ -127,9 +126,11 @@ public class PersonController {
 
 	@RequestMapping(value = "/catalog", method = RequestMethod.GET)
 	public ModelAndView getCatalog(HttpSession session) {
-		session.setAttribute("order", new Order());
+		if(session.getAttribute("cart")==null){
+			session.setAttribute("cart", new Cart());
+		}
 		ModelAndView model = new ModelAndView("catalog");
-
+		model.addObject("title", "Catalog");
 		return model;
 	}
 
@@ -325,41 +326,6 @@ public class PersonController {
 		return model;
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String logInGet(@ModelAttribute("user") User user) {
-		return "auth";
-	}
-
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public void destroySession(HttpServletResponse response, HttpSession session) {
-		User user = (User) session.getAttribute("client");
-		if (user != null)
-			user.setType(PersonType.NONE);
-		try {
-			response.sendRedirect("");
-		} catch (IOException e) {
-			System.out.println("page does not exist!");
-			e.printStackTrace();
-		}
-	}
-
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView logInPost(HttpServletRequest request, @ModelAttribute("user") User user) {
-		ModelAndView model = new ModelAndView("redirect:/client.html");
-		String message;
-//		if (clientService.validateClient(user)) {
-//			message = "You are logged in.";
-//			user.setType(PersonType.CLIENT);
-//			model.addObject("client", user);
-//			model.setView(new RedirectView("client.html"));
-//		} else {
-//			message = "Wrong login and password.";
-//			model.setViewName("auth");
-//		}
-//
-//		model.addObject("message", message);
-		return model;
-	}
 
 	@RequestMapping(value = "client", method = RequestMethod.GET)
 	public String mainClient(HttpSession session) {
@@ -394,7 +360,7 @@ public class PersonController {
 	public ModelAndView createAddress(@Valid @ModelAttribute("address") Address address, BindingResult result,
 			HttpSession session) {
 		ModelAndView model = new ModelAndView("address");
-		model.addObject("title", "Add new address");
+		model.addObject("taitle", "Add new address");
 
 		if (result.hasErrors() && !result.hasFieldErrors("client")) {
 			System.out.println(result.getFieldErrors());
@@ -418,34 +384,31 @@ public class PersonController {
 	 * @return true,if client logged in; false, if null or not a client
 	 */
 
-	private Cart cart = new Cart();
-
 	@RequestMapping(value = "/cart", method = RequestMethod.GET)
 	public ModelAndView getCart() {
 		ModelAndView model = new ModelAndView("cart");
-		model.addObject("cart", cart);
 		model.addObject("title", "Your cart");
 		return model;
 	}
 
 	@RequestMapping(value = "/cartContent", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody Cart getCategoryProducts() {
-		return cart;
+	public @ResponseBody Cart getCategoryProducts(HttpSession session) {
+		return (Cart)session.getAttribute("cart");
 	}
 
 	@RequestMapping(value = "/cart", method = RequestMethod.POST)
-	public ModelAndView setCart(@RequestBody CartItem cartItem) {
+	public ModelAndView setCart(@RequestBody CartItem cartItem, HttpSession session) {
 		ModelAndView model = new ModelAndView("cart");
-		cart.setCartItem(cartItem);
+		((Cart)session.getAttribute("cart")).setCartItem(cartItem);
 		model.addObject("title", "Your cart");
-		model.addObject("cart", cart);
 		return model;
 	}
 
 	@RequestMapping(value = "/addToCart", method = RequestMethod.POST)
-	public ModelAndView putToCart(@RequestBody CartItem cartItem) {
+	public ModelAndView putToCart(@ModelAttribute CartItem cartItem, HttpSession session) {
 		System.out.println(cartItem.getProduct().getName() + " id:" + cartItem.getProduct().getId() + " amount:"
 				+ cartItem.getAmount());
+		Cart cart=(Cart)session.getAttribute("cart");
 		if (cart.getItemList() == null) {
 			cart.setItemList(new LinkedList<CartItem>());
 		}

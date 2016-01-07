@@ -14,7 +14,7 @@
 
 </head>
 <body>
-<%@ include file="clientNavbar.jsp" %>
+<%@ include file="header.jsp" %>
 
 	<div align="center">${message}</div>
 	<script type="text/javascript"

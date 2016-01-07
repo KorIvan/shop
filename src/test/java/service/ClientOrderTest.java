@@ -12,10 +12,9 @@ import com.tsystems.model.Order;
 import com.tsystems.model.OrderItem;
 import com.tsystems.model.OrderStatus;
 import com.tsystems.model.Product;
+import static org.junit.Assert.*;
 
-import junit.framework.TestCase;
-
-public class ClientOrderTest extends TestCase {
+public class ClientOrderTest {
 
 	@Test
 	public void calculateOrder() {
@@ -40,7 +39,7 @@ public class ClientOrderTest extends TestCase {
 		System.out.println(cost);
 		order.setCost(cost);
 		//must be 60
-		assertEquals(order.getCost(), 60f);
+		assertEquals(order.getCost(), new Float(60f));
 
 	}
 

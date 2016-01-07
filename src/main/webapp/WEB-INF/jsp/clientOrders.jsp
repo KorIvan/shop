@@ -14,7 +14,7 @@
 <link href="<spring:url value="/css/menu.css"/>" rel="stylesheet">
 </head>
 <body>
-	<%@ include file="clientNavbar.jsp"%>
+	<%@ include file="header.jsp"%>
 	<div align="center">
 	<form action="">
 		<table>

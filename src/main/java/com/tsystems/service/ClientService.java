@@ -10,7 +10,7 @@ import com.tsystems.model.Person;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
 
-public interface PersonService {
+public interface ClientService {
 	/**
 	 * Client creates an account to continue purchasing process/
 	 * 

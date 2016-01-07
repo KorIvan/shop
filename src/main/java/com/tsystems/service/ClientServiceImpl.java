@@ -20,13 +20,13 @@ import com.tsystems.model.Person;
 import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
-import com.tsystems.repository.PersonRepository;
+import com.tsystems.repository.ClientRepository;
 
 @Service("clientService")
-public class PersonServiceImpl implements PersonService {
+public class ClientServiceImpl implements ClientService {
 
 	@Autowired
-	private PersonRepository clientRepository;
+	private ClientRepository clientRepository;
 
 	public String createClient(Person client) {
 		client.setType(PersonType.ROLE_CLIENT);

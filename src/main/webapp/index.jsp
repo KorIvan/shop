@@ -17,8 +17,8 @@
 
 <div align=center>
 	<div>><a href="<spring:url value="/catalog.html"/>">Guest</a></div>
-		<div>><a href="<spring:url value="/login.html"/>">Client</a></div>
-		<div>><a href="<spring:url value="/manager/login.html"/>">Manager</a></div>
+		<div>><a href="<spring:url value="/client"/>">Client</a></div>
+		<div>><a href="<spring:url value="/manager"/>">Manager</a></div>
 	
 </div>
 </html>

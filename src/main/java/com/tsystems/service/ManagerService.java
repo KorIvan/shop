@@ -1,5 +1,7 @@
 package com.tsystems.service;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import com.tsystems.model.Attribute;
@@ -38,6 +40,10 @@ public interface ManagerService {
 	Product getProductById(Long prodId);
 
 	OrderItem getOrderItemById(Long id);
+
+	Float calculateWeekIncome(Calendar week);
+
+	Float calculateWeekIncome(Date from, Date to);
 
 }
 

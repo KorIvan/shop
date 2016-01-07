@@ -19,7 +19,7 @@
 
 
 <body>
-<%@ include file="clientNavbar.jsp" %>
+<%@ include file="header.jsp" %>
 <div align="center">
 <h1>${title}</h1>
 	<form:form commandName="product"

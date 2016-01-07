@@ -68,10 +68,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		resolver.setOrder(2);
 		return resolver;
 	}
-	@Override
+    @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("auth");
+        registry.addViewController("/login").setViewName("login");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
-
 }
