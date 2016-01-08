@@ -8,8 +8,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<meta name="_csrf" content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" content="${_csrf.headerName}" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="http://localhost:8080/shop/css/bootstrap.css" rel="stylesheet"/>
+<link href="http://localhost:8080/shop/css/bootstrap.css"
+	rel="stylesheet" />
 <link href="http://localhost:8080/shop/css/menu.css" rel="stylesheet">
 
 <title>${title}</title>
@@ -68,9 +72,9 @@
 						data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false">Orders<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="http://localhost:8080/shop/makeOrder.html">Make
+							<li><a href="http://localhost:8080/shop/client/makeOrder">Make
 									new</a></li>
-							<li><a href="http://localhost:8080/shop/orderHistory.html">View
+							<li><a href="http://localhost:8080/shop/client/orderHistory">View
 									history</a></li>
 
 						</ul></li>
@@ -112,7 +116,7 @@
 
 			<ul class="nav navbar-nav navbar-right">
 				<security:authorize access="!hasRole('SALES_MANAGER')">
-					<li><a href="cart.html">Cart</a></li>
+					<li><a href="http://localhost:8080/shop/cart.html">Cart</a></li>
 				</security:authorize>
 
 				<!-- 				<li class="dropdown"><a href="#" class="dropdown-toggle" -->
@@ -126,27 +130,21 @@
 				<!-- 						<li><a href="#">Separated link</a></li> -->
 				<!-- 					</ul> -->
 				<!-- 					</li> -->
-				<li class="active">
-					
-					<c:if test="${loggedIn}">
+				<li class="active"><c:if test="${loggedIn}">
 						<li class="active"><a
-							href="<spring:url value="logout.html" />">Log out <span
+							href="http://localhost:8080/shop/logout.html">Log out <span
 								class="sr-only">(current)</span></a></li>
-					</c:if> 
-					 <%-- 					<security:authentication var="role" property="principal.authorities"/> --%>
+					</c:if> <%-- 					<security:authentication var="role" property="principal.authorities"/> --%>
 					<c:if test="${!loggedIn}">
 						<li class="active"><a> GUEST <span class="sr-only">(current)</span>
 						</a></li>
-					</c:if> 
-					<security:authorize access="hasRole('SALES_MANAGER')">
+					</c:if> <security:authorize access="hasRole('SALES_MANAGER')">
 						<li class="active"><a>Manager<span class="sr-only">(current)</span>
 						</a></li>
-					</security:authorize> 
-					<security:authorize access="hasRole('CLIENT')">
+					</security:authorize> <security:authorize access="hasRole('CLIENT')">
 						<li class="active"><a>Client<span class="sr-only">(current)</span>
 						</a></li>
-					</security:authorize> 
-					<c:if test="${!loggedIn }">
+					</security:authorize> <c:if test="${!loggedIn }">
 						<li class="active"><a href="<spring:url value="login"/>">
 								Log in <span class="sr-only">(current)</span>
 						</a></li>

@@ -186,4 +186,37 @@ public class ClientRepositoryImpl implements ClientRepository {
 		return null;
 	}
 
+	@Override
+	public Person findClientByEmail(String email) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+		Root<Person> c = cq.from(Person.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+		predicates.add(cb.equal(c.get("email"), email));
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+
+		TypedQuery<Person> q = em.createQuery(cq);
+		List<Person> founded = q.getResultList();
+		if (founded.isEmpty())
+			return null;
+		else
+			return founded.get(0);
+	}
+
+	@Override
+	public Product findProductById(Long productId) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Product> cq = cb.createQuery(Product.class);
+		Root<Product> c = cq.from(Product.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
+		predicates.add(cb.equal(c.get("id"), productId));
+		cq.select(c).where(predicates.toArray(new Predicate[] {}));
+		TypedQuery<Product> q = em.createQuery(cq);
+		List<Product> founded = q.getResultList();
+		if (founded.isEmpty())
+			return null;
+		else
+			return founded.get(0);
+	}
+
 }

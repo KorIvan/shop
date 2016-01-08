@@ -1,6 +1,7 @@
 package com.tsystems.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.tsystems.model.Address;
 import com.tsystems.model.Cart;
@@ -44,7 +45,6 @@ public interface ClientService {
 	 * "SHIPPING","DELIVERED".
 	 * 
 	 * @param order
-	 * @return true, if Order canceled.
 	 */
 	void cancelOrder(Order order);
 
@@ -112,10 +112,19 @@ public interface ClientService {
 
 	boolean hasUnfinishedOrder(Long clientId);
 
-	void updateOrder(Order ordser);
 	
 	Address findAddressById(Long id);
 
 	List<Order> getOrdersHistoryByClientI(Long id);
+	/**
+	 * Returns Clietn by email
+	 * @param username
+	 * @return
+	 */
+	Person getClientByEmail(String username);
+
+	Map<String, Object> processOrder(Order order);
+
+	Product getProductById(long parseLong);
 
 }

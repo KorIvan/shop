@@ -19,98 +19,103 @@
 
 
 <body>
-<%@ include file="header.jsp" %>
-<div align="center">
-<h1>${title}</h1>
-	<form:form commandName="product"
-		onsubmit="return validateProdForm(this);">
-		<table>
-			<tr>
-				<td>Category: ${product.category.name}</td>
-			</tr>
-			<tr>
-				<td>${message}</td>
-			</tr>
-			<tr>
-				<td><form:input path="name" placeholder="Enter product name" />
-				</td>
-			</tr>
-			<tr>
-				<td class="errorblock"><label for="name" id="nameError"
-					class="error"></label> <form:errors path="name" cssClass="error" /></td>
-			</tr>
-			<tr>
-				<td></td>
-			</tr>
-			<tr id="properties"></tr>
-			<tr>
-			</tr>
-			<c:forEach items="${product.properties}" var="prop" varStatus="i"
-				begin="0">
+	<%@ include file="header.jsp"%>
+	<div align="center">
+		<h1>${title}</h1>
+		<form:form commandName="product"
+			onsubmit="return validateProdForm(this);">
+			<table>
 				<tr>
-					<td><form:label path="properties[${i.index}].attributes.name"
-							id="name${i.index}">${prop.attributes.name}</form:label></td>
+					<td>Category: ${product.category.name}</td>
 				</tr>
 				<tr>
-					<td><form:input path="properties[${i.index}].description"
-							id="description${i.index}" /></td>
+					<td>${message}</td>
 				</tr>
-			</c:forEach>
+				<tr>
+					<td><form:input path="name" placeholder="Enter product name" />
+					</td>
+				</tr>
+				<tr>
+					<td class="errorblock"><label for="name" id="nameError"
+						class="error"></label> <form:errors path="name" cssClass="error" /></td>
+				</tr>
+				<tr>
+					<td></td>
+				</tr>
+				<tr id="properties"></tr>
+				<tr>
+				</tr>
+				<c:forEach items="${product.properties}" var="prop" varStatus="i"
+					begin="0">
+					<tr>
+						<td><form:label path="properties[${i.index}].attributes.name"
+								id="name${i.index}">${prop.attributes.name}</form:label></td>
+						<td>${prop.attributes.description}</td>
+					</tr>
+					<tr>
+						<td><form:input path="properties[${i.index}].description"
+								id="description${i.index}" /></td>
+					</tr>
+				</c:forEach>
 
-			<tr>
-				<td class="errorblock"><label for="category" id="categoryError"
-					class="error"></label> <form:errors path="category"
-						cssClass="error" /></td>
+				<tr>
+					<td class="errorblock"><label for="category"
+						id="categoryError" class="error"></label> <form:errors
+							path="category" cssClass="error" /></td>
 
-			</tr>
-			<tr>
-				<td><form:input path="currentPrice"
-						placeholder="Enter current price" /></td>
-			</tr>
-			<tr>
-				<td class="errorblock"><label for="currentPrice"
-					id="currentPriceError" class="error"></label> <form:errors
-						path="currentPrice" cssClass="error" /></td>
+				</tr>
+				<tr>
+					<td><form:input path="currentPrice"
+							placeholder="Enter current price" /></td>
+				</tr>
+				<tr>
+					<td class="errorblock"><label for="currentPrice"
+						id="currentPriceError" class="error"></label> <form:errors
+							path="currentPrice" cssClass="error" /></td>
 
-			</tr>
-			<tr>
-				<td><form:input path="weight"
-						placeholder="Enter product's weight" /></td>
-			</tr>
-			<tr>
-				<td class="errorblock"><label for="weight" id="weightError"
-					class="error"></label> <form:errors path="weight" cssClass="error" /></td>
+				</tr>
+				<tr>
+					<td><form:input path="weight"
+							placeholder="Enter product's weight" /></td>
+				</tr>
+				<tr>
+					<td class="errorblock"><label for="weight" id="weightError"
+						class="error"></label> <form:errors path="weight" cssClass="error" /></td>
 
-			</tr>
+				</tr>
 
-			<tr>
-				<td><form:input path="bulk" placeholder="Enter product's bulk" /></td>
-			</tr>
-			<tr>
-				<td class="errorblock"><label for="bulk" id="bulkError"
-					class="error"></label> <form:errors path="bulk" cssClass="error" /></td>
+				<tr>
+					<td><form:input path="bulk" placeholder="Enter product's bulk" /></td>
+				</tr>
+				<tr>
+					<td class="errorblock"><label for="bulk" id="bulkError"
+						class="error"></label> <form:errors path="bulk" cssClass="error" /></td>
 
-			</tr>
+				</tr>
+				<tr>
+					<td>
+					<form:input path="storage.amount" placeholder="Enter product's amount at storage"/>
+					</td>
+				</tr>
+				<tr>
+					<td><form:textarea path="description"
+							placeholder="Enter description" /></td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="Submit" id="submit"></td>
+				</tr>
+			</table>
 
-			<tr>
-				<td><form:textarea path="description"
-						placeholder="Enter description" /></td>
-			</tr>
-			<tr>
-				<td><input type="submit" value="Submit" id="submit"></td>
-			</tr>
-		</table>
 
-
-	</form:form>
-</div>
+		</form:form>
+	</div>
 	<script type="text/javascript" src="../js/validateProdForm.js">
 		
 	</script>
 
 
-<!-- 	<script type="text/javascript" -->
-<!-- 		src="http://code.jquery.com/jquery-2.1.4.min.js"></script> -->
+	<!-- 	<script type="text/javascript" -->
+	<!-- 		src="http://code.jquery.com/jquery-2.1.4.min.js"></script> -->
 	<script type="text/javascript"
 		src='<spring:url value="js/jquery-2.1.4.js"/>'></script>
 	<script type="text/javascript">
@@ -178,7 +183,9 @@
 
 		// 				});
 	</script>
-	<script src="<spring:url value="js/bootstrap.min.js"/>" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<script src="<spring:url value="js/bootstrap.min.js"/>"
+		integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+		crossorigin="anonymous"></script>
 
 </body>
 </html>

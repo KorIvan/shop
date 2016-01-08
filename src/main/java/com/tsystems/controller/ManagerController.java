@@ -29,6 +29,7 @@ import com.tsystems.model.CategoryEditor;
 import com.tsystems.model.Order;
 import com.tsystems.model.Product;
 import com.tsystems.model.Properties;
+import com.tsystems.model.Storage;
 import com.tsystems.service.ManagerService;
 
 @Controller
@@ -138,13 +139,15 @@ public class ManagerController {
 	}
 
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-	public ModelAndView saveProduct(@Valid @ModelAttribute("product") Product product, BindingResult result) {
+	public ModelAndView saveProduct(@Valid @ModelAttribute("product") Product product,BindingResult result) {
 		ModelAndView model = new ModelAndView("product");
 		model.addObject("title", "New product");
 		if (result.hasErrors()) {
 			model.addObject("message", "Sorry, error ocured.");
+			System.out.println(result.getAllErrors());
 			return model;
 		} else {
+//			product.getAmount().setAmount(Integer.parseInt(amount));;
 			model.addObject("message", managerService.createProduct(product));
 			model.setView(new RedirectView("category.html"));
 		}

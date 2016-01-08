@@ -66,4 +66,6 @@ public interface ClientRepository {
 	
 	Address findAddressById(Long id);
 	List<Order> getAllOrders(Long id);
+	Person findClientByEmail(String email);
+	Product findProductById(Long productId);
 }

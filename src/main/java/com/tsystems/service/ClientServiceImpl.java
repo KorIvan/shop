@@ -2,7 +2,9 @@ package com.tsystems.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -142,7 +144,7 @@ public class ClientServiceImpl implements ClientService {
 		clientRepository.createOrder(order);
 	}
 
-	public void updateOrder(Order order) {
+	private void updateOrder(Order order) {
 		clientRepository.updateOrder(order);
 	}
 
@@ -174,6 +176,119 @@ public class ClientServiceImpl implements ClientService {
 
 	public List<Order> getOrdersHistoryByClientI(Long clientId) {
 		return clientRepository.findAllOrders(clientId);
+	}
+
+	@Override
+	public Person getClientByEmail(String email) {
+		return clientRepository.findClientByEmail(email);
+	}
+	/**
+	 * Keys "view","message","addresses","title","order"
+	 */
+	@Override
+	public Map<String,Object> processOrder(Order order) {
+		Map<String,Object> response=new HashMap<>();
+		String keyView="view";
+		String keyMessage="message";
+		if (order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)
+				|| order.getPayMethod().equals(PaymentMethod.UNKNOWN)) {
+			response.put(keyView, "order");
+			response.put(keyMessage,
+					"If you want complete purchase order, fields Payment method and Delivery method can't be unknown!");
+			return response;
+		}
+		if (order.getDeliveryMethod().equals(DeliveryMethod.SELF_DELIVERY)) {
+			order.setAddress(null);
+			order.setDeliveryDate(null);
+			if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
+				order.setStatus(OrderStatus.WAITING_SEFL_DELIVERY);
+				updateOrder(order);
+				// now this order's purchasing is finished
+				response.put(keyView, "catalog");
+				response.put(keyMessage, "Your order is waiting you.");
+				return response;
+			}
+			if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
+
+				order.setStatus(OrderStatus.PAYMENT_PENDING);
+
+				if (order.getPaid().equals(false)) {
+					order.setStatus(OrderStatus.WAITING_SEFL_DELIVERY);
+					updateOrder(order);
+					// now this order's purchasing is finished
+					response.put(keyView,"catalog");
+				}
+				updateOrder(order);
+				response.put(keyView,"orderPayment");
+				return response;
+			}
+		} else if (order.getDeliveryMethod().equals(DeliveryMethod.COURIER)) {
+			order.setStatus(OrderStatus.PAYMENT_PENDING);
+			System.out.println("order address " + order.getAddress());
+			System.out.println("order delivery " + order.getDeliveryDate());
+			// order.setAddress(clientService.get);
+			System.out.println("order address " + order.getAddress());
+			System.out.println("order delivery " + order.getDeliveryDate());
+
+			if (order.getAddress() != null && order.getDeliveryDate() != null) {
+				if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
+					order.setStatus(OrderStatus.SHIPMENT_PENDING);
+					updateOrder(order);
+					// now this order's purchasing is finished
+					response.put(keyView, "catalog");
+					return response;
+				}
+				if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
+					if (order.getPaid().equals(false)) {
+						order.setStatus(OrderStatus.SHIPMENT_PENDING);
+						updateOrder(order);
+						// now this order's purchasing is finished
+						response.put(keyView,"catalog");
+						return response;
+					}
+				}
+			}
+			response.put(keyView, "orderDelivery");
+			response.put("order", order);
+			List<Address> userAddresses = findAllAddresses(order.getClient().getId());
+
+			for (Address address : userAddresses)
+				System.out.println(address.getCity());
+			response.put("addresses", userAddresses);
+			response.put("title", "Choose address and delivery date");
+			return response;
+		} else if (order.getDeliveryMethod().equals(DeliveryMethod.OTHER)) {
+			if (order.getAddress() != null && order.getDeliveryDate() != null) {
+				if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
+					response.put("message", "Exchanging payment possible only with COURIER and SELF DELIVERY");
+					response.put(keyView, "orderPayment");
+					return response;
+				}
+				if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
+					order.setStatus(OrderStatus.PAYMENT_PENDING);
+					if (order.getPaid().equals(false)) {
+						order.setStatus(OrderStatus.SHIPMENT_PENDING);
+						updateOrder(order);
+						// now this order's purchasing is finished
+						response.put(keyView, "catalog");
+						return response;
+					}
+				}
+			}
+			response.put(keyView, "orderDelivery");
+			response.put("order", order);
+			List<Address> userAddresses = findAllAddresses(order.getClient().getId());
+			response.put("addresses", userAddresses);
+			response.put("title", "Choose address and delivery date");
+			return response;
+		}
+		return response;
+	}
+
+	@Override
+	public Product getProductById(long productId) {
+	return 	clientRepository.findProductById(productId);
+		
 	}
 
 }

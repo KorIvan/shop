@@ -1,76 +1,62 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="<spring:url value="/css/bootstrap.css"/>" rel="stylesheet"
-	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
-	crossorigin="anonymous"><link href="<spring:url value="/css/menu.css"/>" rel="stylesheet">
 
-<title>${title}</title>
-</head>
-<body>
-	<%@ include file="header.jsp"%>
+<%@ include file="header.jsp"%>
 
-	<div align="center">
-		<h1>${title}</h1>
-	</div>
-	<div align="center">
-		<form:form commandName="order">
-			<div class="message" align="center">${message}</div>
+<div align="center">
+	<h1>${title}</h1>
+</div>
+<div align="center">
+	<%-- 	<form:form commandName="order"> --%>
+	<form:form method="POST" commandName="order">
+		<input type="hidden" name="${_csrf.parameterName}"
+			value="${_csrf.token}" />
+		<div class="message" align="center">${message}</div>
 
-			<!-- 			onsubmit="return validateRegForm(this);"> -->
-			<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
-			<div>
-				Order status:
-				<form:input readonly="true" cssClass="springInput" path="status" />
-			</div>
+		<!-- 			onsubmit="return validateRegForm(this);"> -->
+		<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
+		<div>
+			Order status:
+			<%-- 			<form:input readonly="true" cssClass="springInput" path="status" /> --%>
+		</div>
+		<%-- 		<form:hidden path="address" /> --%>
+		<%-- 		<form:hidden path="client" /> --%>
+		<%-- 		<form:hidden path="commentsForOrder" /> --%>
+		<%-- 		<form:hidden path="cost" /> --%>
+		<%-- 		<form:hidden path="creationDate" /> --%>
+		<%-- 		<form:hidden path="deliveryDate" /> --%>
+		<%-- 		<form:hidden path="deliveryMethod" /> --%>
+		<%-- 		<form:hidden path="id" /> --%>
+		<%-- 		<form:hidden path="orderItems" /> --%>
+		<%-- 		<form:hidden path="paid" /> --%>
+		<%-- 		<form:hidden path="payMethod" /> --%>
+		<%-- 		<form:hidden path="status" /> --%>
 
-			<table>
+		<table>
+			<tr>
+
+			</tr>
+
+			<thead>
+			<thead>
+				<th>Product</th>
+				<th>Price</th>
+				<th>Amount</th>
+			</thead>
+			<c:forEach items="${order.orderItems}" var="item">
 				<tr>
+					<td>${item.product.name}</td>
+
+					<td>${item.price}</td>
+					<td>${item.amount}</td>
 
 				</tr>
 
-				<thead>
-				<thead>
-					<th>Product</th>
-					<th>Price</th>
-					<th>Amount</th>
-				</thead>
-				<form:hidden path="orderItems" />
-				<c:forEach items="${order.orderItems}" var="item" begin="0"
-					varStatus="i">
-					<tr>
-<%-- 						<td><form:hidden cssClass="springInput" readonly="true" --%>
-<%-- 								path="orderItems[${i.index}].id" /></td> --%>
-						<td><form:input cssClass="springInput" readonly="true"
-								path="orderItems[${i.index}].product.name" /></td>
-
-						<td><form:input cssClass="springAmount" readonly="true" path="orderItems[${i.index}].price"/></td>
-						<td><form:input cssClass="springInput" readonly="true"	path="orderItems[${i.index}].id" /></td> 
-						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.id" /> --%>
-						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.weight" /> --%>
-						<%-- 						<td><form:hidden path="orderItems[${i.index}].product.bulk" /> --%>
-						<%-- 						<td><form:input --%>
-						<%-- 								path="orderItems[${i.index}].product.category" /> <form:hidden --%>
-						<%-- 								cssClass="springInput" readonly="true" path="orderItems" /> --%>
-						<%-- 						<td><form:hidden --%>
-						<%-- 								path="orderItems[${i.index}].product.currentPrice" /> --%>
-					
-					</tr>
-
-				</c:forEach>
-				<tr>
-
-					<td>Total cost:</td>
-					<td><form:input cssClass="springAmount" readonly="true"
-							path="cost" /></td>
-				</tr>
-				<tr>
+			</c:forEach>
+			<tr>
+				<td>Total cost: <%-- <form:hidden path="cost"/> --%>
+				</td>
+				<td>${order.cost}</td>
+			</tr>
+			<tr>
 					<td>Payment method:</td>
 					<td><form:select cssClass="springSelect" path="payMethod">
 							<form:option value="" label="*** Select Option ***" />
@@ -84,32 +70,53 @@
 							<form:options items="${deliveryMethod}" />
 						</form:select></td>
 				</tr>
-				<tr>
-					<%-- 					<td><form:hidden path="id" /> --%>
-					<%-- 					<td><form:hidden path="client.id" /> --%>
-					<%-- 					<td><form:hidden path="paid" />  --%>
-					<%-- 					<td><form:hidden path="deliveryDate" /></td> --%>
-					<%-- 					<td><form:hidden path="payMethod" /> --%>
-					<%-- 					<td><form:hidden path="creationDate.value" /></td> --%>
-					<%-- 					<td><form:hidden path="address" /></td> --%>
+			
+			
+<!-- 			<tr> -->
+<!-- 				<td>Payment method:</td> -->
+<!-- 				<td><select name="payMethod"> -->
+<%-- 						<c:forEach items="${paymentMethod}" var="method"> --%>
+<%-- 							<option value="${method}">${method}</option> --%>
+<%-- 						</c:forEach> --%>
+<!-- 				</select></td> -->
+<%-- 										<form:option value="" label="*** Select Option ***" /> --%>
+<%-- 										<form:options items="${payMethod}" /> --%>
+<!-- 			</tr> -->
+<!-- 			<tr> -->
+<!-- 				<td>Delivery method:</td> -->
+
+<!-- 				<td><select name="deliveryMethod"> -->
+<%-- 												<form:option value="" label="*** Select Option ***" /> --%>
+<%-- 												<form:options items="${deliveryMethod}" /> --%>
+<!-- 				</select></td> -->
+<!-- 			</tr> -->
+<!-- 			<tr> -->
+				<%-- 					<td><form:hidden path="id" /> --%>
+				<%-- 					<td><form:hidden path="client.id" /> --%>
+				<%-- 					<td><form:hidden path="paid" />  --%>
+				<%-- 					<td><form:hidden path="deliveryDate" /></td> --%>
+				<%-- 					<td><form:hidden path="payMethod" /> --%>
+				<%-- 					<td><form:hidden path="creationDate.value" /></td> --%>
+				<%-- 					<td><form:hidden path="address" /></td> --%>
 
 
-				</tr>
-				<tr>
-					<!-- 					<td><input type="submit" id="cancelOrder" value="Cancel order" -->
-					<!-- 						name="action" onclick="return areYouSure();" /></td> -->
+			</tr>
+			<tr>
+				<!-- 					<td><input type="submit" id="cancelOrder" value="Cancel order" -->
+				<!-- 						name="action" onclick="return areYouSure();" /></td> -->
 
-					<td><input type="submit" value="Next" name="action"
-						class="input"></td>
-				</tr>
-			</table>
-		</form:form>
-	</div>
-	<script type="text/javascript">
-		function areYouSure() {
-			alert("Do you really want to cancel order?");
-		}
-	</script>
-
-</body>
-</html>
+				<td><input type="submit" value="Next" name="action"
+					class="input"></td>
+				<td><input type="submit" value="Cancel" name="action"
+					class="input" onclick="return areYouSure();"></td>
+			</tr>
+		</table>
+		<%-- 	</form:form> --%>
+	</form:form>
+</div>
+<script type="text/javascript">
+	function areYouSure() {
+		alert("Do you really want to cancel order?");
+	}
+</script>
+<%@ include file="footer.jsp"%>

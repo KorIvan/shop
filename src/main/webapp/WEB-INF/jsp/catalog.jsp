@@ -1,7 +1,9 @@
 <%@ include file="header.jsp"%>
 <%-- 	<c:out value="${pageContext.request.userPrincipal}"/> --%>
-<c:out value="${sessionScope.cart}"/>
-
+${sessionScope.cart}<br/>
+${sesison.remoteUser}<br/>
+${session.requestedSessionId}<br/>
+${session.id}<br/>
 <div align="center">
 	<h1>${title}</h1>
 	<div class="message">${message}</div>
@@ -32,6 +34,8 @@
 		<security:authorize access="!hasRole('SALES_MANAGER')">
 			<input type="button" value="Send to cart" id="send" name="action" />
 		</security:authorize>
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		
 	</form:form>
 </div>
 <script type="text/javascript"
@@ -54,7 +58,13 @@
 			}
 		}
 	});
-
+	$(function () {
+	    var token = $("meta[name='_csrf']").attr("content");
+	    var header = $("meta[name='_csrf_header']").attr("content");
+	    $(document).ajaxSend(function(e, xhr, options) {
+	        xhr.setRequestHeader(header, token);
+	    });
+	});
 	function sendAjax() {
 
 		$.ajax({
