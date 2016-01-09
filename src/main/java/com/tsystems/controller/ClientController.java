@@ -43,20 +43,21 @@ import com.tsystems.service.ClientService;
 @SessionAttributes({ "cart", "order" })
 @RequestMapping("/client")
 public class ClientController {
-//	@Autowired
-//	private PersonEditor personEditor;
-//	@Autowired
-//	private ProductEditor productEditor;
-//	@Autowired
-//	private OrderItemEditor orderItemEditor;
+	// @Autowired
+	// private PersonEditor personEditor;
+	// @Autowired
+	// private ProductEditor productEditor;
+	// @Autowired
+	// private OrderItemEditor orderItemEditor;
 	@Autowired
 	private OrderItemEditor addressItemEditor;
-//
+
+	//
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
-//		binder.registerCustomEditor(Person.class, this.personEditor);
-//		binder.registerCustomEditor(Product.class, this.productEditor);
-//		binder.registerCustomEditor(OrderItem.class, this.orderItemEditor);
+		// binder.registerCustomEditor(Person.class, this.personEditor);
+		// binder.registerCustomEditor(Product.class, this.productEditor);
+		// binder.registerCustomEditor(OrderItem.class, this.orderItemEditor);
 		binder.registerCustomEditor(Address.class, addressItemEditor);
 	}
 
@@ -73,6 +74,7 @@ public class ClientController {
 		System.out.println(request.getSession().getAttribute("clientId"));
 		return model;
 	}
+
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ModelAndView getClientPage2(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("client");
@@ -83,6 +85,7 @@ public class ClientController {
 		System.out.println(request.getSession().getAttribute("clientId"));
 		return model;
 	}
+
 	/**
 	 * Returns personal information
 	 * 
@@ -94,7 +97,8 @@ public class ClientController {
 	public String getPersonalInformationForm(@ModelAttribute("person") Person person, Model model,
 			HttpSession session) {
 		model.addAttribute("title", "Edit personal information");
-		model.addAttribute("person", clientService.getClientById(Long.parseLong(session.getAttribute("clientId").toString())));
+		model.addAttribute("person",
+				clientService.getClientById(Long.parseLong(session.getAttribute("clientId").toString())));
 		return "editClient";
 	}
 
@@ -114,10 +118,12 @@ public class ClientController {
 	@RequestMapping(value = "/makeOrder", method = RequestMethod.GET)
 	public ModelAndView makeOrder(HttpSession session) {
 		ModelAndView model = new ModelAndView("order");
-		long clientId=0;
-		if(session.getAttribute("clientId")!=null){
-		clientId = Long.parseLong(session.getAttribute("clientId").toString());
-		}
+		long clientId = 0;
+		if (session.getAttribute("clientId") != null) {
+			clientId = Long.parseLong(session.getAttribute("clientId").toString());
+		} else
+			return new ModelAndView("redirect:/client");
+
 		if (clientService.hasUnfinishedOrder(clientId)) {
 			model.setViewName("order");
 			model.addObject("message", "Finish or cancel this order first.");
@@ -143,30 +149,38 @@ public class ClientController {
 		return model;
 	}
 
+	@RequestMapping(value = "/cancelOrder", method = RequestMethod.GET)
+	public ModelAndView cancelOrder(HttpSession session) {
+		ModelAndView model = new ModelAndView("client");
+		if (session.getAttribute("order") == null) {
+			return model;
+		}
+		Order order = (Order) session.getAttribute("order");
+		String message = clientService.cancelOrder(order);
+		model.addObject("message", message);
+		return model;
+	}
+
 	@RequestMapping(value = "/makeOrder", method = RequestMethod.POST)
-	public ModelAndView purchaseOrder(HttpSession session, @ModelAttribute("order") Order order, BindingResult resultOrder,
-			@ModelAttribute("address") Address address, BindingResult resultAddress,
+	public ModelAndView purchaseOrder(HttpSession session, @ModelAttribute("order") Order order,
+			BindingResult resultOrder, @ModelAttribute("address") Address address, BindingResult resultAddress,
 			@RequestParam String action) {
-		if(address!=null){
+		if (address != null) {
 			address.setClient(clientService.getClientById(Long.parseLong(session.getAttribute("clientId").toString())));
-			order.setAddress(address);}
+			order.setAddress(address);
+		}
 		System.out.println(resultOrder.getAllErrors());
 		System.out.println(order.getOrderItems());
 		System.out.println(order.getClient());
-		System.out.println("OrserCost"+ order.getCost());
+		System.out.println("OrserCost" + order.getCost());
 		System.out.println(order.getCreationDate());
 		System.out.println(order.getStatus());
 		System.out.println(order.getDeliveryMethod());
 		System.out.println(order.getPayMethod());
-		ModelAndView model = new ModelAndView("order");		
+		ModelAndView model = new ModelAndView("order");
 
 		model.addObject("title", "Your order");
-		if (action.equalsIgnoreCase("Cancel order")) {
-			clientService.cancelOrder(order);
-			model.setViewName("catalog");
-			return model;
-		}
-		if(action.equalsIgnoreCase("Add address")){
+		if (action.equalsIgnoreCase("Add address")) {
 			model.setViewName("address");
 			return model;
 		}
@@ -178,9 +192,9 @@ public class ClientController {
 					model.addObject(e.getKey(), e.getValue());
 			}
 		}
-		if(action.equalsIgnoreCase("Cancel")){
+		if (action.equalsIgnoreCase("Cancel")) {
 			clientService.cancelOrder(order);
-			
+
 			model.setView(new RedirectView("/"));
 			model.addObject("message", "Order is canceled.");
 			return model;
@@ -210,7 +224,8 @@ public class ClientController {
 	public ModelAndView getAddressForm(HttpSession session, @ModelAttribute("address") Address address,
 			BindingResult result) {
 		ModelAndView model = new ModelAndView("addresses");
-		List<Address> addresses = clientService.findAllAddresses(Long.parseLong(session.getAttribute("clientId").toString()));
+		List<Address> addresses = clientService
+				.findAllAddresses(Long.parseLong(session.getAttribute("clientId").toString()));
 		model.addObject("addresses", addresses);
 		model.addObject("title", "Address list");
 		return model;
@@ -229,7 +244,7 @@ public class ClientController {
 		} else {
 			System.out.println(address.getApartment() + " " + address.getStreet() + " " + address.getCountry());
 			clientService.createAddress(address, Long.parseLong(session.getAttribute("clientId").toString()));
-			if(session.getAttribute("order")!=null){
+			if (session.getAttribute("order") != null) {
 				model.setViewName("orderDelivery");
 				return model;
 			}
@@ -280,7 +295,8 @@ public class ClientController {
 	public ModelAndView getAllOrders(HttpSession session, @ModelAttribute("orderHistory") Order order,
 			BindingResult result) {
 		ModelAndView model = new ModelAndView("clientOrders");
-		List<Order> orders = clientService.getOrdersHistoryByClientI(Long.parseLong(session.getAttribute("clientId").toString()));
+		List<Order> orders = clientService
+				.getOrdersHistoryByClientI(Long.parseLong(session.getAttribute("clientId").toString()));
 		model.addObject("ordersHistory", orders);
 		return model;
 	}

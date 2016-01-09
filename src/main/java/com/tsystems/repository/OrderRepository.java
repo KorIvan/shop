@@ -32,7 +32,6 @@ public interface OrderRepository {
 	 * @param order
 	 */
 	void deleteOrder(Order order);
-	void cancelOrder(Order order);
 	void createOrder(Order order);
 	List<Order> findAllOrders(Long clientId);
 

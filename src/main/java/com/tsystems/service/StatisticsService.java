@@ -21,7 +21,7 @@ public interface StatisticsService {
 
 	Float calculateWeekIncome(Calendar week);
 
-	Map<Integer, Product> getTop10Products(int topSize);
+	Map<Product, Long> getTop10Products(int topSize);
 
 	Statistics gatherStatistics();
 

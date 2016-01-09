@@ -39,8 +39,9 @@ public class ClientServiceImpl implements ClientService {
 	private ProductRepository productRepository;
 	@Autowired
 	private CategoryRepository categoryRepository;
-	@Autowired 
+	@Autowired
 	private AddressRepository addressRepository;
+
 	public String createClient(Person client) {
 		client.setType(PersonType.ROLE_CLIENT);
 		if (personRepository.validatePerson(client)) {
@@ -105,8 +106,48 @@ public class ClientServiceImpl implements ClientService {
 		return order;
 	}
 
-	public void cancelOrder(Order order) {
-		orderRepository.cancelOrder(order);
+	public String cancelOrder(Order order) {
+		if (order.getStatus().equals(OrderStatus.PAYMENT_PENDING) || order.getPayMethod().equals(PaymentMethod.UNKNOWN)
+				|| order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)) {
+			invalidateOrder(order);
+			orderRepository.updateOrder(order);
+			return "Order is canceled.";
+		}
+		if (order.getPaid()) {
+			if (order.getStatus().equals(OrderStatus.WAITING_SELF_DELIVERY))
+				return "Order's already paid and delivered to self delivery point.";
+			if (order.getStatus().equals(OrderStatus.SHIPPING))
+				return "Order's already paid and shipping to you.";
+			if (order.getStatus().equals(OrderStatus.DELIVERED))
+				return "Order's already paid and delivered.";
+			if (order.getStatus().equals(OrderStatus.SHIPMENT_PENDING)) {
+				invalidateOrder(order);
+				orderRepository.updateOrder(order);
+				return "Order is canceled. You money'll be returned.";
+
+			}
+		} else {
+			if (order.getDeliveryMethod().equals(DeliveryMethod.COURIER))
+				if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
+					if (order.getStatus().equals(OrderStatus.SHIPPING))
+						return "Order's shipping to you.";
+				}
+			if (order.getDeliveryMethod().equals(DeliveryMethod.OTHER)) {
+				invalidateOrder(order);
+				orderRepository.updateOrder(order);
+				return "Order is canceled.";
+			}
+			if (order.getDeliveryMethod().equals(DeliveryMethod.SELF_DELIVERY)) {
+				// if(order.getPayMethod().equals(PaymentMethod.EXCHANGING)){
+				invalidateOrder(order);
+				orderRepository.updateOrder(order);
+				return "Order is canceled.";
+				// }
+			}
+		}
+		invalidateOrder(order);
+		orderRepository.updateOrder(order);
+		return "Order is canceled.";
 	}
 
 	public void transferMoney(Order order) {
@@ -134,9 +175,10 @@ public class ClientServiceImpl implements ClientService {
 	public List<Category> findAllCategories() {
 		return categoryRepository.findAllCategories();
 	}
+
 	@Deprecated
 	public boolean validateClient(User user) {
-//		return personRepository.validatePerson(user);
+		// return personRepository.validatePerson(user);
 		return false;
 	}
 
@@ -171,8 +213,9 @@ public class ClientServiceImpl implements ClientService {
 
 	public Order getUnfinishedOrder(Long clientId) {
 		List<Order> unfinished = orderRepository.findAllOrders(clientId);
-		for (Order order:unfinished) {
-			if(order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)||order.getPayMethod().equals(PaymentMethod.UNKNOWN)){
+		for (Order order : unfinished) {
+			if (order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)
+					|| order.getPayMethod().equals(PaymentMethod.UNKNOWN)) {
 				return order;
 			}
 		}
@@ -195,14 +238,15 @@ public class ClientServiceImpl implements ClientService {
 	public Person getClientByEmail(String email) {
 		return personRepository.findClientByEmail(email);
 	}
+
 	/**
 	 * Keys "view","message","addresses","title","order"
 	 */
 	@Override
-	public Map<String,Object> processOrder(Order order) {
-		Map<String,Object> response=new HashMap<>();
-		String keyView="view";
-		String keyMessage="message";
+	public Map<String, Object> processOrder(Order order) {
+		Map<String, Object> response = new HashMap<>();
+		String keyView = "view";
+		String keyMessage = "message";
 		if (order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)
 				|| order.getPayMethod().equals(PaymentMethod.UNKNOWN)) {
 			response.put(keyView, "order");
@@ -229,10 +273,10 @@ public class ClientServiceImpl implements ClientService {
 					order.setStatus(OrderStatus.WAITING_SELF_DELIVERY);
 					updateOrder(order);
 					// now this order's purchasing is finished
-					response.put(keyView,"catalog");
+					response.put(keyView, "catalog");
 				}
 				updateOrder(order);
-				response.put(keyView,"orderPayment");
+				response.put(keyView, "orderPayment");
 				response.put("order", order);
 				return response;
 			}
@@ -259,7 +303,7 @@ public class ClientServiceImpl implements ClientService {
 						order.setStatus(OrderStatus.SHIPMENT_PENDING);
 						updateOrder(order);
 						// now this order's purchasing is finished
-						response.put(keyView,"catalog");
+						response.put(keyView, "catalog");
 						response.put("order", order);
 						response.put(keyMessage, "Order is paid. Shipment is pending. Courier'll contact you.");
 
@@ -291,7 +335,7 @@ public class ClientServiceImpl implements ClientService {
 						updateOrder(order);
 						// now this order's purchasing is finished
 						response.put(keyView, "catalog");
-//						response.put("order", order);
+						// response.put("order", order);
 						return response;
 					}
 					response.put(keyView, "orderPayment");
@@ -311,8 +355,32 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public Product getProductById(long productId) {
-	return 	productRepository.findProductById(productId);
-		
-	}
+		return productRepository.findProductById(productId);
 
+	}
+	
+	
+	private void invalidateOrder(Order order) {
+		//putBackProducts(order);
+		order.setStatus(OrderStatus.CANCELED);
+		order.setPaid(false);
+		order.setDeliveryMethod(DeliveryMethod.UNKNOWN);
+		order.setPayMethod(PaymentMethod.UNKNOWN);
+		order.setDeliveryDate(null);
+		order.setAddress(null);
+	}
+	/**
+	 * To put back products from canceled Order
+	 * @param order
+	 */
+	private void putBackProducts(Order order) {
+		List<OrderItem> items = order.getOrderItems();
+		for (OrderItem o : items) {
+			Product itemProduct = o.getProduct();
+			Product beforePurchase = productRepository.findProductById(itemProduct.getId());
+			beforePurchase.getStorage()
+					.setAmount(beforePurchase.getStorage().getAmount() + itemProduct.getStorage().getAmount());
+			productRepository.updateProduct(beforePurchase);
+		}
+	}
 }

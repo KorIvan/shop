@@ -46,7 +46,7 @@ public interface ClientService {
 	 * 
 	 * @param order
 	 */
-	void cancelOrder(Order order);
+	String cancelOrder(Order order);
 
 	/**
 	 * Client pays his Order by card or electronic wallet.

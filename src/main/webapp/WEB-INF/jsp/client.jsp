@@ -1,5 +1,5 @@
 <%@ include file="header.jsp"%>
 
-<div align="center">${message}</div>
+<div class="message" align="center">${message}</div>
 
 <%@ include file="footer.jsp"%>

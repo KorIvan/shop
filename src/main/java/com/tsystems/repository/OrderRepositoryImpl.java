@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tsystems.model.DeliveryMethod;
 import com.tsystems.model.Order;
 import com.tsystems.model.OrderItem;
+import com.tsystems.model.OrderStatus;
 import com.tsystems.model.PaymentMethod;
 import com.tsystems.model.Person;
 
@@ -37,14 +38,15 @@ public class OrderRepositoryImpl implements OrderRepository {
 		Root<Order> c = cq.from(Order.class);
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
-		predicates.add(cb.equal(c.get("client"), em.find(Person.class,clientId)));
+		predicates.add(cb.equal(c.get("client"), em.find(Person.class, clientId)));
 
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
-
+		cq.orderBy(cb.desc(c.get("creationDate")));
 		TypedQuery<Order> q = em.createQuery(cq);
 		List<Order> founded = q.getResultList();
 		return founded;
 	}
+
 	public List<Order> findAllOrders() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Order> cq = cb.createQuery(Order.class);
@@ -52,7 +54,6 @@ public class OrderRepositoryImpl implements OrderRepository {
 		List<Predicate> predicates = new ArrayList<Predicate>();
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(c.get("creationDate")));
-		
 		TypedQuery<Order> q = em.createQuery(cq);
 		return q.getResultList();
 	}
@@ -63,9 +64,10 @@ public class OrderRepositoryImpl implements OrderRepository {
 		Root<Order> c = cq.from(Order.class);
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
-		predicates.add(cb.equal(c.get("client"), em.find(Person.class,clientId)));
+		predicates.add(cb.equal(c.get("client"), em.find(Person.class, clientId)));
 		predicates.add(cb.equal(c.get("deliveryMethod"), DeliveryMethod.UNKNOWN));
 		predicates.add(cb.equal(c.get("payMethod"), PaymentMethod.UNKNOWN));
+		predicates.add(cb.notEqual(c.get("status"), OrderStatus.CANCELED));
 
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 
@@ -76,13 +78,14 @@ public class OrderRepositoryImpl implements OrderRepository {
 		else
 			return true;
 	}
+
 	@Override
 	@Transactional
 	public void deleteOrder(Order order) {
 		em.remove(order);
 
 	}
-	
+
 	@Override
 	public Order findOrderById(Long orderId) {
 		return em.find(Order.class, orderId);
@@ -93,15 +96,11 @@ public class OrderRepositoryImpl implements OrderRepository {
 	public void updateOrder(Order order) {
 		em.merge(order);
 	}
-	
-	@Override
-	@Transactional
-	public void cancelOrder(Order order) {
-		em.merge(order);
-	}
+
 	public OrderItem findOrderItemById(Long id) {
 		return em.find(OrderItem.class, id);
 	}
+
 	@Override
 	public List<Order> getPaidOrders() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -109,25 +108,28 @@ public class OrderRepositoryImpl implements OrderRepository {
 		Root<Order> c = cq.from(Order.class);
 		List<Predicate> predicates = new ArrayList<Predicate>();
 		predicates.add(cb.equal(c.get("paid"), true));
+		predicates.add(cb.equal(c.get("status"),OrderStatus.DELIVERED));
+		//add "Delivered"
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 		TypedQuery<Order> q = em.createQuery(cq);
 		return q.getResultList();
 	}
+
 	@Override
 	public List<Order> getPaidOrders(Date from, Date to) {
-		System.out.println("from "+from);
-		System.out.println("to "+to);
+		System.out.println("from " + from);
+		System.out.println("to " + to);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Order> cq = cb.createQuery(Order.class);
 		Root<Order> c = cq.from(Order.class);
 		List<Predicate> predicates = new ArrayList<Predicate>();
-//		predicates.add(cb.between(c.get("creationDate"), from, to));
+		// predicates.add(cb.between(c.get("creationDate"), from, to));
 		predicates.add(cb.equal(c.get("paid"), true));
 		predicates.add(cb.greaterThanOrEqualTo(c.get("creationDate"), from));
-		predicates.add(cb.lessThan(c.get("creationDate"),to));
+		predicates.add(cb.lessThan(c.get("creationDate"), to));
 		cq.select(c).where(predicates.toArray(new Predicate[] {}));
 		TypedQuery<Order> q = em.createQuery(cq);
-//		System.out.println(q.getResultList());
+		// System.out.println(q.getResultList());
 		return q.getResultList();
 	}
 }

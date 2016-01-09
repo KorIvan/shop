@@ -3,15 +3,20 @@ package com.tsystems.service;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tsystems.model.Order;
+import com.tsystems.model.OrderItem;
 import com.tsystems.model.Person;
 import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
@@ -34,11 +39,24 @@ public class StatisticsServiceImpl implements StatisticsService {
 	}
 
 	@Override
-	public Map<Integer, Product> getTop10Products(int topSize) {
+	public Map<Product,Long> getTop10Products(int topSize) {
 		
 		List<Order> paidOrders = orderRepository.getPaidOrders();
-
-		return null;
+		Map<Product, Long> top=new HashMap<>();
+		for(Order o:paidOrders){
+			for(OrderItem oi:o.getOrderItems()){
+				top.put(oi.getProduct(), top.get(oi.getProduct())+oi.getAmount());
+			}
+		}
+		Map<Product,Long> result=new HashMap<>();
+		int i=0;
+		for (Map.Entry<Product, Long> e:entriesSortedByValues(top)){
+			if (i>=topSize)
+				break;
+			result.put(e.getKey(), e.getValue());
+			i++;
+		}
+		return result;
 	}
 
 	@Override
@@ -105,5 +123,17 @@ public class StatisticsServiceImpl implements StatisticsService {
 
 	private Float calculateTotalIncome() {
 		return 0f;
+	}
+	
+	static <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> entriesSortedByValues(Map<K, V> map) {
+		SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<Map.Entry<K, V>>(new Comparator<Map.Entry<K, V>>() {
+			@Override
+			public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {
+				int res = e2.getValue().compareTo(e1.getValue());
+				return res != 0 ? res : 1;
+			}
+		});
+		sortedEntries.addAll(map.entrySet());
+		return sortedEntries;
 	}
 }
