@@ -90,7 +90,7 @@ public interface ClientService {
 
 	List<Category> findAllCategories();
 
-	boolean validateClient(User user);
+//	boolean validateClient(User user);
 
 	Person getClientById(Long id);
 

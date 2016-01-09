@@ -134,10 +134,10 @@ textarea {
 }
 
 select {
-	font-size: 18px;
-	width: 310px;
-	padding: 5px;
-	height: 40px;
+	#font-size: 18px;
+	#width: 310px;
+	#padding: 5px;
+	#height: 40px;
 }
 
 .springInput {

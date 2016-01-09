@@ -22,25 +22,36 @@ import com.tsystems.model.Person;
 import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
-import com.tsystems.repository.ClientRepository;
+import com.tsystems.repository.AddressRepository;
+import com.tsystems.repository.CategoryRepository;
+import com.tsystems.repository.OrderRepository;
+import com.tsystems.repository.PersonRepository;
+import com.tsystems.repository.ProductRepository;
 
 @Service("clientService")
 public class ClientServiceImpl implements ClientService {
 
 	@Autowired
-	private ClientRepository clientRepository;
-
+	private PersonRepository personRepository;
+	@Autowired
+	private OrderRepository orderRepository;
+	@Autowired
+	private ProductRepository productRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
+	@Autowired 
+	private AddressRepository addressRepository;
 	public String createClient(Person client) {
 		client.setType(PersonType.ROLE_CLIENT);
-		if (clientRepository.validateClient(client)) {
-			clientRepository.createClient(client);
+		if (personRepository.validatePerson(client)) {
+			personRepository.createPerson(client);
 			return "Congratulations! You're registred!";
 		} else
 			return String.format("Sorry, user with email %s already exists.", client.getEmail());
 	}
 
 	public Person getClientById(Long id) {
-		return clientRepository.readPerson(id);
+		return personRepository.readPerson(id);
 
 	}
 
@@ -54,7 +65,7 @@ public class ClientServiceImpl implements ClientService {
 		// System.out.println(client.getId());
 		// System.out.println(client.getType());
 
-		clientRepository.updatePerson(client);
+		personRepository.updatePerson(client);
 	}
 
 	public Person authenticatePerson() {
@@ -65,10 +76,11 @@ public class ClientServiceImpl implements ClientService {
 	public Order makeOrder(Cart cart, Long clientId) {
 		Order order = new Order();
 		order.setStatus(OrderStatus.PAYMENT_PENDING);
+		order.setPaid(false);
 		order.setPayMethod(PaymentMethod.UNKNOWN);
 		order.setDeliveryMethod(DeliveryMethod.UNKNOWN);
 		order.setCreationDate(new Date());
-		order.setClient(clientRepository.readPerson(clientId));
+		order.setClient(personRepository.readPerson(clientId));
 		List<OrderItem> itemList = new ArrayList<OrderItem>();
 		float cost = 0;
 		for (CartItem item : cart.getItemList()) {
@@ -89,12 +101,12 @@ public class ClientServiceImpl implements ClientService {
 		System.out.println("total cost is" + cost);
 		order.setCost(cost);
 		order.setOrderItems(itemList);
-		clientRepository.createOrder(order);
+		orderRepository.createOrder(order);
 		return order;
 	}
 
 	public void cancelOrder(Order order) {
-		clientRepository.deleteOrder(order);
+		orderRepository.cancelOrder(order);
 	}
 
 	public void transferMoney(Order order) {
@@ -116,48 +128,49 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	public List<Product> getCategoryById(Long categoryId) {
-		return clientRepository.getProductsByCategory(categoryId);
+		return productRepository.findProductsByCategory(categoryId);
 	}
 
 	public List<Category> findAllCategories() {
-		return clientRepository.findAllCategories();
+		return categoryRepository.findAllCategories();
 	}
-
+	@Deprecated
 	public boolean validateClient(User user) {
-		return clientRepository.validateClient(user);
+//		return personRepository.validatePerson(user);
+		return false;
 	}
 
 	public void createAddress(Address address, Long clientId) {
-		Person client = clientRepository.readPerson(clientId);
+		Person client = personRepository.readPerson(clientId);
 		if (client.getAddresses() == null) {
 			client.setAddresses(new ArrayList<Address>());
 		}
 		client.getAddresses().add(address);
 		address.setClient(client);
-		clientRepository.updatePerson(client);
+		personRepository.updatePerson(client);
 	}
 
 	public void purchaseOrder(Order order, Long clientId) {
 		System.out.println(order.getOrderItems());
 		System.out.println(order.getClient().getEmail());
 
-		clientRepository.createOrder(order);
+		orderRepository.createOrder(order);
 	}
 
 	private void updateOrder(Order order) {
-		clientRepository.updateOrder(order);
+		orderRepository.updateOrder(order);
 	}
 
 	public List<Address> findAllAddresses(Long clientId) {
-		return clientRepository.findAllAddresses(clientId);
+		return addressRepository.findAllAddresses(clientId);
 	}
 
 	public List<Order> findAllOrders(Long clientId) {
-		return clientRepository.findAllOrders(clientId);
+		return orderRepository.findAllOrders(clientId);
 	}
 
 	public Order getUnfinishedOrder(Long clientId) {
-		List<Order> unfinished = clientRepository.findAllOrders(clientId);
+		List<Order> unfinished = orderRepository.findAllOrders(clientId);
 		for (Order order:unfinished) {
 			if(order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)||order.getPayMethod().equals(PaymentMethod.UNKNOWN)){
 				return order;
@@ -167,20 +180,20 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	public boolean hasUnfinishedOrder(Long clientId) {
-		return clientRepository.hasUnfinishedOrder(clientId);
+		return orderRepository.hasUnfinishedOrder(clientId);
 	}
 
 	public Address findAddressById(Long id) {
-		return clientRepository.findAddressById(id);
+		return addressRepository.findAddressById(id);
 	}
 
 	public List<Order> getOrdersHistoryByClientI(Long clientId) {
-		return clientRepository.findAllOrders(clientId);
+		return orderRepository.findAllOrders(clientId);
 	}
 
 	@Override
 	public Person getClientByEmail(String email) {
-		return clientRepository.findClientByEmail(email);
+		return personRepository.findClientByEmail(email);
 	}
 	/**
 	 * Keys "view","message","addresses","title","order"
@@ -201,7 +214,7 @@ public class ClientServiceImpl implements ClientService {
 			order.setAddress(null);
 			order.setDeliveryDate(null);
 			if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
-				order.setStatus(OrderStatus.WAITING_SEFL_DELIVERY);
+				order.setStatus(OrderStatus.WAITING_SELF_DELIVERY);
 				updateOrder(order);
 				// now this order's purchasing is finished
 				response.put(keyView, "catalog");
@@ -212,14 +225,15 @@ public class ClientServiceImpl implements ClientService {
 
 				order.setStatus(OrderStatus.PAYMENT_PENDING);
 
-				if (order.getPaid().equals(false)) {
-					order.setStatus(OrderStatus.WAITING_SEFL_DELIVERY);
+				if (order.getPaid().equals(true)) {
+					order.setStatus(OrderStatus.WAITING_SELF_DELIVERY);
 					updateOrder(order);
 					// now this order's purchasing is finished
 					response.put(keyView,"catalog");
 				}
 				updateOrder(order);
 				response.put(keyView,"orderPayment");
+				response.put("order", order);
 				return response;
 			}
 		} else if (order.getDeliveryMethod().equals(DeliveryMethod.COURIER)) {
@@ -236,14 +250,19 @@ public class ClientServiceImpl implements ClientService {
 					updateOrder(order);
 					// now this order's purchasing is finished
 					response.put(keyView, "catalog");
+					response.put("order", order);
+					response.put(keyMessage, "Shipment is pending. Courier'll contact you.");
 					return response;
 				}
 				if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
-					if (order.getPaid().equals(false)) {
+					if (order.getPaid().equals(true)) {
 						order.setStatus(OrderStatus.SHIPMENT_PENDING);
 						updateOrder(order);
 						// now this order's purchasing is finished
 						response.put(keyView,"catalog");
+						response.put("order", order);
+						response.put(keyMessage, "Order is paid. Shipment is pending. Courier'll contact you.");
+
 						return response;
 					}
 				}
@@ -260,19 +279,24 @@ public class ClientServiceImpl implements ClientService {
 		} else if (order.getDeliveryMethod().equals(DeliveryMethod.OTHER)) {
 			if (order.getAddress() != null && order.getDeliveryDate() != null) {
 				if (order.getPayMethod().equals(PaymentMethod.EXCHANGING)) {
-					response.put("message", "Exchanging payment possible only with COURIER and SELF DELIVERY");
-					response.put(keyView, "orderPayment");
+					response.put("message", "Exchanging payment possible only with COURIER and SELF DELIVERY.");
+					response.put(keyView, "order");
+					response.put("order", order);
 					return response;
 				}
 				if (order.getPayMethod().equals(PaymentMethod.PROVISIONING)) {
 					order.setStatus(OrderStatus.PAYMENT_PENDING);
-					if (order.getPaid().equals(false)) {
+					if (order.getPaid().equals(true)) {
 						order.setStatus(OrderStatus.SHIPMENT_PENDING);
 						updateOrder(order);
 						// now this order's purchasing is finished
 						response.put(keyView, "catalog");
+//						response.put("order", order);
 						return response;
 					}
+					response.put(keyView, "orderPayment");
+					response.put("order", order);
+					return response;
 				}
 			}
 			response.put(keyView, "orderDelivery");
@@ -287,7 +311,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public Product getProductById(long productId) {
-	return 	clientRepository.findProductById(productId);
+	return 	productRepository.findProductById(productId);
 		
 	}
 

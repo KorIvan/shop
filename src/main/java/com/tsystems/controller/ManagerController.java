@@ -34,7 +34,7 @@ import com.tsystems.service.ManagerService;
 
 @Controller
 @RequestMapping("/manager")
-@SessionAttributes({ "product" })
+@SessionAttributes({ "product","order" })
 public class ManagerController {
 	@Autowired
 	private ManagerService managerService;
@@ -162,13 +162,30 @@ public class ManagerController {
 	@RequestMapping(value = "/orders", method = RequestMethod.GET)
 	public ModelAndView findAllOrders(HttpSession session) {
 		ModelAndView model = new ModelAndView("orders");
-		// if (!validateManager(session)) {
-		// model.setViewName("accessDenied");
-		// return model;
-		// }
 		List<Order> orders = managerService.findAllOrders();
 		model.addObject("orders", orders);
-		model.addObject("orders", orders);
+		return model;
+	}
+	@RequestMapping(value = "/orders/{orderId}", method = RequestMethod.GET)
+	public ModelAndView getOrder(@PathVariable String orderId ,HttpSession session) {
+		ModelAndView model = new ModelAndView("orderEdit");
+		Order order=managerService.getOrderById(Long.parseLong(orderId));
+		model.addObject("order", order);
+		session.setAttribute("order", order);
+		return model;
+	}
+	
+	@RequestMapping(value = "/orders/{orderId}", method = RequestMethod.POST)
+	public ModelAndView applyChangesOrder(@PathVariable String orderId ,HttpSession session, @ModelAttribute("order") Order order, BindingResult result) {
+//		ModelAndView model = new ModelAndView("orderEdit");
+		ModelAndView model = new ModelAndView(new RedirectView("/shop/manager/orders/"));
+		String message=managerService.updateOrder(order);
+		if(message!=null){
+		model.addObject("message", message);
+		model.setViewName("orderEdit");
+		
+		}
+		session.setAttribute("order",null);
 		return model;
 	}
 

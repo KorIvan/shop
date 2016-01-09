@@ -35,11 +35,15 @@ public interface ManagerService {
 
 	List<Attribute> getAllAttributesOfCategory(Long parseLong);
 	
-	boolean validateManager(User user);
+//	boolean validateManager(User user);
 	List<Order> findAllOrders();
 	Product getProductById(Long prodId);
 
 	OrderItem getOrderItemById(Long id);
+
+	Order getOrderById(Long parseLong);
+	
+	String updateOrder(Order order);
 }
 
 

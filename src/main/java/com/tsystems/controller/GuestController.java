@@ -97,7 +97,6 @@ public class GuestController {
 		Product product=clientService.getProductById(Long.parseLong(productId));
 		model.addObject("product", product);
 		model.addObject("properties", product.getProperties());
-
 		return model;
 	}
 

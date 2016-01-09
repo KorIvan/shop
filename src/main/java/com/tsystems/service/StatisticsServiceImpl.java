@@ -13,15 +13,21 @@ import org.springframework.stereotype.Service;
 
 import com.tsystems.model.Order;
 import com.tsystems.model.Person;
+import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
 import com.tsystems.model.Statistics;
+import com.tsystems.repository.OrderRepository;
+import com.tsystems.repository.PersonRepository;
 import com.tsystems.repository.StatisticsRepository;
 
 @Service("statisticsService")
 public class StatisticsServiceImpl implements StatisticsService {
 	@Autowired
 	private StatisticsRepository statisticsRepository;
-
+	@Autowired
+	private OrderRepository orderRepository;
+	@Autowired
+	private PersonRepository personRepository;
 	@Override
 	public Statistics gatherStatistics() {
 		return null;
@@ -30,14 +36,14 @@ public class StatisticsServiceImpl implements StatisticsService {
 	@Override
 	public Map<Integer, Product> getTop10Products(int topSize) {
 		
-		List<Order> paidOrders = statisticsRepository.getOrders();
+		List<Order> paidOrders = orderRepository.getPaidOrders();
 
 		return null;
 	}
 
 	@Override
 	public Map<Float, Person> getTop10Clients(int topSize) {
-		List<Person> clients = statisticsRepository.getClients();
+		List<Person> clients = personRepository.getPersons(PersonType.ROLE_CLIENT);
 		Map<Float, Person> top = new TreeMap<>(Collections.reverseOrder());
 		for (Person p : clients) {
 			float clientTotal = 0;
@@ -75,7 +81,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 		Date from = new Date(week.getTime().getTime());
 		week.add(Calendar.WEEK_OF_YEAR, 1);
 		Date to = new Date(week.getTime().getTime());
-		List<Order> paidOrders = statisticsRepository.getPaidOrders(from, to);
+		List<Order> paidOrders = orderRepository.getPaidOrders(from, to);
 		float total = 0;
 		for (Order o : paidOrders) {
 			total += o.getCost();
@@ -85,7 +91,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
 	@Override
 	public Float calculateWeekIncome(Date from, Date to) {
-		List<Order> paidOrders = statisticsRepository.getPaidOrders(from, to);
+		List<Order> paidOrders = orderRepository.getPaidOrders(from, to);
 		float total = 0;
 		for (Order o : paidOrders) {
 			total += o.getCost();

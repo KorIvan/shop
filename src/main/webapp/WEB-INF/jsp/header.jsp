@@ -15,8 +15,13 @@
 <link href="http://localhost:8080/shop/css/bootstrap.css"
 	rel="stylesheet" />
 <link href="http://localhost:8080/shop/css/menu.css" rel="stylesheet">
-
+<link href="/shop/css/bootstrap-datepicker.css" rel="stylesheet">
 <title>${title}</title>
+<script type="text/javascript"
+	src="http://localhost:8080/shop/js/jquery-2.1.4.js"></script>
+<script type="text/javascript"
+	src="http://localhost:8080/shop/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/shop/js/bootstrap-datepicker.js"></script>
 </head>
 <body>
 	<nav class="navbar navbar-default">
@@ -39,6 +44,7 @@
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<security:authorize var="loggedIn" access="isAuthenticated()" />
+				
 				<c:if test="${!loggedIn}">
 					<li><a
 						href="<spring:url value="http://localhost:8080/shop/registration.html"/>">Registration</a></li>
@@ -47,26 +53,22 @@
 				<li><a
 					href="<spring:url value="http://localhost:8080/shop/catalog.html"/>">Catalog</a>
 				</li>
-
-				<c:if test="${client.type eq 'CLIENT'}">
+			</ul>
+			<ul class="nav navbar-nav">
+				<!-- 				<li><a href="#">Link</a></li> -->\
+				<security:authorize access="hasRole('CLIENT')">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
 						data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false">Addresses<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="<spring:url value="addAddress.html"/>">Add
+							<li><a href="<spring:url value="http://localhost:8080/shop/client/addAddress"/>">Add
 									new</a></li>
-							<li><a href="<spring:url value="allAddresses.html"/>">All
+							<li><a href="<spring:url value="http://localhost:8080/shop/client/allAddresses"/>">All
 									addresses</a></li>
 
 							<li><a href="#">Edit</a></li>
 
 						</ul></li>
-				</c:if>
-			</ul>
-			<ul class="nav navbar-nav">
-				<!-- 				<li><a href="#">Link</a></li> -->
-				<security:authorize access="hasRole('CLIENT')">
-
 
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
 						data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -141,8 +143,11 @@
 					</c:if> <security:authorize access="hasRole('SALES_MANAGER')">
 						<li class="active"><a>Manager<span class="sr-only">(current)</span>
 						</a></li>
-					</security:authorize> <security:authorize access="hasRole('CLIENT')">
-						<li class="active"><a>Client<span class="sr-only">(current)</span>
+					</security:authorize> 
+					<security:authorize access="hasRole('CLIENT')">
+						<li class="active"><a>Client 				
+<%-- 						<security:authentication property="principal.displayName" /> --%>
+<span class="sr-only">(current)</span>
 						</a></li>
 					</security:authorize> <c:if test="${!loggedIn }">
 						<li class="active"><a href="<spring:url value="login"/>">

@@ -18,7 +18,4 @@ import com.tsystems.model.PersonType;
 public interface StatisticsRepository {
 	List<Order> getPaidOrders(IncomePeriod period);
 	List<Order> getPaidOrders(Calendar selectedPeriod);
-	List<Order> getPaidOrders(Date from, Date to);
-	List<Person> getClients();
-	List<Order> getOrders();
 }
