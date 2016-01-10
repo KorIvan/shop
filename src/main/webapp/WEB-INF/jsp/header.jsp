@@ -15,6 +15,7 @@
 <link href="http://localhost:8080/shop/css/bootstrap.css"
 	rel="stylesheet" />
 <link href="http://localhost:8080/shop/css/menu.css" rel="stylesheet">
+<link href="/shop/css/customRadio.css" rel="stylesheet">
 <link href="/shop/css/bootstrap-datepicker.css" rel="stylesheet">
 <title>${title}</title>
 <script type="text/javascript"
@@ -159,7 +160,7 @@
 								<span class="sr-only">(current)</span>
 						</a></li>
 					</security:authorize> <c:if test="${!loggedIn }">
-						<li class="active"><a href="<spring:url value="login"/>">
+						<li class="active"><a href="<spring:url value="/login"/>">
 								Log in <span class="sr-only">(current)</span>
 						</a></li>
 					</c:if></li>

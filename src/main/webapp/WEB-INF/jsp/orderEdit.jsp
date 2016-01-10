@@ -3,7 +3,7 @@
 
 <div align="center">
 	<form:form commandName="order" method="POST">
-		<table>
+		<table >
 			<thead>
 			</thead>
 			<tbody class="springSelect">

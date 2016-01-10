@@ -94,7 +94,7 @@ public class GuestController {
 	@RequestMapping(value = "/product/{productId}", method = RequestMethod.GET)
 	public ModelAndView getProduct(@PathVariable() String productId) {
 		ModelAndView model = new ModelAndView("productDescription");
-		Product product=clientService.getProductById(Long.parseLong(productId));
+		Product product = clientService.getProductById(Long.parseLong(productId));
 		model.addObject("product", product);
 		model.addObject("properties", product.getProperties());
 		return model;
@@ -131,7 +131,28 @@ public class GuestController {
 	@RequestMapping(value = "/cart", method = RequestMethod.POST)
 	public ModelAndView setCart(@RequestBody CartItem cartItem, HttpSession session) {
 		ModelAndView model = new ModelAndView("cart");
-		((Cart) session.getAttribute("cart")).setCartItem(cartItem);
+		Cart cart = ((Cart) session.getAttribute("cart"));
+		if (cartItem.getAmount().intValue() < 0)
+			return model;
+		if (cart.getItemList().contains(cartItem)) {
+			if (cartItem.getAmount().intValue() == 0) {
+				cart.getItemList().remove(cartItem);
+				return model;
+			}
+			if (cartItem.getAmount().intValue() > 0) {
+				Integer maxAmount = clientService.getProductById(cartItem.getProduct().getId()).getStorage()
+						.getAmount();
+				CartItem current = cart.getItemList().get(cart.getItemList().indexOf(cartItem));
+				if ((current.getAmount() + cartItem.getAmount()) > maxAmount) {
+					cart.getItemList().get(cart.getItemList().indexOf(cartItem)).setAmount(maxAmount);
+				}
+				else cart.addToCartItem(cartItem);
+				return model;
+			}
+
+		}
+
+		cart.setCartItem(cartItem);
 		model.addObject("title", "Your cart");
 		return model;
 	}
@@ -146,14 +167,21 @@ public class GuestController {
 		System.out.println(cartItem.getProduct().getName() + " id:" + cartItem.getProduct().getId() + " amount:"
 				+ cartItem.getAmount());
 		Cart cart = (Cart) session.getAttribute("cart");
+		ModelAndView model = new ModelAndView("cart");
 		if (cart.getItemList() == null) {
 			cart.setItemList(new LinkedList<CartItem>());
 		}
 		if (cart.getItemList().contains(cartItem)) {
+			Integer maxAmount = clientService.getProductById(cartItem.getProduct().getId()).getStorage().getAmount();
+			CartItem current = cart.getItemList().get(cart.getItemList().indexOf(cartItem));
+			if ((current.getAmount() + cartItem.getAmount()) > maxAmount) {
+				cart.getItemList().get(cart.getItemList().indexOf(cartItem)).setAmount(maxAmount);
+				// model.addObject("message", )
+				return model;
+			}
 			cart.addToCartItem(cartItem);
 		} else
 			cart.getItemList().add(cartItem);
-		ModelAndView model = new ModelAndView("cart");
 		model.addObject("cart", cart);
 		model.addObject("lol", "String ;ol");
 		return model;

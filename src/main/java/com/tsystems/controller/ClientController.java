@@ -27,6 +27,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.tsystems.model.Address;
+import com.tsystems.model.AddressEditor;
 import com.tsystems.model.Cart;
 import com.tsystems.model.Order;
 import com.tsystems.model.OrderItem;
@@ -49,8 +50,10 @@ public class ClientController {
 	// private ProductEditor productEditor;
 	// @Autowired
 	// private OrderItemEditor orderItemEditor;
+	// @Autowired
+	// private OrderItemEditor addressItemEditor;
 	@Autowired
-	private OrderItemEditor addressItemEditor;
+	private AddressEditor addressEditor;
 
 	//
 	@InitBinder
@@ -58,7 +61,7 @@ public class ClientController {
 		// binder.registerCustomEditor(Person.class, this.personEditor);
 		// binder.registerCustomEditor(Product.class, this.productEditor);
 		// binder.registerCustomEditor(OrderItem.class, this.orderItemEditor);
-		binder.registerCustomEditor(Address.class, addressItemEditor);
+		binder.registerCustomEditor(Address.class, addressEditor);
 	}
 
 	@Autowired
@@ -138,8 +141,18 @@ public class ClientController {
 			return model;
 		}
 		model.addObject("title", "Your order");
+		if (cart.getItemList() == null) {
+			model.addObject("title", "Catalog");
+			model.addObject("message", "Cart is empty. Choose some products first.");
+			return model;
+		}
 		if (!cart.getItemList().isEmpty()) {
 			Order newOrder = clientService.makeOrder(cart, clientId);
+			if (newOrder == null) {
+				model.setViewName("cart");
+				model.addObject("message", "Not enough product's amount.");
+				return model;
+			}
 			session.setAttribute("order", newOrder);
 			model.addObject("order", newOrder);
 			return model;

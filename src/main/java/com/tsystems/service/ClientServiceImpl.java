@@ -83,20 +83,22 @@ public class ClientServiceImpl implements ClientService {
 		order.setCreationDate(new Date());
 		order.setClient(personRepository.readPerson(clientId));
 		List<OrderItem> itemList = new ArrayList<OrderItem>();
+		
 		float cost = 0;
 		for (CartItem item : cart.getItemList()) {
 			OrderItem orderItem = new OrderItem();
 			Integer amount = item.getAmount();
 			if (amount != 0) {
 				orderItem.setAmount(amount);
-				orderItem.setProduct(item.getProduct());
+				//orderItem.setProduct(item.getProduct());
 				Float price = item.getProduct().getCurrentPrice();
+				Product product=productRepository.findProductById(item.getProduct().getId());
+				orderItem.setProduct(product);
 				orderItem.setPrice(price);
 				orderItem.setOrder(order);
 				itemList.add(orderItem);
 				cost += amount * price;
 			}
-
 		}
 		cart.setItemList(new ArrayList<CartItem>());
 		System.out.println("total cost is" + cost);
@@ -361,7 +363,7 @@ public class ClientServiceImpl implements ClientService {
 	
 	
 	private void invalidateOrder(Order order) {
-		//putBackProducts(order);
+		putBackProducts(order);
 		order.setStatus(OrderStatus.CANCELED);
 		order.setPaid(false);
 		order.setDeliveryMethod(DeliveryMethod.UNKNOWN);
@@ -382,5 +384,9 @@ public class ClientServiceImpl implements ClientService {
 					.setAmount(beforePurchase.getStorage().getAmount() + itemProduct.getStorage().getAmount());
 			productRepository.updateProduct(beforePurchase);
 		}
+	}
+	private boolean checkProductAmount(){
+		
+		return false;
 	}
 }

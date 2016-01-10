@@ -1,33 +1,32 @@
 <%@ include file="header.jsp"%>
-<%-- 	<c:out value="${pageContext.request.userPrincipal}"/> --%>
-${sessionScope.cart}<br/>
-${sesison.remoteUser}<br/>
-${session.requestedSessionId}<br/>
-${session.id}<br/>
 <div align="center">
 	<h1>${title}</h1>
 	<div class="message">${message}</div>
 </div>
-<div align="center">
-	<form:form commandName="cart.cart" name="products">
-		<td><select id="categories"></select></td>
-		<table>
-			<thead>
-
-			</thead>
-			<tbody>
-				<tr>
-
-				</tr>
-			</tbody>
+		<td>
+			<div class="customList" id="categories" data-bind="foreach:categories">
+				<input type="radio" name="category" data-bind="value:id,attr:{id:'cat'+id},event:{change:$root.onCategoryChange}"/>
+				<label data-bind="attr:{for:'cat'+id},text:name"></label>
+			</div>
+		</td>
+<div id="products" align="center" style="display: none;">
+	<form:form commandName="cart.cart" name="products" style="margin:0px;border-radius: 0px;;">
+		<table style="border-collapse: separate;
+    border-spacing: 30px 20px;">
 			<tr>
 				<th>Product name</th>
-				<th></th>
 				<th>Price</th>
-				<th></th>
-				<th align="right">Put product to cart</th>
+				<th>Amount at storage</th>
+				<th>Put to cart</th>
 			</tr>
-			<tbody id="properties">
+			<tbody id="properties" data-bind="foreach:products">
+				 <tr>
+				 <td><a data-bind="attr:{href:'product/'+id}"><label data-bind="text:name"></label></a></td>
+	
+		<td><label data-bind="text:currentPrice"></label></td>
+			<td><label data-bind="text:storage.amount"> </label>	</td>
+		<td >
+		<input id="productAmount" data-bind="attr:{id:'prod'+id,max:storage.amount}" type="number" min="0" value=""></td></tr>
 			</tbody>
 
 		</table>
@@ -37,105 +36,101 @@ ${session.id}<br/>
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		
 	</form:form>
+	</div>
 </div>
-<script type="text/javascript"
-	src='<spring:url value="js/jquery-2.1.4.js"/>'></script>
+<script type="text/javascript" src="/shop/js/knockout.js"></script>
 <script type="text/javascript">
-	var product;
-	var amount;
+$(function(){
+var viewModel={
+		categories:ko.observableArray([]),
+		products:ko.observableArray([]),
+		onCategoryChange:function(data,event){
+			console.log(data);
+			console.log(this);
+			viewModel.loadProducts(data.id);
+			},
+		loadProducts:function(categoryId)
+		{
+			var self=this;
+			self.products.removeAll();
+			$
+			$.getJSON(
+					'<spring:url value="/category/'
+							+ (categoryId) + '.json"/>',
+					{
+						ajax : 'true'
+					},
+					function(data) {
+						
+						var html = '';
+						
+						var len = data.length;
+						for (var i = 0; i < len; i++) {
+							self.products.push(data[i]);
+						}
+						$("#products").show();
+					});
+
+
+			}
+			
+		};
+	ko.applyBindings(viewModel);
+// 	$('#productAmount').click(function(this){
+// 		});
+	
 	$('#send').click(function() {
 		var tempAmount;
-		amount = 0;
-		product = null;
+	
+		var product = null;
+		var products=viewModel.products();
+		var amount=0;
 		for (var i = 0; i < products.length; i++) {
-			tempAmount = $('#prod' + products[i].id).val();
+			var tempAmount = $('#prod' + products[i].id).val();
+			console.log(tempAmount);
 			if (tempAmount != 0) {
 				amount = tempAmount;
-				product = products[i];
+				var product = products[i];
 				tempAmount = 0;
 				$('#prod' + products[i].id).val(0);
-				sendAjax();
+				sendAjax(product,amount);
 			}
 		}
 	});
-	$(function () {
+	
 	    var token = $("meta[name='_csrf']").attr("content");
 	    var header = $("meta[name='_csrf_header']").attr("content");
 	    $(document).ajaxSend(function(e, xhr, options) {
 	        xhr.setRequestHeader(header, token);
 	    });
-	});
-	function sendAjax() {
+	
+	function sendAjax(product,amount) {
 
 		$.ajax({
-			url : "<spring:url value="addToCart.html"/>",
+			url : "<spring:url value="/addToCart.html"/>",
 			type : 'POST',
 			dataType : 'json',
 			data : JSON.stringify({
 				product : product,
-				amount : parseInt(amount)
+				amount : amount
 			}),
 			contentType : 'application/json',
 			mimeType : 'application/json',
 			success : function(data) {
 				alert(data.id + " " + data.name);
 			},
-		//     error:function(data,status,er) { 
-		//         alert("error: "+data.name+" status: "+status+" er:"+er);
-		//     }
 		});
-	}
-</script>
-<script type="text/javascript">
+	}//sendAjax
 	var products;
-	$(document)
-			.ready(
-					function() {
-						$
-								.getJSON(
-										'<spring:url value="categories.json"/>',
-										{
-											ajax : 'true'
-										},
+	$.getJSON('<spring:url value="/categories.json"/>',
+				{ ajax : 'true'},
 										function(data) {
-											var html = '<option id="selectCategory" value="">--Select category--</option>';
-											var len = data.length;
-											for (var i = 0; i < len; i++) {
-												html += '<option value="'
-														+ data[i].id + '">'
-														+ data[i].name
-														+ '</option>';
-											}
-											html += '</option>';
-											$('#categories').html(html);
+											for(var i=0;i<data.length;++i)
+												{
+													viewModel.categories.push(data[i]);
+												}
 										});
-					});
-	$("#categories")
-			.change(
-					function() {
-						var index = $(this)[0].value;
-						$
-								.getJSON(
-										'<spring:url value="category/'
-												+ (index) + '.json"/>',
-										{
-											ajax : 'true'
-										},
-										function(data) {
-											var html = '';
-											products = data;
-											var len = products.length;
-											for (var i = 0; i < len; i++) {
-												html += '<tr><td><label>'
-														+ products[i].name
-														+ '</label></td><td></td><td><label>'
-														+ products[i].currentPrice
-														+ '</label></td><td></td><td ><input id="prod'+ products[i].id+'" type="number" min="0" max="100" value=""></td></tr>';
-											}
-											html += '';
-											globalData = data;
-											$('#properties').html(html);
-										});
-					});
+	});
 </script>
+
 <%@ include file="footer.jsp"%>

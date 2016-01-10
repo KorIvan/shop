@@ -72,7 +72,7 @@
 					value="Add address" /></td>
 				<td>
 					<div id="oldAddress">
-
+								
 						<form:select id="addressSelect" cssClass="springSelect"
 							path="address">
 							<option value="0">Previous addresses</option>
@@ -96,6 +96,7 @@
 <%-- 								</form:form> --%>
 <!-- 							</div> -->
 						</form:select>
+						
 					</div>
 					<div id="newAddress" style="display: none">
 						<form:form commandName="address">

@@ -1,0 +1,15 @@
+@CHARSET "UTF-8";
+.customList{
+	text-align:left;
+}
+.customList input[type='radio']{
+	display:none;
+}
+.customList label{
+	cursor:pointer;
+	display:block;
+	
+}
+.customList input[type='radio']:checked + label{
+	color:red;
+}

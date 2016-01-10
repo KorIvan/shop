@@ -1,23 +1,8 @@
 <%@ include file="header.jsp"%>
-<form:form commandName="product">
-	<%-- <c:forEach items="properties" var="attribute"> --%>
-	<%-- ${attribute.name} //// ${attribute.description} --%>
-	<%-- </c:forEach> --%>
-	<form:label path="name" />
-	<form:input path="weight" />
-	<form:label path="name">
-	</form:label>
-
-</form:form>
-<div class="w3-padding w3-white notranslate">
-	<table class="table">
-
-
+<div align="center" class="w3-padding w3-white notranslate">
+	<h2>${product.name}</h2>
+	<table class="table" style="width: 50%; font-size: 17px; background: #FFFFCC ;border-radius: 20px;">
 		<tbody>
-			<tr>
-				<td>Name</td>
-				<td>${product.name}</td>
-			</tr>
 			<tr>
 				<td>Price</td>
 				<td>${product.currentPrice}</td>
@@ -30,7 +15,7 @@
 				<tr>
 					<td>${property.attributes.name}</td>
 					<td>${property.description}</td>
-				<tr>
+				</tr>
 			</c:forEach>
 			<tr>
 				<td>Weight</td>
