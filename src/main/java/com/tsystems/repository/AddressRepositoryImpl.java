@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
@@ -39,9 +40,14 @@ public class AddressRepositoryImpl implements AddressRepository {
 	public Address findAddressById(Long id) {
 		return em.find(Address.class, id);
 	}
+	@Transactional
 	@Override
-	public boolean updateAddress(Address address) {
-		// TODO Auto-generated method stub
-		return false;
+	public void updateAddress(Address address) {
+		em.merge(address);
+	}
+	@Transactional
+	@Override
+	public void createAddress(Address address) {
+		em.persist(address);
 	}
 }

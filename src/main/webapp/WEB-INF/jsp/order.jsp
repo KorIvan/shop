@@ -15,7 +15,7 @@
 		<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
 		<div>
 			Order status:
-			<%-- 			<form:input readonly="true" cssClass="springInput" path="status" /> --%>
+						<form:input readonly="true" cssClass="springInput" path="status" />
 		</div>
 		<%-- 		<form:hidden path="address" /> --%>
 		<%-- 		<form:hidden path="client" /> --%>
@@ -107,7 +107,7 @@
 
 				<td><input type="submit" value="Next" name="action"
 					class="input"></td>
-				<td><a href="<spring:url value="client/cancelOrder"/>">Cancel Order</a>
+				<td><a href="<spring:url value="/client/cancelOrder"/>">Cancel Order</a>
 				<input type="button" value="Cancel" name="action"
 					class="input" onclick="return areYouSure();"></td>
 			</tr>

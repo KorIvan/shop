@@ -1,9 +1,8 @@
 package com.tsystems.controller;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -99,7 +98,7 @@ public class ManagerController {
 		// return model;
 		// }
 		// if (product.getProperties() == null) {
-		Set<Properties> properties = new HashSet<Properties>();
+		List<Properties> properties = new ArrayList<Properties>();
 		List<Attribute> attributes = product.getCategory().getAttributesForCategory();
 		for (int i = 0; i < attributes.size(); i++) {
 			System.out.println(attributes.get(i).getName());

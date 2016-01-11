@@ -1,6 +1,6 @@
 package com.tsystems.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -60,7 +60,7 @@ public class Order {
 	@OneToMany(fetch=FetchType.EAGER, cascade={CascadeType.ALL},mappedBy="order")
 //	@JoinTable(name = "ORDER_PRODUCT", joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = {
 //			@JoinColumn(name = "product_id") })
-	private List<OrderItem> orderItems;
+	private Set<OrderItem> orderItems;
 
 	private Boolean paid;
 
@@ -173,11 +173,11 @@ public class Order {
 		this.deliveryMethod = deliveryMethod;
 	}
 
-	public List<OrderItem> getOrderItems() {
+	public Set<OrderItem> getOrderItems() {
 		return orderItems;
 	}
 
-	public void setOrderItems(List<OrderItem> orderItems) {
+	public void setOrderItems(Set<OrderItem> orderItems) {
 		this.orderItems = orderItems;
 	}
 

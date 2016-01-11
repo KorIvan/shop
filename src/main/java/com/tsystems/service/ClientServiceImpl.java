@@ -1,11 +1,17 @@
 package com.tsystems.service;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +28,7 @@ import com.tsystems.model.Person;
 import com.tsystems.model.PersonType;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
+import com.tsystems.model.excep.ObjectNoLongerExistsException;
 import com.tsystems.repository.AddressRepository;
 import com.tsystems.repository.CategoryRepository;
 import com.tsystems.repository.OrderRepository;
@@ -30,7 +37,7 @@ import com.tsystems.repository.ProductRepository;
 
 @Service("clientService")
 public class ClientServiceImpl implements ClientService {
-
+	private static Logger log = Logger.getLogger(ClientService.class.getName());
 	@Autowired
 	private PersonRepository personRepository;
 	@Autowired
@@ -45,6 +52,7 @@ public class ClientServiceImpl implements ClientService {
 	public String createClient(Person client) {
 		client.setType(PersonType.ROLE_CLIENT);
 		if (personRepository.validatePerson(client)) {
+			log.info(String.format("New client %s registered", client.getEmail()));
 			personRepository.createPerson(client);
 			return "Congratulations! You're registred!";
 		} else
@@ -82,18 +90,15 @@ public class ClientServiceImpl implements ClientService {
 		order.setDeliveryMethod(DeliveryMethod.UNKNOWN);
 		order.setCreationDate(new Date());
 		order.setClient(personRepository.readPerson(clientId));
-		List<OrderItem> itemList = new ArrayList<OrderItem>();
-		
+		Set<OrderItem> itemList = new HashSet<OrderItem>();
 		float cost = 0;
 		for (CartItem item : cart.getItemList()) {
 			OrderItem orderItem = new OrderItem();
 			Integer amount = item.getAmount();
-			if (amount != 0) {
+			if (amount != 0 && checkAndTakeProductAmount(item.getProduct(), amount)) {
 				orderItem.setAmount(amount);
-				//orderItem.setProduct(item.getProduct());
+				orderItem.setProduct(item.getProduct());
 				Float price = item.getProduct().getCurrentPrice();
-				Product product=productRepository.findProductById(item.getProduct().getId());
-				orderItem.setProduct(product);
 				orderItem.setPrice(price);
 				orderItem.setOrder(order);
 				itemList.add(orderItem);
@@ -205,7 +210,7 @@ public class ClientServiceImpl implements ClientService {
 		orderRepository.updateOrder(order);
 	}
 
-	public List<Address> findAllAddresses(Long clientId) {
+	public List<Address> findAllAddresses(Long clientId) throws ConnectException {
 		return addressRepository.findAllAddresses(clientId);
 	}
 
@@ -228,10 +233,13 @@ public class ClientServiceImpl implements ClientService {
 		return orderRepository.hasUnfinishedOrder(clientId);
 	}
 
-	public Address findAddressById(Long id) {
-		return addressRepository.findAddressById(id);
+	public Address getAddressById(Long id) throws ObjectNoLongerExistsException, ConnectException {
+		try {
+		return addressRepository.findAddressById(id);}
+		catch (EntityNotFoundException e){
+			throw new ObjectNoLongerExistsException();
+		}
 	}
-
 	public List<Order> getOrdersHistoryByClientI(Long clientId) {
 		return orderRepository.findAllOrders(clientId);
 	}
@@ -243,9 +251,10 @@ public class ClientServiceImpl implements ClientService {
 
 	/**
 	 * Keys "view","message","addresses","title","order"
+	 * @throws ConnectException 
 	 */
 	@Override
-	public Map<String, Object> processOrder(Order order) {
+	public Map<String, Object> processOrder(Order order) throws ConnectException {
 		Map<String, Object> response = new HashMap<>();
 		String keyView = "view";
 		String keyMessage = "message";
@@ -360,8 +369,7 @@ public class ClientServiceImpl implements ClientService {
 		return productRepository.findProductById(productId);
 
 	}
-	
-	
+
 	private void invalidateOrder(Order order) {
 		putBackProducts(order);
 		order.setStatus(OrderStatus.CANCELED);
@@ -371,22 +379,38 @@ public class ClientServiceImpl implements ClientService {
 		order.setDeliveryDate(null);
 		order.setAddress(null);
 	}
+
 	/**
 	 * To put back products from canceled Order
+	 * 
 	 * @param order
 	 */
 	private void putBackProducts(Order order) {
-		List<OrderItem> items = order.getOrderItems();
+		Set<OrderItem> items = order.getOrderItems();
 		for (OrderItem o : items) {
-			Product itemProduct = o.getProduct();
-			Product beforePurchase = productRepository.findProductById(itemProduct.getId());
-			beforePurchase.getStorage()
-					.setAmount(beforePurchase.getStorage().getAmount() + itemProduct.getStorage().getAmount());
+			Product beforePurchase = productRepository.findProductById(o.getProduct().getId());
+			beforePurchase.getStorage().setAmount(beforePurchase.getStorage().getAmount() + o.getAmount());
 			productRepository.updateProduct(beforePurchase);
 		}
 	}
-	private boolean checkProductAmount(){
-		
-		return false;
+
+	private boolean checkAndTakeProductAmount(Product product, Integer amountToTake) {
+		Product productFromDB = productRepository.findProductById(product.getId());
+		if (productFromDB.getStorage().getAmount() < amountToTake) {
+			return false;
+		} else {
+			productFromDB.getStorage().setAmount(productFromDB.getStorage().getAmount() - amountToTake);
+			productRepository.updateProduct(productFromDB);
+			return true;
+		}
+	}
+
+	@Override
+	public void updateAddress(Address address) throws ConnectException, EntityNotFoundException {
+		if (address.getCity() != null && address.getCountry() != null && address.getBuilding() != null
+				&& address.getApartment() != null && address.getClient() != null && address.getStreet() != null
+				&& address.getZip() != null)
+			addressRepository.updateAddress(address);
+
 	}
 }

@@ -74,6 +74,11 @@
 		</table>
 	</form:form>
 </div>
+<script type="text/javascript">
+$(function() {
+	$("#birthdate").datepicker();
+	});
+</script>
 	<script src="<spring:url value="js/validateRegForm.js"/>"
 		type="text/javascript" /></script>
 <%@ include file="footer.jsp" %>

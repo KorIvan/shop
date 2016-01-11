@@ -27,4 +27,6 @@ public interface StatisticsService {
 
 	Map<Float, Person> getTop10Clients(int topSize);
 
+	Float gatherTotalIncome();
+
 }

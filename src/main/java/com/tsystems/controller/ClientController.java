@@ -1,12 +1,15 @@
 package com.tsystems.controller;
 
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,33 +20,30 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.tsystems.model.Address;
 import com.tsystems.model.AddressEditor;
 import com.tsystems.model.Cart;
 import com.tsystems.model.Order;
-import com.tsystems.model.OrderItem;
-import com.tsystems.model.OrderItemEditor;
-import com.tsystems.model.PaymentMethod;
 import com.tsystems.model.Person;
-import com.tsystems.model.PersonEditor;
-import com.tsystems.model.Product;
-import com.tsystems.model.ProductEditor;
-import com.tsystems.model.User;
+import com.tsystems.model.excep.ExceptionMessages;
+import com.tsystems.model.excep.ObjectNoLongerExistsException;
 import com.tsystems.service.ClientService;
 
 @Controller
 @SessionAttributes({ "cart", "order" })
 @RequestMapping("/client")
 public class ClientController {
+	private static Logger log = Logger.getLogger(ClientController.class.getName());
+
 	// @Autowired
 	// private PersonEditor personEditor;
 	// @Autowired
@@ -54,7 +54,6 @@ public class ClientController {
 	// private OrderItemEditor addressItemEditor;
 	@Autowired
 	private AddressEditor addressEditor;
-
 	//
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -74,7 +73,9 @@ public class ClientController {
 		UserDetails userDetail = (UserDetails) auth.getPrincipal();
 		Person client = clientService.getClientByEmail(userDetail.getUsername());
 		request.getSession().setAttribute("clientId", client.getId());
+		request.getSession().setAttribute("username", userDetail.getUsername());
 		System.out.println(request.getSession().getAttribute("clientId"));
+		log.info("Welcome. Client logged in");
 		return model;
 	}
 
@@ -140,7 +141,6 @@ public class ClientController {
 			model.addObject("message", "Cart is empty. Choose some products first.");
 			return model;
 		}
-		model.addObject("title", "Your order");
 		if (cart.getItemList() == null) {
 			model.addObject("title", "Catalog");
 			model.addObject("message", "Cart is empty. Choose some products first.");
@@ -179,17 +179,14 @@ public class ClientController {
 			BindingResult resultOrder, @ModelAttribute("address") Address address, BindingResult resultAddress,
 			@RequestParam String action) {
 		if (address != null) {
-			address.setClient(clientService.getClientById(Long.parseLong(session.getAttribute("clientId").toString())));
-			order.setAddress(address);
+			if (address.getCity() != null && address.getCountry() != null)
+				if (address.getCity().length() > 0 && address.getCountry().length() > 0) {
+					address.setClient(
+							clientService.getClientById(Long.parseLong(session.getAttribute("clientId").toString())));
+					order.setAddress(address);
+				}
 		}
 		System.out.println(resultOrder.getAllErrors());
-		System.out.println(order.getOrderItems());
-		System.out.println(order.getClient());
-		System.out.println("OrserCost" + order.getCost());
-		System.out.println(order.getCreationDate());
-		System.out.println(order.getStatus());
-		System.out.println(order.getDeliveryMethod());
-		System.out.println(order.getPayMethod());
 		ModelAndView model = new ModelAndView("order");
 
 		model.addObject("title", "Your order");
@@ -198,7 +195,14 @@ public class ClientController {
 			return model;
 		}
 		if (action.equalsIgnoreCase("Next")) {
-			Map<String, Object> resp = clientService.processOrder(order);
+			Map<String, Object> resp=null;
+			try {
+				resp = clientService.processOrder(order);
+			} catch (ConnectException e1) {
+				model.setViewName("exception");
+				model.addObject("message", ExceptionMessages.DATABASE_FAILED_CONNECT);
+				return model;
+			}
 			model.setViewName(resp.get("view").toString());
 			for (Map.Entry<String, Object> e : resp.entrySet()) {
 				if (!e.getKey().equals("view"))
@@ -233,17 +237,6 @@ public class ClientController {
 		return "address";
 	}
 
-	@RequestMapping(value = "/allAddresses", method = RequestMethod.GET)
-	public ModelAndView getAddressForm(HttpSession session, @ModelAttribute("address") Address address,
-			BindingResult result) {
-		ModelAndView model = new ModelAndView("addresses");
-		List<Address> addresses = clientService
-				.findAllAddresses(Long.parseLong(session.getAttribute("clientId").toString()));
-		model.addObject("addresses", addresses);
-		model.addObject("title", "Address list");
-		return model;
-	}
-
 	@RequestMapping(value = "/addAddress", method = RequestMethod.POST)
 	public ModelAndView createAddress(@Valid @ModelAttribute("address") Address address, BindingResult result,
 			HttpSession session) {
@@ -266,12 +259,85 @@ public class ClientController {
 		return model;
 	}
 
-	/**
-	 * Validation of client
-	 * 
-	 * @param session
-	 * @return true,if client logged in; false, if null or not a client
-	 */
+	@RequestMapping(value = "/allAddresses", method = RequestMethod.GET)
+	public ModelAndView getAddressForm(HttpSession session, @ModelAttribute("address") Address address,
+			BindingResult result) {
+		ModelAndView model = new ModelAndView("addresses");
+		List<Address> addresses = null;
+		try {
+			addresses = clientService
+					.findAllAddresses(Long.parseLong(session.getAttribute("clientId").toString()));
+		} catch (ConnectException e) {
+			model.addObject("message", ExceptionMessages.DATABASE_FAILED_CONNECT);
+			model.setViewName("exception");
+			return model;
+		} catch (NumberFormatException e) {
+			model.addObject("message", ExceptionMessages.WRONG_ID);
+			model.setViewName("exception");
+			return model;
+
+
+		}
+		model.addObject("addresses", addresses);
+		model.addObject("title", "Address list");
+		return model;
+	}
+
+	@RequestMapping(value = "/editAddress/{id}", method = RequestMethod.GET)
+	public ModelAndView editAddress(@ModelAttribute("address") Address address, @PathVariable String id,
+			HttpSession session) {
+		ModelAndView model = new ModelAndView("address");
+		Person client = clientService.getClientById(Long.parseLong(session.getAttribute("clientId").toString()));
+		System.out.println("xxx"+client.getAddresses().contains(address));
+		System.out.println(address);
+		if (client.getAddresses().contains(address)) {
+			model.addObject("title", "Edit address");
+			try {
+				try {
+					model.addObject("address", clientService.getAddressById(Long.parseLong(id)));
+				} catch (ConnectException e) {
+					model.setViewName("exception");
+					model.addObject("message", ExceptionMessages.DATABASE_FAILED_CONNECT);
+					return model;
+				}
+			} catch (NumberFormatException e) {
+				model.addObject("message", ExceptionMessages.WRONG_ID);
+				model.setViewName("exception");
+				return model;
+			} catch (ObjectNoLongerExistsException e) {
+				model.addObject("message", ExceptionMessages.RESOURCE_DOES_NOT_EXISTS);
+				model.setViewName("exception");
+				return model;
+			}
+			return model;
+		} else
+			model.setViewName("addresses");
+		return model;
+	}
+
+	@RequestMapping(value = "/editAddress/{id}", method = RequestMethod.POST)
+	public ModelAndView saveAddress(@ModelAttribute("address") Address address, @PathVariable String id,
+			HttpSession session) {
+		ModelAndView model = new ModelAndView("addresses");
+		
+		if (Long.parseLong(session.getAttribute("clientId").toString()) == address.getId().longValue()) {
+			try {
+				clientService.updateAddress(address);
+			} catch (ConnectException e) {
+				model.setViewName("exception");
+				model.addObject("message", ExceptionMessages.DATABASE_FAILED_CONNECT);
+				return model;
+			} catch (EntityNotFoundException e) {
+				model.setViewName("exception");
+				model.addObject("message", ExceptionMessages.RESOURCE_DOES_NOT_EXISTS);
+				return model;
+			}
+			model.addObject("title", "Address list");
+			model.addObject("message", "Address saved.");
+			return model;
+		}
+		return model;
+	}
 
 	/**
 	 * Return Client's Addresses as json
@@ -281,7 +347,17 @@ public class ClientController {
 	 */
 	@RequestMapping(value = "/getAllAddresses", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody List<Address> getClientAddresses(HttpSession session, Model model) {
-		return clientService.findAllAddresses(Long.parseLong(session.getAttribute("clientId").toString()));
+		List<Address> list=null;
+		try {
+			list=clientService.findAllAddresses(Long.parseLong(session.getAttribute("clientId").toString()));
+		} catch (NumberFormatException e) {
+			log.error(ExceptionMessages.WRONG_ID);
+			return null;
+		} catch (ConnectException e) {
+			log.error(ExceptionMessages.DATABASE_FAILED_CONNECT);
+			return null;
+		}
+		return list;
 	}
 
 	/**

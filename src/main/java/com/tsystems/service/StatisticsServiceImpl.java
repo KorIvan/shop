@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -23,35 +24,46 @@ import com.tsystems.model.Product;
 import com.tsystems.model.Statistics;
 import com.tsystems.repository.OrderRepository;
 import com.tsystems.repository.PersonRepository;
-import com.tsystems.repository.StatisticsRepository;
 
 @Service("statisticsService")
 public class StatisticsServiceImpl implements StatisticsService {
 	@Autowired
-	private StatisticsRepository statisticsRepository;
-	@Autowired
 	private OrderRepository orderRepository;
 	@Autowired
 	private PersonRepository personRepository;
+
 	@Override
 	public Statistics gatherStatistics() {
 		return null;
 	}
 
 	@Override
-	public Map<Product,Long> getTop10Products(int topSize) {
-		
+	public Float gatherTotalIncome() {
 		List<Order> paidOrders = orderRepository.getPaidOrders();
-		Map<Product, Long> top=new HashMap<>();
-		for(Order o:paidOrders){
-			for(OrderItem oi:o.getOrderItems()){
-				top.put(oi.getProduct(), top.get(oi.getProduct())+oi.getAmount());
+		float total = 0;
+		for (Order o : paidOrders) {
+			total += o.getCost();
+		}
+		return new Float(total);
+	}
+
+	@Override
+	public Map<Product, Long> getTop10Products(int topSize) {
+
+		List<Order> paidOrders = orderRepository.getPaidOrders();
+		Map<Product, Long> top = new HashMap<>();
+		for (Order o : paidOrders) {
+			for (OrderItem oi : o.getOrderItems()) {
+				if (top.containsKey(oi.getProduct()))
+					top.put(oi.getProduct(), top.get(oi.getProduct()) + oi.getAmount());
+				else
+					top.put(oi.getProduct(), new Long(oi.getAmount()));
 			}
 		}
-		Map<Product,Long> result=new HashMap<>();
-		int i=0;
-		for (Map.Entry<Product, Long> e:entriesSortedByValues(top)){
-			if (i>=topSize)
+		Map<Product, Long> result = new LinkedHashMap<>();
+		int i = 0;
+		for (Map.Entry<Product, Long> e : entriesSortedByValues(top)) {
+			if (i >= topSize)
 				break;
 			result.put(e.getKey(), e.getValue());
 			i++;
@@ -124,8 +136,9 @@ public class StatisticsServiceImpl implements StatisticsService {
 	private Float calculateTotalIncome() {
 		return 0f;
 	}
-	
-	private static <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> entriesSortedByValues(Map<K, V> map) {
+
+	private static <K, V extends Comparable<? super V>> SortedSet<Map.Entry<K, V>> entriesSortedByValues(
+			Map<K, V> map) {
 		SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<Map.Entry<K, V>>(new Comparator<Map.Entry<K, V>>() {
 			@Override
 			public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {

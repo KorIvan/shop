@@ -99,7 +99,7 @@
 						
 					</div>
 					<div id="newAddress" style="display: none">
-						<form:form commandName="address">
+						<form:form modelAttribute="address">
 							<%-- 		onsubmit="return validateAddressForm(this);"> --%>
 							<%-- 		<form:errors path="*" cssClass="errorblock" element="div" /> --%>
 							<table>
@@ -112,7 +112,7 @@
 								</tr>
 								<tr>
 									<td class="errorblock"><label for="zip" id="zipError"
-										class="error"></label></td>
+										class="error"><</label></td>
 									<form:errors path="zip" cssClass="error" />
 
 								</tr>

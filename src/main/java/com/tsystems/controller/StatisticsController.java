@@ -30,8 +30,11 @@ public class StatisticsController {
 		week.set(Calendar.HOUR_OF_DAY, 0);
 		week.set(2015, Calendar.DECEMBER, 2);
 		System.out.println("Week now is " + week.getTime());
-
+		
 		model.addObject("stats", statisticsService.calculateWeekIncome(week));
+		model.addObject("totalIncome",statisticsService.gatherTotalIncome());
+		model.addObject("topClients", statisticsService.getTop10Clients(10));
+		model.addObject("topProducts", statisticsService.getTop10Products(10));
 		return model;
 	}
 

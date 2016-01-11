@@ -1,6 +1,9 @@
 package com.tsystems.repository;
 
+import java.net.ConnectException;
 import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
 
 import com.tsystems.model.Address;
 
@@ -12,9 +15,11 @@ import com.tsystems.model.Address;
  */
 public interface AddressRepository {
 
-	boolean updateAddress(Address address);
+	List<Address> findAllAddresses(Long clientId) throws ConnectException;
 
-	List<Address> findAllAddresses(Long clientId);
+	Address findAddressById(Long id) throws EntityNotFoundException,ConnectException;
 
-	Address findAddressById(Long id);
+	void createAddress(Address address) throws ConnectException;
+
+	void updateAddress(Address address) throws ConnectException,EntityNotFoundException;
 }

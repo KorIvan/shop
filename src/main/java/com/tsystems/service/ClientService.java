@@ -1,7 +1,10 @@
 package com.tsystems.service;
 
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.EntityNotFoundException;
 
 import com.tsystems.model.Address;
 import com.tsystems.model.Cart;
@@ -10,6 +13,7 @@ import com.tsystems.model.Order;
 import com.tsystems.model.Person;
 import com.tsystems.model.Product;
 import com.tsystems.model.User;
+import com.tsystems.model.excep.ObjectNoLongerExistsException;
 
 public interface ClientService {
 	/**
@@ -104,7 +108,7 @@ public interface ClientService {
 	 */
 	void purchaseOrder(Order order, Long clientId);
 
-	List<Address> findAllAddresses(Long clientId);
+	List<Address> findAllAddresses(Long clientId) throws ConnectException;
 
 	List<Order> findAllOrders(Long clientId);
 
@@ -113,7 +117,7 @@ public interface ClientService {
 	boolean hasUnfinishedOrder(Long clientId);
 
 	
-	Address findAddressById(Long id);
+	Address getAddressById(Long id) throws ObjectNoLongerExistsException, ConnectException;
 
 	List<Order> getOrdersHistoryByClientI(Long id);
 	/**
@@ -123,8 +127,10 @@ public interface ClientService {
 	 */
 	Person getClientByEmail(String username);
 
-	Map<String, Object> processOrder(Order order);
+	Map<String, Object> processOrder(Order order) throws ConnectException;
 
 	Product getProductById(long parseLong);
+
+	void updateAddress(Address address) throws ConnectException, EntityNotFoundException;
 
 }

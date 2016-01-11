@@ -1,12 +1,13 @@
 package com.tsystems.controller;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,7 @@ import com.tsystems.service.ClientService;
 @RequestMapping("/")
 @SessionAttributes({ "cart" })
 public class GuestController {
+    private static Logger log = Logger.getLogger(ClientController.class.getName());
 	@Autowired
 	private ClientService clientService;
 
@@ -49,6 +51,10 @@ public class GuestController {
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
 	public String getRegistrationForm(@ModelAttribute("person") Person person, Model model, HttpSession session) {
 		model.addAttribute("title", "Registration");
+		log.info("registration statrdte");
+		log.debug("registratino debug");
+		log.error("error happend");
+		log.fatal("some fatal");
 		return "registration";
 	}
 
@@ -169,7 +175,7 @@ public class GuestController {
 		Cart cart = (Cart) session.getAttribute("cart");
 		ModelAndView model = new ModelAndView("cart");
 		if (cart.getItemList() == null) {
-			cart.setItemList(new LinkedList<CartItem>());
+			cart.setItemList(new ArrayList<CartItem>());
 		}
 		if (cart.getItemList().contains(cartItem)) {
 			Integer maxAmount = clientService.getProductById(cartItem.getProduct().getId()).getStorage().getAmount();

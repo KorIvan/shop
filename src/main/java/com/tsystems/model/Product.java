@@ -1,6 +1,6 @@
 package com.tsystems.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -43,7 +42,7 @@ public class Product {
 //	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL) //in json does not load
 	@OneToMany(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST,CascadeType.MERGE},mappedBy="product")
 	
-	private Set<Properties> properties;
+	private List<Properties> properties;
 	
 	@NotNull(message = "This field must be filled in!")
 	@DecimalMin(value = "0.001", message = "Minimal weight is 0.001 gram.")
@@ -112,11 +111,11 @@ public class Product {
 		this.weight = weigth;
 	}
 
-	public Set<Properties> getProperties() {
+	public List<Properties> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(Set<Properties> properties) {
+	public void setProperties(List<Properties> properties) {
 		this.properties = properties;
 	}
 
