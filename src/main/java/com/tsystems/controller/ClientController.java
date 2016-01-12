@@ -201,6 +201,7 @@ public class ClientController {
 			} catch (ConnectException e1) {
 				model.setViewName("exception");
 				model.addObject("message", ExceptionMessages.DATABASE_FAILED_CONNECT);
+				log.error(ExceptionMessages.DATABASE_FAILED_CONNECT);
 				return model;
 			}
 			model.setViewName(resp.get("view").toString());

@@ -65,15 +65,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	public void updateClient(Person client) {
-		// System.out.println(client.getFirstName());
-		// System.out.println(client.getLastName());
-		// System.out.println(client.getEmail());
-		// System.out.println(client.getPassword());
-		// System.out.println(client.getAddresses());
-		// System.out.println(client.getBirthdate());
-		// System.out.println(client.getId());
-		// System.out.println(client.getType());
-
+		log.info(String.format("Personal information %s  updated",client.getEmail()));
 		personRepository.updatePerson(client);
 	}
 
@@ -83,13 +75,15 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	public Order makeOrder(Cart cart, Long clientId) {
+		Person client=personRepository.readPerson(clientId);
+		log.info(String.format("Client %s created new order",client.getEmail()));
 		Order order = new Order();
 		order.setStatus(OrderStatus.PAYMENT_PENDING);
 		order.setPaid(false);
 		order.setPayMethod(PaymentMethod.UNKNOWN);
 		order.setDeliveryMethod(DeliveryMethod.UNKNOWN);
 		order.setCreationDate(new Date());
-		order.setClient(personRepository.readPerson(clientId));
+		order.setClient(client);
 		Set<OrderItem> itemList = new HashSet<OrderItem>();
 		float cost = 0;
 		for (CartItem item : cart.getItemList()) {
@@ -116,6 +110,7 @@ public class ClientServiceImpl implements ClientService {
 	public String cancelOrder(Order order) {
 		if (order.getStatus().equals(OrderStatus.PAYMENT_PENDING) || order.getPayMethod().equals(PaymentMethod.UNKNOWN)
 				|| order.getDeliveryMethod().equals(DeliveryMethod.UNKNOWN)) {
+			log.info(String.format("Client %s canceled order with id=%s",	order.getClient().getEmail(),order.getId().toString()));
 			invalidateOrder(order);
 			orderRepository.updateOrder(order);
 			return "Order is canceled.";
@@ -128,10 +123,11 @@ public class ClientServiceImpl implements ClientService {
 			if (order.getStatus().equals(OrderStatus.DELIVERED))
 				return "Order's already paid and delivered.";
 			if (order.getStatus().equals(OrderStatus.SHIPMENT_PENDING)) {
+				log.info(String.format("Client %s canceled order with id=%s", order.getClient().getEmail(),
+						order.getId().toString()));
 				invalidateOrder(order);
 				orderRepository.updateOrder(order);
 				return "Order is canceled. You money'll be returned.";
-
 			}
 		} else {
 			if (order.getDeliveryMethod().equals(DeliveryMethod.COURIER))
@@ -140,18 +136,19 @@ public class ClientServiceImpl implements ClientService {
 						return "Order's shipping to you.";
 				}
 			if (order.getDeliveryMethod().equals(DeliveryMethod.OTHER)) {
+				log.info(String.format("Client %s canceled order with id=%s",	order.getClient().getEmail(),order.getId().toString()));
 				invalidateOrder(order);
 				orderRepository.updateOrder(order);
 				return "Order is canceled.";
 			}
 			if (order.getDeliveryMethod().equals(DeliveryMethod.SELF_DELIVERY)) {
-				// if(order.getPayMethod().equals(PaymentMethod.EXCHANGING)){
+				log.info(String.format("Client %s canceled order with id=%s",	order.getClient().getEmail(),order.getId().toString()));
 				invalidateOrder(order);
 				orderRepository.updateOrder(order);
 				return "Order is canceled.";
-				// }
 			}
 		}
+		log.info(String.format("Client %s canceled order with id=%s",	order.getClient().getEmail(),order.getId().toString()));
 		invalidateOrder(order);
 		orderRepository.updateOrder(order);
 		return "Order is canceled.";
@@ -235,11 +232,12 @@ public class ClientServiceImpl implements ClientService {
 
 	public Address getAddressById(Long id) throws ObjectNoLongerExistsException, ConnectException {
 		try {
-		return addressRepository.findAddressById(id);}
-		catch (EntityNotFoundException e){
+			return addressRepository.findAddressById(id);
+		} catch (EntityNotFoundException e) {
 			throw new ObjectNoLongerExistsException();
 		}
 	}
+
 	public List<Order> getOrdersHistoryByClientI(Long clientId) {
 		return orderRepository.findAllOrders(clientId);
 	}
@@ -251,7 +249,8 @@ public class ClientServiceImpl implements ClientService {
 
 	/**
 	 * Keys "view","message","addresses","title","order"
-	 * @throws ConnectException 
+	 * 
+	 * @throws ConnectException
 	 */
 	@Override
 	public Map<String, Object> processOrder(Order order) throws ConnectException {
@@ -397,6 +396,7 @@ public class ClientServiceImpl implements ClientService {
 	private boolean checkAndTakeProductAmount(Product product, Integer amountToTake) {
 		Product productFromDB = productRepository.findProductById(product.getId());
 		if (productFromDB.getStorage().getAmount() < amountToTake) {
+			log.info(String.format("Insufficient amount of product: %s, id=%d",product.getName(),product.getId()));
 			return false;
 		} else {
 			productFromDB.getStorage().setAmount(productFromDB.getStorage().getAmount() - amountToTake);
@@ -409,8 +409,10 @@ public class ClientServiceImpl implements ClientService {
 	public void updateAddress(Address address) throws ConnectException, EntityNotFoundException {
 		if (address.getCity() != null && address.getCountry() != null && address.getBuilding() != null
 				&& address.getApartment() != null && address.getClient() != null && address.getStreet() != null
-				&& address.getZip() != null)
-			addressRepository.updateAddress(address);
+				&& address.getZip() != null){
+			log.info(String.format("Client %s updated address id=%d.",address.getId()));
 
+			addressRepository.updateAddress(address);
+		}
 	}
 }

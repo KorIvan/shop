@@ -20,7 +20,6 @@ public class AuthenticationController {
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String destroySession(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		System.out.println("logged out");
 		if (auth != null) {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}

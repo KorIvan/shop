@@ -6,8 +6,8 @@ public class Statistics {
 	private Float incomeTotal;
 	private Float incomePerMonth;
 	private Float incomePerWeek;
-	private Map<Integer, Product> top10Products;
-	private Map<Integer, Person> top10Clients;
+	private Map<Product, Long> topProducts;
+	private Map<Float, Person> topClients;
 	public Float getIncomeTotal() {
 		return incomeTotal;
 	}
@@ -26,17 +26,18 @@ public class Statistics {
 	public void setIncomePerWeek(Float incomePerWeek) {
 		this.incomePerWeek = incomePerWeek;
 	}
-	public Map<Integer, Product> getTop10Products() {
-		return top10Products;
+	public Map<Product, Long> getTopProducts() {
+		return topProducts;
 	}
-	public void setTop10Products(Map<Integer, Product> top10Products) {
-		this.top10Products = top10Products;
+	public Map<Float, Person> getTopClients() {
+		return topClients;
 	}
-	public Map<Integer, Person> getTop10Clients() {
-		return top10Clients;
+	public void setTopClients(Map<Float, Person> map) {
+		this.topClients = map;
 	}
-	public void setTop10Clients(Map<Integer, Person> top10Clients) {
-		this.top10Clients = top10Clients;
+	public void setTopProducts(Map<Product, Long> top10Products) {
+		this.topProducts = top10Products;
+		
 	}
 
 }

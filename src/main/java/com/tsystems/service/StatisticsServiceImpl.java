@@ -48,7 +48,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 	}
 
 	@Override
-	public Map<Product, Long> getTop10Products(int topSize) {
+	public Map<Product, Long> getTopProducts(int topSize) {
 
 		List<Order> paidOrders = orderRepository.getPaidOrders();
 		Map<Product, Long> top = new HashMap<>();
@@ -72,7 +72,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 	}
 
 	@Override
-	public Map<Float, Person> getTop10Clients(int topSize) {
+	public Map<Float, Person> getTopClients(int topSize) {
 		List<Person> clients = personRepository.getPersons(PersonType.ROLE_CLIENT);
 		Map<Float, Person> top = new TreeMap<>(Collections.reverseOrder());
 		for (Person p : clients) {

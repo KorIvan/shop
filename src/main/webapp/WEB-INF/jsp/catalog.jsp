@@ -3,12 +3,10 @@
 	<h1>${title}</h1>
 	<div class="message">${message}</div>
 </div>
-		<td>
-			<div class="customList" id="categories" data-bind="foreach:categories">
+			<div align="center"><div class="customList" id="categories" data-bind="foreach:categories">
 				<input type="radio" name="category" data-bind="value:id,attr:{id:'cat'+id},event:{change:$root.onCategoryChange}"/>
 				<label data-bind="attr:{for:'cat'+id},text:name"></label>
-			</div>
-		</td>
+			</div></div>
 <div id="products" align="center" style="display: none;">
 	<form:form commandName="cart.cart" name="products" style="margin:0px;border-radius: 0px;;">
 		<table style="border-collapse: separate;
@@ -37,7 +35,6 @@
 		
 	</form:form>
 	</div>
-</div>
 <script type="text/javascript" src="/shop/js/knockout.js"></script>
 <script type="text/javascript">
 $(function(){

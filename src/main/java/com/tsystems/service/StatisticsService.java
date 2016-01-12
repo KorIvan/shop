@@ -21,12 +21,13 @@ public interface StatisticsService {
 
 	Float calculateWeekIncome(Calendar week);
 
-	Map<Product, Long> getTop10Products(int topSize);
 
 	Statistics gatherStatistics();
 
-	Map<Float, Person> getTop10Clients(int topSize);
+	Map<Float, Person> getTopClients(int topSize);
 
 	Float gatherTotalIncome();
+
+	Map<Product, Long> getTopProducts(int topSize);
 
 }

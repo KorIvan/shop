@@ -107,9 +107,9 @@
 
 				<td><input type="submit" value="Next" name="action"
 					class="input"></td>
-				<td><a href="<spring:url value="/client/cancelOrder"/>">Cancel Order</a>
-				<input type="button" value="Cancel" name="action"
-					class="input" onclick="return areYouSure();"></td>
+				<td><a  href="<spring:url value="/client/cancelOrder"/>">Cancel Order</a>
+<!-- 				<input type="button" value="Cancel" name="action" -->
+<!-- 					class="input" onclick="return areYouSure();"></td> -->
 			</tr>
 		</table>
 		<%-- 	</form:form> --%>

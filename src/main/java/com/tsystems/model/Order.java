@@ -22,6 +22,9 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.tsystems.model.excep.UnPaidOrderException;
+import com.tsystems.model.excep.UnallowableStateException;
+
 /**
  * Order consist of set of Products, Address, Client and If Client chose self
  * delivery method, then Order's Address is null.
@@ -34,16 +37,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Order {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(unique = true, nullable = false)
 	private Long id;
 
 	@ManyToOne
-	//(fetch=FetchType.EAGER, cascade=CascadeType.DETACH)
+	// (fetch=FetchType.EAGER, cascade=CascadeType.DETACH)
 	@NotNull(message = "This field can't be null!")
 	private Person client;
 
-	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)//just try
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // just try
 	private Address address;
 
 	@Enumerated(EnumType.STRING)
@@ -57,9 +60,10 @@ public class Order {
 	private DeliveryMethod deliveryMethod;
 
 	@NotNull(message = "This field must be filled in!")
-	@OneToMany(fetch=FetchType.EAGER, cascade={CascadeType.ALL},mappedBy="order")
-//	@JoinTable(name = "ORDER_PRODUCT", joinColumns = { @JoinColumn(name = "order_id") }, inverseJoinColumns = {
-//			@JoinColumn(name = "product_id") })
+	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "order")
+	// @JoinTable(name = "ORDER_PRODUCT", joinColumns = { @JoinColumn(name =
+	// "order_id") }, inverseJoinColumns = {
+	// @JoinColumn(name = "product_id") })
 	private Set<OrderItem> orderItems;
 
 	private Boolean paid;
@@ -76,16 +80,14 @@ public class Order {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "creation_date")
 	private java.util.Date creationDate;
-	
+
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "MM/dd/yyyy")
 	@Column(name = "delivery_date")
 	private java.util.Date deliveryDate;
-	
+
 	@Column(name = "comment_for_order")
 	private String commentsForOrder;
-
-
 
 	@Override
 	public int hashCode() {
@@ -185,7 +187,13 @@ public class Order {
 		return paid;
 	}
 
-	public void setPaid(Boolean paid) {
+	/**
+	 * If OrderPayment is Provisioning
+	 * 
+	 * @param paid
+	 * @throws UnPaidOrderException
+	 */
+	public void setPaid(Boolean paid) throws UnPaidOrderException {
 		this.paid = paid;
 	}
 
@@ -193,8 +201,13 @@ public class Order {
 		return status;
 	}
 
-	public void setStatus(OrderStatus status) {
-		this.status = status;
+	/**
+	 * 
+	 * @param status
+	 * @throws UnallowableStateException
+	 */
+	public void setStatus(OrderStatus status) throws UnallowableStateException {
+			this.status=status;
 	}
 
 	public Float getCost() {
@@ -228,6 +241,5 @@ public class Order {
 	public void setCommentsForOrder(String commentsForOrder) {
 		this.commentsForOrder = commentsForOrder;
 	}
-
 
 }

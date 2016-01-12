@@ -112,7 +112,7 @@
 								</tr>
 								<tr>
 									<td class="errorblock"><label for="zip" id="zipError"
-										class="error"><</label></td>
+										class="error"></label></td>
 									<form:errors path="zip" cssClass="error" />
 
 								</tr>

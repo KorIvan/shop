@@ -51,10 +51,6 @@ public class GuestController {
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
 	public String getRegistrationForm(@ModelAttribute("person") Person person, Model model, HttpSession session) {
 		model.addAttribute("title", "Registration");
-		log.info("registration statrdte");
-		log.debug("registratino debug");
-		log.error("error happend");
-		log.fatal("some fatal");
 		return "registration";
 	}
 
@@ -91,9 +87,7 @@ public class GuestController {
 
 	@RequestMapping(value = "/greeting", method = RequestMethod.GET)
 	public String sayHello(Model model) {
-
 		model.addAttribute("greeting", "Hello World");
-
 		return "hello";
 	}
 

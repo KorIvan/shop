@@ -1,8 +1,11 @@
 package com.tsystems.controller;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -17,6 +20,8 @@ import com.tsystems.service.StatisticsService;
 @Controller
 @RequestMapping("/statistics")
 public class StatisticsController {
+	private static Logger log = Logger.getLogger(StatisticsControllerRest.class.getName());
+
 	@Autowired
 	private StatisticsService statisticsService;
 
@@ -29,19 +34,18 @@ public class StatisticsController {
 		week.clear(Calendar.MILLISECOND);
 		week.set(Calendar.HOUR_OF_DAY, 0);
 		week.set(2015, Calendar.DECEMBER, 2);
-		System.out.println("Week now is " + week.getTime());
-		
+
 		model.addObject("stats", statisticsService.calculateWeekIncome(week));
-		model.addObject("totalIncome",statisticsService.gatherTotalIncome());
-		model.addObject("topClients", statisticsService.getTop10Clients(10));
-		model.addObject("topProducts", statisticsService.getTop10Products(10));
+		model.addObject("totalIncome", statisticsService.gatherTotalIncome());
+		model.addObject("topClients", statisticsService.getTopClients(10));
+		model.addObject("topProducts", statisticsService.getTopProducts(10));
 		return model;
 	}
 
 	@RequestMapping(value = "/topClients")
 	public ModelAndView getTopClients() {
 		ModelAndView model = new ModelAndView("statisticsTopClients");
-		model.addObject("topClients", statisticsService.getTop10Clients(10));
+		model.addObject("topClients", statisticsService.getTopClients(10));
 		return model;
 	}
 
@@ -51,22 +55,27 @@ public class StatisticsController {
 	 * ModelAndView("statistics"); System.out.println("POST METHOS");
 	 * model.addObject("stats", "lol"); return model; }
 	 */
-	@RequestMapping(value = "/perWeek", method = RequestMethod.GET)
+	@RequestMapping(value = "/incomePeriod", method = RequestMethod.GET)
 	public ModelAndView getPerWeek() {
-		ModelAndView model = new ModelAndView("statistics");
-		model.addObject("income", "ll");
+		ModelAndView model = new ModelAndView("statisticsIncome");
 		return model;
 	}
 
-	@RequestMapping(value = "/perWeek", method = RequestMethod.POST)
-	 public ModelAndView getWeekStatistics(@RequestParam("from") String
-	 from,@RequestParam("to") String to ){
-//	public ModelAndView getWeekStatistics(HttpServletRequest request) {
-//		String from = request.getAttribute("from").toString();
-//		String to = request.getAttribute("to").toString();
-		ModelAndView model = new ModelAndView("statistics");
-		System.out.println("POST sent");
-		model.addObject("income", statisticsService.calculateWeekIncome(Date.valueOf(from), Date.valueOf(to)));
+	@RequestMapping(value = "/incomePeriod", method = RequestMethod.POST)
+	public ModelAndView getWeekStatistics(@RequestParam("from") String from, @RequestParam("to") String to) {
+		ModelAndView model = new ModelAndView("statisticsIncome");
+		java.util.Date fromParsed = null;
+		java.util.Date toParsed = null;
+
+		try {
+			fromParsed = new SimpleDateFormat("MM/dd/yyyy").parse(from);
+			toParsed = new SimpleDateFormat("MM/dd/yyyy").parse(from);
+
+		} catch (ParseException e) {
+			log.error("Incorrect date format");
+		}
+		model.addObject("income", statisticsService.calculateWeekIncome(new java.sql.Date(fromParsed.getTime()),
+				new java.sql.Date(toParsed.getTime())));
 		return model;
 	}
 

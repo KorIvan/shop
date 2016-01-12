@@ -33,7 +33,7 @@ import com.tsystems.service.ManagerService;
 
 @Controller
 @RequestMapping("/manager")
-@SessionAttributes({ "product","order" })
+@SessionAttributes({ "product","order" , "category"})
 public class ManagerController {
 	@Autowired
 	private ManagerService managerService;
@@ -241,6 +241,50 @@ public class ManagerController {
 		}
 		return model;
 	}
+//	
+//	@RequestMapping(value = "/editCategory", method = RequestMethod.GET)
+//	public ModelAndView editCategory() {
+//		ModelAndView model = new ModelAndView("category");
+//		Category cat = new Category();
+//		List<Attribute> attributes = new LinkedList<Attribute>();
+//		attributes.add(new Attribute());
+//		cat.setAttributesForCategory(attributes);
+//		model.addObject("title", "New category");
+//		model.addObject("category", cat);
+//
+//		return model;
+//	}
+//
+//	@RequestMapping(value = "/editCategory", method = RequestMethod.POST)
+//	public ModelAndView saveCategory(@Valid @ModelAttribute("category") Category category, BindingResult result,
+//			@RequestParam String action, HttpServletRequest request) {
+//		ModelAndView model = new ModelAndView("category");
+//
+//		String[] toDelete = request.getParameterValues("toDelete");
+//
+//		model.addObject("title", "New category");
+//
+//		if (result.hasErrors() && !result.hasFieldErrors("type")) {
+//			model.addObject("message", "Sorry, error ocured.");
+//			return model;
+//		}
+//		if (action.equalsIgnoreCase("Save")) {
+//			model.addObject("message", managerService.createCategory(category));
+//			model.setView(new RedirectView("addCategory.html"));
+//		}
+//		if (action.equalsIgnoreCase("Add Attribute")) {
+//			category.getAttributesForCategory().add(new Attribute());
+//			model.addObject("category", category);
+//		}
+//		if (toDelete != null && action.equalsIgnoreCase("Delete")) {
+//			for (int i = toDelete.length - 1; i >= 0; i--) {
+//				category.getAttributesForCategory().remove(Integer.parseInt(toDelete[i]));
+//			}
+//			model.addObject("category", category);
+//		}
+//		return model;
+//	}
+//	
 
 
 }

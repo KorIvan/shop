@@ -5,7 +5,7 @@
 		<fieldset>
 			<legend>Please Login</legend>
 			<label for="username">Email</label> 
-			<input type="text" id="username" name="username" /> <br/>
+			<input type="text" id="username" name="username" />
 				<label for="password">Password</label>
 				 <input type="password" id="password" name="password" /> 
 				 <input	type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
